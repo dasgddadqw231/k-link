@@ -9,6 +9,9 @@ export const LANG_LABEL: Record<Lang, string> = {
   ko: "한국어",
 };
 
+/** 태국 수요측 페이지 전용 문구. 한국어는 LandingKo가 별도로 갖는다. */
+export type ThLang = "th" | "en";
+
 /**
  * 랜딩 카피 원칙 — 반드시 유지할 것.
  * 1. 태국 FDA 광고 허가(Sor Bor 4) 취득 전까지 식품의 건강 효능을 주장할 수 없다.
@@ -28,6 +31,7 @@ export const t = {
     heroCtaPartner: "สนใจจัดจำหน่าย",
 
     productsLabel: "สินค้าชุดแรก",
+    productsNote: "ทุกชิ้นเป็นแบบซองเดียวจบ พกง่าย ไม่เหลือทิ้ง",
     madeInKorea: "ผลิตในเกาหลี",
     positivaName: "Positiva",
     positivaKind: "น้ำมันมะกอกแบบซองสติ๊ก",
@@ -81,68 +85,6 @@ export const t = {
     footerNote: "B&Y k-link co., ltd. — กรุงเทพมหานคร ประเทศไทย",
   },
 
-  ko: {
-    eyebrow: "KOREA × THAILAND",
-    heroTitle: "한국의 좋은 것을\n태국으로",
-    heroSub:
-      "태국에 등록된 법인이 직접 수입하고 유통합니다. 방콕에서 현지 팀이 움직입니다.",
-    heroCtaConsumer: "출시 소식 받기",
-    heroCtaPartner: "유통 문의",
-
-    productsLabel: "첫 번째 제품",
-    madeInKorea: "대한민국 생산",
-    positivaName: "포지티바",
-    positivaKind: "올리브오일 스틱",
-    positivaDesc: "한 포씩 뜯어 바로 쓰는 20ml 스틱형 올리브오일. 두 가지.",
-    olleName: "올레샷",
-    olleDesc: "유기농 엑스트라버진 올리브오일",
-    oltoName: "올토샷",
-    oltoDesc: "올리브오일에 토마토를 더한 스틱",
-    eunhwiName: "은휘플로우",
-    eunhwiKind: "늙은호박즙",
-    eunhwiDesc: "국내산 늙은호박을 통째로 갈아 넣은 90ml 파우치.",
-    eunhwiSkuName: "국내산 늙은호박즙",
-    eunhwiSkuDesc: "호박 100% · HACCP 인증 시설 생산",
-    realPhotoLabel: "실물 사진",
-
-    lineLabel: "소비자분들께",
-    lineTitle: "누구보다 먼저",
-    lineBody: "LINE 친구 추가 한 번이면 세 가지를 받으십니다",
-    linePerk1: "출시일과 판매처를 가장 먼저",
-    linePerk2: "시식 행사 초대",
-    linePerk3: "캐릭터 스티커·배경화면 다운로드",
-    lineCta: "LINE 친구 추가",
-    lineMissing: "LINE 링크가 아직 설정되지 않았습니다",
-
-    bizLabel: "유통·리테일 파트너께",
-    bizTitle: "수입 리스크는\n저희가 집니다",
-    bizBody:
-      "수입 서류도 인허가도 파트너가 떠안지 않습니다. 판매에만 집중하시면 됩니다.",
-    biz1Title: "태국 법인",
-    biz1Body:
-      "저희가 직접 수입자(Importer of Record)가 됩니다. 남의 명의를 빌리는 중개상이 아닙니다.",
-    biz2Title: "태국 FDA 등록 직접 수행",
-    biz2Body: "대행사를 끼지 않고 저희 법인 명의로 직접 신고합니다.",
-    biz3Title: "캐릭터 IP 보유",
-    biz3Body: "매대 POP, 스티커, 온라인 소재를 라이선스 비용 없이 쓰실 수 있습니다.",
-    biz4Title: "한국 제조사 직거래",
-    biz4Body: "중간 유통 없이 한국 제조사에서 직접 선별하고 발주합니다.",
-    bizCta: "거래 조건 문의",
-    emailCta: "이메일 보내기",
-
-    flowLabel: "일하는 방식",
-    flow1Title: "제품을 고르고",
-    flow1Sub: "서울",
-    flow2Title: "수입하고 등록하고",
-    flow2Sub: "태국 FDA",
-    flow3Title: "매대까지",
-    flow3Sub: "방콕",
-
-    statusNote:
-      "현재 태국 FDA 등록 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정.",
-    footerNote: "B&Y k-link co., ltd. — 태국 방콕",
-  },
-
   en: {
     eyebrow: "KOREA × THAILAND",
     heroTitle: "Korea's best,\non its way to Thailand",
@@ -152,6 +94,7 @@ export const t = {
     heroCtaPartner: "Distribute with us",
 
     productsLabel: "First products",
+    productsNote: "Every item is single-serve — one sachet, nothing left over.",
     madeInKorea: "Made in Korea",
     positivaName: "Positiva",
     positivaKind: "Olive Oil Sticks",
