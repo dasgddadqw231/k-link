@@ -11,16 +11,22 @@ export const LANG_LABEL: Record<Lang, string> = {
 
 /**
  * 랜딩 카피 원칙 — 반드시 유지할 것.
- * 태국 FDA 광고 허가(Sor Bor 4) 취득 전까지 식품의 건강 효능을 주장할 수 없다.
- * 부종 완화, 다이어트, 면역, 피부 개선 등 어떤 기능성 표현도 넣지 말 것.
- * 제품 설명은 원재료, 형태, 용도 같은 사실 기술로만 작성한다.
+ * 1. 태국 FDA 광고 허가(Sor Bor 4) 취득 전까지 식품의 건강 효능을 주장할 수 없다.
+ *    부종 완화, 다이어트, 면역, 피부 개선 등 어떤 기능성 표현도 넣지 말 것.
+ *    제품 설명은 원재료, 형태, 용도 같은 사실 기술로만 작성한다.
+ * 2. 이 페이지의 독자는 두 부류다. QR로 들어온 태국 소비자, 그리고 태국 유통·리테일.
+ *    양쪽 모두에게 "지금 얻을 수 있는 것"을 제시한다. 회사 소개는 훅이 아니다.
+ * 3. 아직 못 한 일(인허가 진행 중, 미출시)은 지우지 않되 헤드라인에 두지 않는다.
  */
 export const t = {
   th: {
     eyebrow: "เกาหลี × ไทย",
     heroTitle: "ของดีจากเกาหลี\nกำลังจะมาถึงไทย",
     heroSub:
-      "เราเป็นบริษัทจดทะเบียนในไทย นำเข้าและดูแลสินค้าเกาหลีคัดสรรด้วยทีมงานในกรุงเทพฯ",
+      "บริษัทจดทะเบียนในไทย นำเข้าและดูแลสินค้าเกาหลีคัดสรร ด้วยทีมงานในกรุงเทพฯ",
+    heroCtaConsumer: "รับข่าวก่อนใคร",
+    heroCtaPartner: "สนใจจัดจำหน่าย",
+
     productsLabel: "สินค้าชุดแรก",
     madeInKorea: "ผลิตในเกาหลี",
     positivaName: "Positiva",
@@ -36,33 +42,53 @@ export const t = {
     eunhwiSkuName: "น้ำฟักทองเกาหลี",
     eunhwiSkuDesc: "ฟักทอง 100% · โรงงานมาตรฐาน HACCP",
     realPhotoLabel: "ภาพสินค้าจริง",
-    statusLabel: "สถานะปัจจุบัน",
-    fact1Label: "บริษัท",
-    fact1Value: "นิติบุคคลไทย · กรุงเทพฯ",
-    fact2Label: "การจดทะเบียน",
-    fact2Value: "อยู่ระหว่างยื่น อย.",
-    fact3Label: "กำหนดวางจำหน่าย",
-    fact3Value: "ปี 2026",
-    honestNote:
-      "เรายังไม่เปิดขาย ระหว่างนี้เรากำลังดำเนินการขออนุญาตให้ถูกต้องครบถ้วนก่อน",
-    forkLabel: "คุณสนใจด้านไหน",
-    consumerTitle: "อยากรู้เรื่องสินค้า",
-    consumerBody:
-      "เพิ่มเพื่อนใน LINE เพื่อรับข่าวสารก่อนใคร ทั้งวันวางจำหน่าย จุดจำหน่าย และกิจกรรมทดลองสินค้า",
-    consumerCta: "รับข่าวก่อนใครทาง LINE",
-    partnerTitle: "อยากคุยเรื่องธุรกิจ",
-    partnerBody:
-      "ผู้ซื้อ ร้านค้าปลีก ครีเอเตอร์ และแบรนด์เกาหลีที่มองหาทางเข้าตลาดไทย ติดต่อเราได้โดยตรง",
-    partnerCta: "ติดต่อฝ่ายธุรกิจ",
-    emailCta: "ส่งอีเมล",
-    footerNote: "B&Y k-link co., ltd. — กรุงเทพมหานคร ประเทศไทย",
+
+    lineLabel: "สำหรับผู้บริโภค",
+    lineTitle: "รู้ก่อน ชิมก่อน",
+    lineBody: "เพิ่มเพื่อนใน LINE วันนี้ แล้วรับสามอย่างนี้",
+    linePerk1: "รู้วันวางจำหน่ายและจุดจำหน่ายก่อนใคร",
+    linePerk2: "ได้รับเชิญร่วมงานชิมสินค้า",
+    linePerk3: "ดาวน์โหลดสติกเกอร์และวอลเปเปอร์คาแรกเตอร์",
+    lineCta: "เพิ่มเพื่อนใน LINE",
     lineMissing: "ยังไม่ได้ตั้งค่าลิงก์ LINE",
+
+    bizLabel: "สำหรับผู้จัดจำหน่ายและร้านค้า",
+    bizTitle: "ความเสี่ยงเรื่องนำเข้า\nเรารับไว้เอง",
+    bizBody:
+      "คุณไม่ต้องยุ่งกับเอกสารนำเข้าหรือการขึ้นทะเบียน หน้าที่ของคุณคือขาย",
+    biz1Title: "นิติบุคคลไทย",
+    biz1Body:
+      "เราเป็นผู้นำเข้าเอง (Importer of Record) ไม่ใช่คนกลางที่ฝากคนอื่นนำเข้า",
+    biz2Title: "ขึ้นทะเบียน อย. เอง",
+    biz2Body: "ยื่นขึ้นทะเบียนกับ อย. ไทยในนามบริษัทเราโดยตรง ไม่ผ่านตัวแทน",
+    biz3Title: "คาแรกเตอร์เป็นของเรา",
+    biz3Body: "ป้ายหน้าร้าน สติกเกอร์ และสื่อออนไลน์ ใช้ได้ทันทีโดยไม่มีค่าลิขสิทธิ์",
+    biz4Title: "ติดต่อโรงงานเกาหลีโดยตรง",
+    biz4Body: "คัดและสั่งจากผู้ผลิตเกาหลีเอง ไม่ผ่านพ่อค้าคนกลาง",
+    bizCta: "ขอข้อมูลและเงื่อนไข",
+    emailCta: "ส่งอีเมล",
+
+    flowLabel: "เราทำงานอย่างไร",
+    flow1Title: "คัดสินค้า",
+    flow1Sub: "โซล",
+    flow2Title: "นำเข้าและขึ้นทะเบียน",
+    flow2Sub: "อย. ไทย",
+    flow3Title: "ส่งถึงหน้าร้าน",
+    flow3Sub: "กรุงเทพฯ",
+
+    statusNote:
+      "ขณะนี้อยู่ระหว่างขึ้นทะเบียนกับ อย. ไทย ยังไม่เปิดจำหน่าย กำหนดวางจำหน่ายปี 2026",
+    footerNote: "B&Y k-link co., ltd. — กรุงเทพมหานคร ประเทศไทย",
   },
+
   ko: {
     eyebrow: "KOREA × THAILAND",
     heroTitle: "한국의 좋은 것을\n태국으로",
     heroSub:
       "태국에 등록된 법인이 직접 수입하고 유통합니다. 방콕에서 현지 팀이 움직입니다.",
+    heroCtaConsumer: "출시 소식 받기",
+    heroCtaPartner: "유통 문의",
+
     productsLabel: "첫 번째 제품",
     madeInKorea: "대한민국 생산",
     positivaName: "포지티바",
@@ -78,33 +104,53 @@ export const t = {
     eunhwiSkuName: "국내산 늙은호박즙",
     eunhwiSkuDesc: "호박 100% · HACCP 인증 시설 생산",
     realPhotoLabel: "실물 사진",
-    statusLabel: "현재 상태",
-    fact1Label: "법인",
-    fact1Value: "태국 법인 · 방콕",
-    fact2Label: "인허가",
-    fact2Value: "태국 FDA 등록 진행 중",
-    fact3Label: "출시 예정",
-    fact3Value: "2026년",
-    honestNote:
-      "아직 판매를 시작하지 않았습니다. 정식 인허가를 모두 마친 뒤 출시합니다.",
-    forkLabel: "어느 쪽이신가요",
-    consumerTitle: "제품이 궁금해요",
-    consumerBody:
-      "LINE 친구 추가하면 출시일, 판매처, 시식 행사 소식을 가장 먼저 보내드립니다.",
-    consumerCta: "LINE으로 출시 소식 받기",
-    partnerTitle: "사업 이야기를 하고 싶어요",
-    partnerBody:
-      "바이어, 리테일, 크리에이터, 그리고 태국 진출을 준비하는 한국 브랜드. 직접 연락 주세요.",
-    partnerCta: "사업 문의하기",
-    emailCta: "이메일 보내기",
-    footerNote: "B&Y k-link co., ltd. — 태국 방콕",
+
+    lineLabel: "소비자분들께",
+    lineTitle: "누구보다 먼저",
+    lineBody: "LINE 친구 추가 한 번이면 세 가지를 받으십니다",
+    linePerk1: "출시일과 판매처를 가장 먼저",
+    linePerk2: "시식 행사 초대",
+    linePerk3: "캐릭터 스티커·배경화면 다운로드",
+    lineCta: "LINE 친구 추가",
     lineMissing: "LINE 링크가 아직 설정되지 않았습니다",
+
+    bizLabel: "유통·리테일 파트너께",
+    bizTitle: "수입 리스크는\n저희가 집니다",
+    bizBody:
+      "수입 서류도 인허가도 파트너가 떠안지 않습니다. 판매에만 집중하시면 됩니다.",
+    biz1Title: "태국 법인",
+    biz1Body:
+      "저희가 직접 수입자(Importer of Record)가 됩니다. 남의 명의를 빌리는 중개상이 아닙니다.",
+    biz2Title: "태국 FDA 등록 직접 수행",
+    biz2Body: "대행사를 끼지 않고 저희 법인 명의로 직접 신고합니다.",
+    biz3Title: "캐릭터 IP 보유",
+    biz3Body: "매대 POP, 스티커, 온라인 소재를 라이선스 비용 없이 쓰실 수 있습니다.",
+    biz4Title: "한국 제조사 직거래",
+    biz4Body: "중간 유통 없이 한국 제조사에서 직접 선별하고 발주합니다.",
+    bizCta: "거래 조건 문의",
+    emailCta: "이메일 보내기",
+
+    flowLabel: "일하는 방식",
+    flow1Title: "제품을 고르고",
+    flow1Sub: "서울",
+    flow2Title: "수입하고 등록하고",
+    flow2Sub: "태국 FDA",
+    flow3Title: "매대까지",
+    flow3Sub: "방콕",
+
+    statusNote:
+      "현재 태국 FDA 등록 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정.",
+    footerNote: "B&Y k-link co., ltd. — 태국 방콕",
   },
+
   en: {
     eyebrow: "KOREA × THAILAND",
     heroTitle: "Korea's best,\non its way to Thailand",
     heroSub:
       "A Thai-registered company importing and distributing selected Korean goods, run by a local team in Bangkok.",
+    heroCtaConsumer: "Get launch news",
+    heroCtaPartner: "Distribute with us",
+
     productsLabel: "First products",
     madeInKorea: "Made in Korea",
     positivaName: "Positiva",
@@ -120,27 +166,43 @@ export const t = {
     eunhwiSkuName: "Korean Pumpkin Juice",
     eunhwiSkuDesc: "100% pumpkin · HACCP-certified facility",
     realPhotoLabel: "Actual product",
-    statusLabel: "Where we are",
-    fact1Label: "Entity",
-    fact1Value: "Thai company · Bangkok",
-    fact2Label: "Regulatory",
-    fact2Value: "Thai FDA registration in progress",
-    fact3Label: "Launch",
-    fact3Value: "2026",
-    honestNote:
-      "We have not started selling yet. We launch once every approval is properly in place.",
-    forkLabel: "What brings you here",
-    consumerTitle: "I want the products",
-    consumerBody:
-      "Add us on LINE and be first to hear about the launch date, where to buy, and tasting events.",
-    consumerCta: "Get launch news on LINE",
-    partnerTitle: "Let's talk business",
-    partnerBody:
-      "Buyers, retailers, creators, and Korean brands looking at Thailand. Reach us directly.",
-    partnerCta: "Business enquiry",
-    emailCta: "Send email",
-    footerNote: "B&Y k-link co., ltd. — Bangkok, Thailand",
+
+    lineLabel: "For shoppers",
+    lineTitle: "Know it first,\ntaste it first",
+    lineBody: "Add us on LINE today and get three things",
+    linePerk1: "Launch date and stockists, before anyone else",
+    linePerk2: "Invitations to tasting events",
+    linePerk3: "Character stickers and wallpapers to download",
+    lineCta: "Add us on LINE",
     lineMissing: "LINE link is not configured yet",
+
+    bizLabel: "For distributors and retailers",
+    bizTitle: "We carry\nthe import risk",
+    bizBody:
+      "No import paperwork, no registration burden on your side. You sell; we handle the rest.",
+    biz1Title: "Thai-registered entity",
+    biz1Body:
+      "We are the Importer of Record ourselves — not a broker borrowing someone else's licence.",
+    biz2Title: "Thai FDA filing in-house",
+    biz2Body: "Registered under our own company name, without an agency in between.",
+    biz3Title: "We own the characters",
+    biz3Body: "Shelf POP, stickers and online assets, yours to use at no licence cost.",
+    biz4Title: "Direct from Korean makers",
+    biz4Body: "We select and order straight from the manufacturer, with no middlemen.",
+    bizCta: "Request terms",
+    emailCta: "Send email",
+
+    flowLabel: "How we work",
+    flow1Title: "Select the product",
+    flow1Sub: "Seoul",
+    flow2Title: "Import and register",
+    flow2Sub: "Thai FDA",
+    flow3Title: "Onto the shelf",
+    flow3Sub: "Bangkok",
+
+    statusNote:
+      "Thai FDA registration is in progress and we have not started selling. Launch planned for 2026.",
+    footerNote: "B&Y k-link co., ltd. — Bangkok, Thailand",
   },
 } as const;
 

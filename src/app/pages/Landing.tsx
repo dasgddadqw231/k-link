@@ -1,11 +1,29 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { MessageCircle, Mail, ArrowRight, Check } from "lucide-react";
+import {
+  MessageCircle,
+  Mail,
+  ArrowRight,
+  Check,
+  Building2,
+  FileCheck2,
+  Sparkles,
+  Factory,
+  Search,
+  PackageCheck,
+  Store,
+} from "lucide-react";
 import { t, LANG_KEY, LANG_LABEL, detectLang, type Lang } from "../i18n";
 
 /** 값이 없으면 해당 버튼을 렌더링하지 않는다. 없는 연락처를 지어내지 않기 위함. */
 const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string) || "";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 14 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+};
 
 export default function Landing() {
   const [lang, setLang] = useState<Lang>("th");
@@ -72,10 +90,20 @@ export default function Landing() {
     },
   ];
 
-  const facts = [
-    { label: c.fact1Label, value: c.fact1Value },
-    { label: c.fact2Label, value: c.fact2Value },
-    { label: c.fact3Label, value: c.fact3Value },
+  const perks = [c.linePerk1, c.linePerk2, c.linePerk3];
+
+  /** 유통 파트너가 계산기를 두드릴 근거. 전부 태국 법인이라서 가능한 것들이다. */
+  const bizCards = [
+    { Icon: Building2, title: c.biz1Title, body: c.biz1Body },
+    { Icon: FileCheck2, title: c.biz2Title, body: c.biz2Body },
+    { Icon: Sparkles, title: c.biz3Title, body: c.biz3Body },
+    { Icon: Factory, title: c.biz4Title, body: c.biz4Body },
+  ];
+
+  const flow = [
+    { Icon: Search, title: c.flow1Title, sub: c.flow1Sub },
+    { Icon: PackageCheck, title: c.flow2Title, sub: c.flow2Sub },
+    { Icon: Store, title: c.flow3Title, sub: c.flow3Sub },
   ];
 
   return (
@@ -95,13 +123,13 @@ export default function Landing() {
         ))}
       </div>
 
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-[#0A0E1A] px-6 pb-20 pt-24 text-white">
+      {/* HERO — 캐릭터를 첫 화면에 세운다. QR로 들어온 사람이 3초 안에 뭘 파는지 알아야 한다. */}
+      <section className="relative overflow-hidden bg-[#0A0E1A] px-6 pt-20 text-white">
         <div
-          className="pointer-events-none absolute inset-0 opacity-70"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 80% at 50% 0%, rgba(12,63,128,0.55) 0%, rgba(10,14,26,0) 65%)",
+              "radial-gradient(120% 75% at 50% 0%, rgba(12,63,128,0.6) 0%, rgba(10,14,26,0) 62%)",
           }}
         />
         <div className="relative mx-auto max-w-lg">
@@ -112,45 +140,73 @@ export default function Landing() {
             className="flex flex-col items-center text-center"
           >
             <img
-              src="/favicon.png"
+              src="/brands/klink-mark.webp"
               alt="B&Y k-link"
-              className="mb-8 h-16 w-auto drop-shadow-[0_2px_12px_rgba(255,255,255,0.15)]"
+              className="mb-6 h-14 w-auto drop-shadow-[0_4px_14px_rgba(0,0,0,0.5)]"
             />
             <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-white/45">
               {c.eyebrow}
             </span>
-            <h1 className="mt-5 whitespace-pre-line text-[2.6rem] font-bold leading-[1.15] tracking-tight sm:text-5xl">
+            <h1 className="mt-4 whitespace-pre-line text-[2.6rem] font-bold leading-[1.12] tracking-tight sm:text-5xl">
               {c.heroTitle}
             </h1>
-            <div className="mt-7 h-px w-16 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-            <p className="mt-7 text-[15px] leading-relaxed text-white/65">{c.heroSub}</p>
+            <p className="mt-5 text-[15px] leading-relaxed text-white/60">
+              {c.heroSub}
+            </p>
+
+            <div className="mt-8 flex w-full flex-col gap-2.5">
+              {LINE_URL && (
+                <a
+                  href={LINE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold transition-colors active:bg-[#05b34c]"
+                >
+                  <MessageCircle size={18} />
+                  {c.heroCtaConsumer}
+                </a>
+              )}
+              <a
+                href="#partner"
+                className="flex h-13 items-center justify-center gap-2 rounded-xl border border-white/20 py-3.5 font-bold text-white/90 transition-colors active:bg-white/10"
+              >
+                {c.heroCtaPartner}
+                <ArrowRight size={17} />
+              </a>
+            </div>
           </motion.div>
         </div>
-      </section>
 
-      {/* 현재 상태 — 레퍼런스가 없을 때는 검증 가능한 사실이 유일한 신뢰 근거다 */}
-      {/* relative z-10 — 히어로의 absolute 그라디언트가 위로 덮는 것을 막는다 */}
-      <section className="relative z-10 mx-auto -mt-8 max-w-lg px-5">
-        <div className="rounded-2xl border border-black/5 bg-white p-6 shadow-[0_2px_24px_rgba(10,14,26,0.06)]">
-          <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0C3F80]">
-            {c.statusLabel}
-          </p>
-          <dl className="space-y-3.5">
-            {facts.map((f) => (
-              <div key={f.label} className="flex items-baseline justify-between gap-4">
-                <dt className="shrink-0 text-[13px] text-neutral-400">{f.label}</dt>
-                <dd className="text-right text-[14px] font-semibold">{f.value}</dd>
-              </div>
-            ))}
-          </dl>
-          <p className="mt-5 border-t border-neutral-100 pt-4 text-[12.5px] leading-relaxed text-neutral-500">
-            {c.honestNote}
-          </p>
-        </div>
+        {/* 캐릭터 3종이 히어로 바닥에 선다. 누끼라 배경 위에 그대로 얹힌다. */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="relative mx-auto mt-10 flex max-w-lg items-end justify-center gap-1 pb-4"
+        >
+          <img
+            src="/brands/positiva-olleshot.webp"
+            alt=""
+            aria-hidden
+            className="h-36 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-44"
+          />
+          <img
+            src="/brands/eunhwi-character.webp"
+            alt=""
+            aria-hidden
+            className="h-32 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-40"
+          />
+          <img
+            src="/brands/positiva-oltoshot.webp"
+            alt=""
+            aria-hidden
+            className="h-32 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-40"
+          />
+        </motion.div>
       </section>
 
       {/* 제품 — 실물 3종이 현재 유일한 구체적 증거다. 캐릭터로 기억에 남긴다. */}
-      <section className="mt-14 bg-[#FBF7EF] py-14">
+      <section className="bg-[#FBF7EF] py-14">
         <div className="mx-auto max-w-lg px-5">
           <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
             {c.productsLabel}
@@ -159,9 +215,7 @@ export default function Landing() {
             {brands.map((brand, i) => (
               <motion.article
                 key={brand.name}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                {...fadeUp}
                 transition={{ delay: i * 0.08 }}
                 className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-[0_2px_20px_rgba(10,14,26,0.05)]"
               >
@@ -234,55 +288,100 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 분기 — 고객과 관계자는 다음 행동이 다르다 */}
-      <section className="mx-auto max-w-lg px-5 pb-28 pt-14">
-        <p className="mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-          {c.forkLabel}
-        </p>
-
-        <div className="mb-3.5 rounded-2xl bg-[#0A0E1A] p-7 text-white">
-          <h3 className="text-xl font-bold tracking-tight">{c.consumerTitle}</h3>
-          <p className="mt-2.5 text-[14px] leading-relaxed text-white/60">
-            {c.consumerBody}
+      {/* 소비자 훅 — 아직 못 파니까, 지금 당장 줄 수 있는 것 세 가지를 준다. */}
+      <section className="bg-white py-14">
+        <motion.div {...fadeUp} className="mx-auto max-w-lg px-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#06A047]">
+            {c.lineLabel}
           </p>
+          <h2 className="mt-3 whitespace-pre-line text-[1.85rem] font-bold leading-[1.2] tracking-tight">
+            {c.lineTitle}
+          </h2>
+          <p className="mt-3 text-[14px] leading-relaxed text-neutral-500">
+            {c.lineBody}
+          </p>
+
+          <ul className="mt-7 space-y-3">
+            {perks.map((p) => (
+              <li key={p} className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#06C755]/12 text-[#06A047]">
+                  <Check size={14} strokeWidth={3} />
+                </span>
+                <span className="text-[14.5px] leading-relaxed">{p}</span>
+              </li>
+            ))}
+          </ul>
+
           {LINE_URL ? (
             <a
               href={LINE_URL}
               target="_blank"
               rel="noreferrer"
-              className="mt-6 flex h-14 items-center justify-center gap-2 rounded-xl bg-[#06C755] font-bold transition-colors active:bg-[#05b34c]"
+              className="mt-8 flex h-14 items-center justify-center gap-2 rounded-xl bg-[#06C755] font-bold text-white transition-colors active:bg-[#05b34c]"
             >
               <MessageCircle size={19} />
-              {c.consumerCta}
+              {c.lineCta}
             </a>
           ) : (
-            <p className="mt-6 rounded-xl border border-dashed border-white/20 py-4 text-center text-[12px] text-white/40">
+            <p className="mt-8 rounded-xl border border-dashed border-neutral-300 py-4 text-center text-[12px] text-neutral-400">
               {c.lineMissing}
             </p>
           )}
-        </div>
+        </motion.div>
+      </section>
 
-        <div className="rounded-2xl border border-black/8 bg-white p-7">
-          <h3 className="text-xl font-bold tracking-tight">{c.partnerTitle}</h3>
-          <p className="mt-2.5 text-[14px] leading-relaxed text-neutral-500">
-            {c.partnerBody}
-          </p>
-          <div className="mt-6 space-y-2.5">
+      {/* 유통 파트너 훅 — 태국 법인이라서 가능한 것들. 경쟁사가 복제할 수 없는 지점이다. */}
+      <section id="partner" className="scroll-mt-4 bg-[#0A0E1A] py-16 text-white">
+        <div className="mx-auto max-w-lg px-5">
+          <motion.div {...fadeUp}>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#5B9BE8]">
+              {c.bizLabel}
+            </p>
+            <h2 className="mt-3 whitespace-pre-line text-[1.95rem] font-bold leading-[1.18] tracking-tight">
+              {c.bizTitle}
+            </h2>
+            <p className="mt-3.5 text-[14.5px] leading-relaxed text-white/60">
+              {c.bizBody}
+            </p>
+          </motion.div>
+
+          <div className="mt-8 grid gap-2.5 sm:grid-cols-2">
+            {bizCards.map((card, i) => (
+              <motion.div
+                key={card.title}
+                {...fadeUp}
+                transition={{ delay: i * 0.06 }}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+              >
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0C3F80] text-white">
+                  <card.Icon size={17} />
+                </span>
+                <h3 className="mt-3.5 text-[15px] font-bold leading-snug tracking-tight">
+                  {card.title}
+                </h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
+                  {card.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-7 space-y-2.5">
             {LINE_URL && (
               <a
                 href={LINE_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#0C3F80] font-bold text-white transition-colors active:bg-[#0a3468]"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-white font-bold text-[#0A0E1A] transition-colors active:bg-white/85"
               >
-                {c.partnerCta}
+                {c.bizCta}
                 <ArrowRight size={18} />
               </a>
             )}
             {CONTACT_EMAIL && (
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-neutral-200 font-bold transition-colors active:bg-neutral-50"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-white/20 font-bold text-white/90 transition-colors active:bg-white/10"
               >
                 <Mail size={18} />
                 {c.emailCta}
@@ -292,8 +391,41 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-black/5 px-6 py-8 text-center">
-        <img src="/favicon.png" alt="" className="mx-auto mb-3 h-7 w-auto opacity-40" />
+      {/* 일하는 방식 — 서울에서 매대까지 한 팀이라는 것을 한 줄로 보여준다. */}
+      <section className="bg-[#F7F6F3] py-14">
+        <motion.div {...fadeUp} className="mx-auto max-w-lg px-5">
+          <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
+            {c.flowLabel}
+          </p>
+          <ol className="flex items-stretch gap-2">
+            {flow.map((s, i) => (
+              <li key={s.title} className="flex flex-1 items-stretch gap-2">
+                <div className="flex flex-1 flex-col justify-center rounded-2xl border border-black/5 bg-white px-3 py-5 text-center">
+                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[#0C3F80]/8 text-[#0C3F80]">
+                    <s.Icon size={18} />
+                  </span>
+                  <p className="mt-3 text-[13px] font-bold leading-tight tracking-tight">
+                    {s.title}
+                  </p>
+                  <p className="mt-1 text-[11px] text-neutral-400">{s.sub}</p>
+                </div>
+                {i < flow.length - 1 && (
+                  <ArrowRight size={14} className="shrink-0 self-center text-neutral-300" />
+                )}
+              </li>
+            ))}
+          </ol>
+
+          {/* 아직 못 한 일은 지우지 않되, 헤드라인이 아니라 주석 자리에 둔다. */}
+          <p className="mt-8 border-t border-black/5 pt-6 text-center text-[12px] leading-relaxed text-neutral-400">
+            {c.statusNote}
+          </p>
+        </motion.div>
+      </section>
+
+      <footer className="border-t border-black/5 px-6 py-8 pb-28 text-center sm:pb-8">
+        {/* 심볼만 — 사명은 바로 아래 텍스트로 나오므로 워드마크까지 넣으면 중복이다 */}
+        <img src="/brands/klink-mark.webp" alt="" className="mx-auto mb-3 h-8 w-auto opacity-40" />
         <p className="text-[12px] text-neutral-400">{c.footerNote}</p>
       </footer>
 
@@ -306,8 +438,8 @@ export default function Landing() {
             rel="noreferrer"
             className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold text-white"
           >
-            <Check size={18} />
-            {c.consumerCta}
+            <MessageCircle size={18} />
+            {c.lineCta}
           </a>
         </div>
       )}
