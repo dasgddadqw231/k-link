@@ -3,3 +3,6 @@ dist
 .env
 .env.*
 .vercel
+
+# 작업용으로 받은 원본 이미지 (LINE QR 등)
+KakaoTalk_Photo_*.png
