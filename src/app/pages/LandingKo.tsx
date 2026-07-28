@@ -103,16 +103,14 @@ const brands = [
   {
     name: "포지티바",
     kind: "올리브오일 스틱",
-    desc: "유기농 엑스트라버진 20ml 스틱과 토마토를 더한 스틱, 2종",
-    img: "/brands/positiva-mascot.webp",
-    tint: "#EAEFDD",
+    desc: "올레샷(유기농 EVOO 65% + 유기농 레몬 착즙 35%)과 올토샷(올리브오일·토마토), 각 20ml 스틱",
+    img: "/brands/sku-olleshot.webp",
   },
   {
     name: "은휘플로우",
     kind: "늙은호박즙",
     desc: "국내산 늙은호박 100%, 90ml 파우치, HACCP 인증 시설 생산",
-    img: "/brands/eunhwi-mascot.webp",
-    tint: "#FAEEDA",
+    img: "/brands/sku-hobak.webp",
   },
 ];
 
@@ -342,18 +340,13 @@ export default function LandingKo() {
                 transition={{ delay: i * 0.06 }}
                 className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white p-4"
               >
-                <div
-                  className="relative h-20 w-20 shrink-0 rounded-2xl"
-                  style={{ backgroundColor: b.tint }}
-                >
-                  <img
-                    src={b.img}
-                    alt=""
-                    aria-hidden
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-contain p-2 drop-shadow-[0_3px_5px_rgba(0,0,0,0.10)]"
-                  />
-                </div>
+                <img
+                  src={b.img}
+                  alt=""
+                  aria-hidden
+                  loading="lazy"
+                  className="h-24 w-20 shrink-0 rounded-xl object-cover"
+                />
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-baseline gap-x-2">
                     <h3 className="text-[16px] font-bold tracking-tight">{b.name}</h3>

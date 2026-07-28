@@ -34,23 +34,23 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.positivaName,
       kind: c.positivaKind,
       desc: c.positivaDesc,
-      mascot: "/brands/positiva-mascot.webp",
-      mascotTint: "#EAEFDD",
       accent: "#5E7241",
       items: [
         {
           name: c.olleName,
           sub: c.olleDesc,
           size: "20 ml",
-          img: "/brands/positiva-olleshot.webp",
-          tint: "#FBF0D6",
+          img: "/brands/sku-olleshot.webp",
+          tint: "#FBF3DF",
+          photo: true,
         },
         {
           name: c.oltoName,
           sub: c.oltoDesc,
           size: "20 ml",
-          img: "/brands/positiva-oltoshot.webp",
-          tint: "#FBE5D9",
+          img: "/brands/sku-oltoshot.webp",
+          tint: "#FBF3DF",
+          photo: true,
         },
       ],
     },
@@ -58,16 +58,15 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.eunhwiName,
       kind: c.eunhwiKind,
       desc: c.eunhwiDesc,
-      mascot: "/brands/eunhwi-mascot.webp",
-      mascotTint: "#FAEEDA",
       accent: "#A6641B",
       items: [
         {
           name: c.eunhwiSkuName,
           sub: c.eunhwiSkuDesc,
           size: "90 ml",
-          img: "/brands/eunhwi-character.webp",
-          tint: "#FBF1DA",
+          img: "/brands/sku-hobak.webp",
+          tint: "#F7EEDD",
+          photo: true,
         },
         {
           name: c.realPhotoLabel,
@@ -92,10 +91,9 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       title: c.biz3Title,
       body: c.biz3Body,
       art: [
-        "/brands/positiva-mascot.webp",
-        "/brands/eunhwi-mascot.webp",
-        "/brands/positiva-olleshot.webp",
-        "/brands/positiva-oltoshot.webp",
+        "/brands/sku-olleshot.webp",
+        "/brands/sku-hobak.webp",
+        "/brands/sku-oltoshot.webp",
       ],
     },
     { Icon: Factory, title: c.biz4Title, body: c.biz4Body },
@@ -170,24 +168,19 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
           transition={{ duration: 0.7, delay: 0.25 }}
           className="relative mx-auto mt-10 flex max-w-lg items-end justify-center gap-1 pb-4"
         >
-          <img
-            src="/brands/positiva-olleshot.webp"
-            alt=""
-            aria-hidden
-            className="h-36 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-44"
-          />
-          <img
-            src="/brands/eunhwi-character.webp"
-            alt=""
-            aria-hidden
-            className="h-32 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-40"
-          />
-          <img
-            src="/brands/positiva-oltoshot.webp"
-            alt=""
-            aria-hidden
-            className="h-32 w-auto drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)] sm:h-40"
-          />
+          {[
+            "/brands/sku-olleshot.webp",
+            "/brands/sku-hobak.webp",
+            "/brands/sku-oltoshot.webp",
+          ].map((src) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              aria-hidden
+              className="w-1/3 rounded-2xl shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
+            />
+          ))}
         </motion.div>
       </section>
 
@@ -208,18 +201,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 transition={{ delay: i * 0.08 }}
                 className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-[0_2px_20px_rgba(10,14,26,0.05)]"
               >
-                <header className="flex items-center gap-4 px-5 pt-5">
-                  <div
-                    className="relative h-16 w-16 shrink-0 rounded-2xl"
-                    style={{ backgroundColor: brand.mascotTint }}
-                  >
-                    <img
-                      src={brand.mascot}
-                      alt=""
-                      aria-hidden
-                      className="absolute inset-0 h-full w-full object-contain p-1.5 drop-shadow-[0_3px_5px_rgba(0,0,0,0.10)]"
-                    />
-                  </div>
+                <header className="px-5 pt-5">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-baseline gap-x-2">
                       <h3 className="text-lg font-bold tracking-tight">{brand.name}</h3>
@@ -352,7 +334,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   {card.body}
                 </p>
                 {card.art && (
-                  <div className="mt-4 flex items-end justify-around gap-1 rounded-xl bg-white/[0.05] px-3 py-3">
+                  <div className="mt-4 grid grid-cols-3 gap-2">
                     {card.art.map((src) => (
                       <img
                         key={src}
@@ -360,7 +342,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                         alt=""
                         aria-hidden
                         loading="lazy"
-                        className="h-16 w-auto"
+                        className="w-full rounded-lg"
                       />
                     ))}
                   </div>
