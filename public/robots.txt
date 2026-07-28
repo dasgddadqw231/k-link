@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# 내부 전략 보드. 색인 대상이 아니다.
+Disallow: /board
+
+Sitemap: https://www.b-y-klink.com/sitemap.xml
