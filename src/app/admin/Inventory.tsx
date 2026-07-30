@@ -233,7 +233,6 @@ function ProductRow({
   onClick: () => void;
 }) {
   const c = a[lang];
-  const isLow = stock <= product.low_stock_at;
   const days = expiryDaysLeft(expiry);
 
   return (
@@ -260,16 +259,10 @@ function ProductRow({
         </span>
 
         <span className="shrink-0 text-right">
-          <span
-            className={`block text-lg font-black tabular-nums ${
-              isLow ? "text-amber-600" : "text-neutral-900"
-            }`}
-          >
+          <span className="block text-lg font-black tabular-nums text-neutral-900">
             {num(stock)}
           </span>
-          <span className="text-[11px] text-neutral-400">
-            {isLow ? c.stockLow : product.unit}
-          </span>
+          <span className="text-[11px] text-neutral-400">{product.unit}</span>
         </span>
 
         <ChevronRight size={16} className="shrink-0 text-neutral-300" />
@@ -685,7 +678,6 @@ function ProductForm({
     name_th: product?.name_th ?? "",
     name_en: product?.name_en ?? "",
     unit: product?.unit ?? "ea",
-    low_stock_at: String(product?.low_stock_at ?? 0),
     cost_krw: String(product?.cost_krw ?? 0),
     price_thb: String(product?.price_thb ?? 0),
     active: product?.active ?? true,
@@ -716,7 +708,6 @@ function ProductForm({
       name_th: f.name_th.trim(),
       name_en: f.name_en.trim(),
       unit: f.unit.trim() || "ea",
-      low_stock_at: Number(f.low_stock_at) || 0,
       cost_krw: Number(f.cost_krw) || 0,
       price_thb: Number(f.price_thb) || 0,
       active: f.active,
@@ -819,24 +810,13 @@ function ProductForm({
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={c.stockUnit}>
-            <input
-              value={f.unit}
-              onChange={(e) => set("unit", e.target.value)}
-              className={inputCls}
-            />
-          </Field>
-          <Field label={c.stockLowAt}>
-            <input
-              type="number"
-              inputMode="numeric"
-              value={f.low_stock_at}
-              onChange={(e) => set("low_stock_at", e.target.value)}
-              className={inputCls}
-            />
-          </Field>
-        </div>
+        <Field label={c.stockUnit}>
+          <input
+            value={f.unit}
+            onChange={(e) => set("unit", e.target.value)}
+            className={inputCls}
+          />
+        </Field>
 
         <div className="grid grid-cols-2 gap-3">
           <Field label={c.stockCostKrw}>

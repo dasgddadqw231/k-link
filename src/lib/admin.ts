@@ -122,7 +122,6 @@ export interface Product {
   name_th: string;
   name_en: string;
   unit: string;
-  low_stock_at: number;
   cost_krw: number;
   price_thb: number;
   active: boolean;
@@ -150,6 +149,24 @@ export interface ProductStock {
   product_id: string;
   on_hand: number;
   nearest_expiry: string | null;
+}
+
+/**
+ * 홈에 직접 적는 할 일.
+ *
+ * 예전에는 재고·유통기한·인플루언서 상태에서 자동으로 뽑아 "지금 챙길 일"을
+ * 만들었다. 실제로 챙겨야 할 일은 그 세 갈래로 떨어지지 않아서, 규칙으로 짐작하는
+ * 대신 사람이 적는 목록으로 바꿨다.
+ */
+export interface Todo {
+  id: string;
+  body: string;
+  done: boolean;
+  /** 선택. 적어 두면 지난 것부터 위로 올라온다. */
+  due_on: string | null;
+  sort: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Influencer {

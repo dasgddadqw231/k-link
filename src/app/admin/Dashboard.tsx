@@ -1,33 +1,31 @@
 /**
- * 홈 — 숫자 넉 장과 "지금 챙길 일" 한 묶음.
+ * 홈 — 숫자 넉 장과 할 일 한 묶음.
  *
  * 화면을 열었을 때 알고 싶은 건 두 가지뿐이다. 돈이 늘었나 줄었나, 그리고 내가
  * 지금 무엇을 놓치고 있나. 차트는 넣지 않는다 — 출시 전 데이터로 그린 그래프는
  * 읽을 게 없고, 숫자 넉 장이 더 빨리 읽힌다.
  *
- * "챙길 일"은 누르면 그 항목이 바로 열린다. 탭만 바꿔 주고 목록에서 다시 찾게
- * 하면, 할 일 목록이 아니라 알림판이 된다.
+ * 할 일은 직접 적는다. 예전에는 재고·유통기한·인플루언서 상태에서 규칙으로 뽑아
+ * "지금 챙길 일"을 만들었는데, 실제로 챙겨야 하는 일이 그 세 갈래로 떨어지지
+ * 않았다. 규칙이 짐작한 목록은 정작 급한 게 빠져 있어도 다 한 것처럼 보인다.
  *
- * 유통기한을 빼지 않는다. 수입 건기식에서 돈이 가장 크게 새는 곳이고, 재고
- * 목록에만 뱃지로 있으면 그 탭을 열어 본 사람만 알게 된다.
+ * 유통기한은 타일로 남긴다. 수입 건기식에서 돈이 가장 크게 새는 곳이라 숫자
+ * 하나로는 계속 보이게 두고, 무엇을 할지는 사람이 할 일로 적는다.
  */
-import type { ReactNode } from "react";
-import { AlertTriangle, CalendarClock, ChevronRight, Package, Megaphone } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { CalendarClock, Plus, Trash2, Check } from "lucide-react";
+import { supabase } from "../../lib/supabase";
 import {
   monthOf,
   thb,
   todayBkk,
-  num,
   type Influencer,
-  type Product,
+  type Todo,
 } from "../../lib/admin";
-import { a, count, productName, statusLabel, type AdminLang } from "./i18n";
+import { a, count, type AdminLang } from "./i18n";
 import { onHand, type AdminData } from "./data";
-import { Card, Empty, Page, Pill, Tile } from "./ui";
+import { Card, Empty, Page, Pill, Tile, inputCls, useToast } from "./ui";
 import type { Jump, Tab } from "./AdminApp";
-
-/** 게시가 끝났거나 중단된 건은 챙길 일이 아니다. */
-const OPEN_STATUSES: Influencer["status"][] = ["lead", "contacted", "confirmed", "shipped"];
 
 /** 발굴만 해 둔 건은 아직 "진행 중"이 아니다. 실제로 말을 붙인 뒤부터 센다. */
 const ACTIVE_STATUSES: Influencer["status"][] = ["contacted", "confirmed", "shipped"];
@@ -38,23 +36,6 @@ const EXPIRY_WARN_DAYS = 90;
 function daysUntil(date: string, today: string): number {
   const ms = new Date(`${date}T00:00:00Z`).getTime() - new Date(`${today}T00:00:00Z`).getTime();
   return Math.round(ms / 86_400_000);
-}
-
-interface StockAlert {
-  product: Product;
-  stock: number;
-  low: boolean;
-  /** 임박 기준에 들어온 유통기한. 아니면 null. */
-  expiry: string | null;
-  days: number | null;
-}
-
-/** 급한 순서. 다 팔린 것과 이미 지난 유통기한이 먼저다. */
-function rank(x: StockAlert): number {
-  if (x.stock <= 0) return 4;
-  if (x.days !== null && x.days < 0) return 3;
-  if (x.low) return 2;
-  return 1;
 }
 
 export default function Dashboard({
@@ -82,39 +63,15 @@ export default function Dashboard({
     .reduce((s, e) => s + Number(e.amount_thb), 0);
   const net = inSum - outSum;
 
-  /**
-   * 제품 하나에 한 줄만 준다.
-   *
-   * 재고도 부족하고 유통기한도 임박한 제품은 흔하다(안 팔려서 남았으니까). 그걸
-   * 두 줄로 내면 같은 이름이 연달아 두 번 보여서 목록을 잘못 읽었다고 느낀다.
-   * 사유는 한 줄에 이어 붙이고, 오른쪽 뱃지는 가장 급한 것 하나만 보여 준다.
-   */
-  const alerts = data.products
-    .filter((p) => p.active)
-    .map((p) => {
-      const stock = onHand(data.stock, p.id);
-      const expiry = data.stock[p.id]?.nearest_expiry ?? null;
-      // 이미 다 판 로트의 유통기한은 챙길 일이 아니다.
-      const days = expiry && stock > 0 ? daysUntil(expiry, today) : null;
-      return {
-        product: p,
-        stock,
-        low: stock <= p.low_stock_at,
-        expiry: days !== null && days <= EXPIRY_WARN_DAYS ? expiry : null,
-        days,
-      };
-    })
-    .filter((x) => x.low || x.expiry !== null)
-    .sort((x, y) => rank(y) - rank(x));
+  /** 이미 다 판 로트의 유통기한은 세지 않는다. 남은 게 없으면 잃을 것도 없다. */
+  const expiring = data.products.filter((p) => {
+    if (!p.active) return false;
+    if (onHand(data.stock, p.id) <= 0) return false;
+    const expiry = data.stock[p.id]?.nearest_expiry;
+    return !!expiry && daysUntil(expiry, today) <= EXPIRY_WARN_DAYS;
+  });
 
   const activeInf = data.influencers.filter((i) => ACTIVE_STATUSES.includes(i.status));
-  const overdue = data.influencers.filter(
-    (i) =>
-      OPEN_STATUSES.includes(i.status) && i.next_action_on && i.next_action_on <= today,
-  );
-
-  const low = alerts.filter((x) => x.low);
-  const nothingToDo = alerts.length === 0 && overdue.length === 0;
 
   return (
     <Page title={c.homeTitle}>
@@ -133,9 +90,9 @@ export default function Dashboard({
           onClick={() => go("fin")}
         />
         <Tile
-          label={c.homeLowStock}
-          value={count(c.homeSkuCount, low.length)}
-          tone={low.length > 0 ? "warn" : "plain"}
+          label={c.homeExpiring}
+          value={count(c.homeSkuCount, expiring.length)}
+          tone={expiring.length > 0 ? "warn" : "plain"}
           onClick={() => go("stock")}
         />
         <Tile
@@ -146,139 +103,169 @@ export default function Dashboard({
         />
       </div>
 
-      <Card title={c.homeTodo}>
-        {nothingToDo ? (
-          <Empty>{c.homeTodoEmpty}</Empty>
-        ) : (
-          <ul className="divide-y divide-neutral-100">
-            {alerts.map((x) => (
-              <StockAlertRow
-                key={x.product.id}
-                alert={x}
-                lang={lang}
-                onClick={() => go({ tab: "stock", productId: x.product.id })}
-              />
-            ))}
-            {overdue.map((i) => (
-              <OverdueRow key={i.id} inf={i} lang={lang} onClick={() => go("inf")} />
-            ))}
-          </ul>
-        )}
-      </Card>
+      <TodoCard lang={lang} todos={data.todos} today={today} reload={data.reload} />
     </Page>
   );
 }
 
-/** 챙길 일 한 줄의 뼈대. 세 종류가 같은 리듬으로 읽히게 모양을 공유한다. */
-function TodoRow({
-  icon,
-  iconTone,
-  title,
-  hint,
-  right,
-  onClick,
+function TodoCard({
+  lang,
+  todos,
+  today,
+  reload,
 }: {
-  icon: ReactNode;
-  iconTone: string;
-  title: string;
-  hint: string;
-  right: ReactNode;
-  onClick: () => void;
+  lang: AdminLang;
+  todos: Todo[];
+  today: string;
+  reload: () => Promise<void>;
 }) {
+  const c = a[lang];
+  const toast = useToast();
+  const [body, setBody] = useState("");
+  const [due, setDue] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function add(e: FormEvent) {
+    e.preventDefault();
+    const text = body.trim();
+    if (!text || busy) return;
+    setBusy(true);
+    const { error } = await supabase
+      .from("todos")
+      .insert({ body: text, due_on: due || null });
+    setBusy(false);
+    if (error) return toast(c.saveFailed, "bad");
+    // 적자마자 칸을 비운다. 연달아 적는 게 이 화면의 주된 쓰임이다.
+    setBody("");
+    setDue("");
+    await reload();
+  }
+
+  async function toggle(t: Todo) {
+    const { error } = await supabase
+      .from("todos")
+      .update({ done: !t.done, updated_at: new Date().toISOString() })
+      .eq("id", t.id);
+    if (error) return toast(c.saveFailed, "bad");
+    await reload();
+  }
+
+  async function remove(t: Todo) {
+    const { error } = await supabase.from("todos").delete().eq("id", t.id);
+    if (error) return toast(c.saveFailed, "bad");
+    toast(c.removed);
+    await reload();
+  }
+
+  const openCount = todos.filter((t) => !t.done).length;
+
   return (
-    <li>
+    <Card
+      title={c.homeTodo}
+      action={
+        openCount > 0 ? <Pill tone="blue">{count(c.todoOpenCount, openCount)}</Pill> : undefined
+      }
+    >
+      <form onSubmit={add} className="flex flex-col gap-2 px-5 py-4 sm:flex-row">
+        <input
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder={c.todoPlaceholder}
+          className={`${inputCls} flex-1`}
+        />
+        <div className="flex gap-2">
+          <input
+            type="date"
+            value={due}
+            onChange={(e) => setDue(e.target.value)}
+            className={`${inputCls} w-full sm:w-40`}
+          />
+          <button
+            type="submit"
+            disabled={!body.trim() || busy}
+            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-xl bg-[#0C3F80] px-4 text-sm font-bold text-white transition-colors disabled:opacity-40"
+          >
+            <Plus size={16} />
+            {c.todoAdd}
+          </button>
+        </div>
+      </form>
+
+      {todos.length === 0 ? (
+        <Empty>{c.homeTodoEmpty}</Empty>
+      ) : (
+        <ul className="divide-y divide-neutral-100 border-t border-neutral-100">
+          {todos.map((t) => (
+            <TodoRow
+              key={t.id}
+              todo={t}
+              lang={lang}
+              today={today}
+              onToggle={() => toggle(t)}
+              onDelete={() => remove(t)}
+            />
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+function TodoRow({
+  todo,
+  lang,
+  today,
+  onToggle,
+  onDelete,
+}: {
+  todo: Todo;
+  lang: AdminLang;
+  today: string;
+  onToggle: () => void;
+  onDelete: () => void;
+}) {
+  const c = a[lang];
+  const overdue = !todo.done && !!todo.due_on && todo.due_on <= today;
+
+  return (
+    <li className="flex items-center gap-3 px-5 py-3">
+      {/* 체크와 지우기만 버튼이다. 줄 전체를 누르게 하면 지우려다 완료 처리하게 된다. */}
       <button
-        onClick={onClick}
-        className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-neutral-50"
+        onClick={onToggle}
+        aria-label={todo.done ? c.todoUndo : c.todoDone}
+        className={`grid size-6 shrink-0 place-items-center rounded-md border transition-colors ${
+          todo.done
+            ? "border-[#0C3F80] bg-[#0C3F80] text-white"
+            : "border-neutral-300 text-transparent hover:border-[#0C3F80]"
+        }`}
       >
-        <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${iconTone}`}>
-          {icon}
+        <Check size={14} strokeWidth={3} />
+      </button>
+
+      <span className="min-w-0 flex-1">
+        <span
+          className={`block text-sm ${
+            todo.done ? "text-neutral-400 line-through" : "font-medium text-neutral-800"
+          }`}
+        >
+          {todo.body}
         </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-semibold text-neutral-800">{title}</span>
-          {/* 줄바꿈을 막는다 — 사유가 두 줄로 늘어나면 줄 높이가 들쭉날쭉해진다. */}
-          <span className="block truncate text-xs text-neutral-400">{hint}</span>
-        </span>
-        {right}
-        <ChevronRight size={15} className="shrink-0 text-neutral-300" />
+      </span>
+
+      {todo.due_on && (
+        <Pill tone={overdue ? "rose" : todo.done ? "gray" : "amber"}>
+          <CalendarClock size={11} className="mr-1" />
+          {todo.due_on}
+        </Pill>
+      )}
+
+      <button
+        onClick={onDelete}
+        aria-label={c.todoDelete}
+        className="shrink-0 rounded-lg p-1.5 text-neutral-300 transition-colors hover:bg-rose-50 hover:text-rose-600"
+      >
+        <Trash2 size={15} />
       </button>
     </li>
-  );
-}
-
-function StockAlertRow({
-  alert,
-  lang,
-  onClick,
-}: {
-  alert: StockAlert;
-  lang: AdminLang;
-  onClick: () => void;
-}) {
-  const c = a[lang];
-  const { product, stock, low, expiry, days } = alert;
-  const expired = days !== null && days < 0;
-  const urgent = stock <= 0 || expired;
-
-  // 아이콘은 무엇이 급한지 가리킨다. 유통기한만 문제면 시계, 그 밖은 재고 쪽 표시.
-  const icon =
-    stock <= 0 ? (
-      <AlertTriangle size={15} />
-    ) : !low && expiry ? (
-      <CalendarClock size={15} />
-    ) : (
-      <Package size={15} />
-    );
-
-  /**
-   * 사유가 하나면 문장으로 무엇을 하라고 말해 준다. 둘이면 문장 두 개를 이어
-   * 붙이는 대신 짧은 이름으로 바꾼다 — 모바일 한 줄에 들어가야 읽히고, 어차피
-   * 둘 다 걸린 제품은 눌러서 안을 봐야 한다.
-   */
-  const hint =
-    low && expiry
-      ? `${c.homeLowStock} · ${expired ? c.stockExpired : c.stockExpirySoon}`
-      : low
-        ? c.homeLowStockTodo
-        : expired
-          ? c.homeExpiredTodo
-          : c.homeExpiryTodo;
-
-  return (
-    <TodoRow
-      icon={icon}
-      iconTone={urgent ? "bg-rose-50 text-rose-600" : "bg-amber-50 text-amber-600"}
-      title={productName(product, lang)}
-      hint={hint}
-      right={
-        <Pill tone={urgent ? "rose" : "amber"}>
-          {/* 급한 쪽 숫자만 보여 준다. 재고가 넉넉하면 알고 싶은 건 날짜다. */}
-          {low ? `${num(stock)} / ${num(product.low_stock_at)}` : expiry}
-        </Pill>
-      }
-      onClick={onClick}
-    />
-  );
-}
-
-function OverdueRow({
-  inf,
-  lang,
-  onClick,
-}: {
-  inf: Influencer;
-  lang: AdminLang;
-  onClick: () => void;
-}) {
-  const c = a[lang];
-  return (
-    <TodoRow
-      icon={<Megaphone size={15} />}
-      iconTone="bg-blue-50 text-[#0C3F80]"
-      title={inf.name}
-      hint={c.homeInfDueTodo}
-      right={<Pill tone="blue">{statusLabel(inf.status, c)}</Pill>}
-      onClick={onClick}
-    />
   );
 }

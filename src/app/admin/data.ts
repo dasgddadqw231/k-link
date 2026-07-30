@@ -16,6 +16,7 @@ import type {
   Product,
   ProductStock,
   StockMove,
+  Todo,
 } from "../../lib/admin";
 
 export interface AdminData {
@@ -26,6 +27,7 @@ export interface AdminData {
   moves: StockMove[];
   influencers: Influencer[];
   finance: FinanceEntry[];
+  todos: Todo[];
   loading: boolean;
   /** 다시 읽는 중. 첫 로딩과 달리 화면은 그대로 두고 표시만 바꾼다. */
   refreshing: boolean;
@@ -42,13 +44,14 @@ export function useAdminData(): AdminData {
   const [moves, setMoves] = useState<StockMove[]>([]);
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
   const [finance, setFinance] = useState<FinanceEntry[]>([]);
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
 
   const reload = useCallback(async () => {
     setRefreshing(true);
-    const [p, s, m, i, f, b, as] = await Promise.all([
+    const [p, s, m, i, f, b, as, td] = await Promise.all([
       supabase.from("products").select("*").order("sort").order("sku"),
       supabase.from("product_stock").select("*"),
       supabase.from("stock_moves").select("*").order("moved_on", { ascending: false }).limit(500),
@@ -64,6 +67,14 @@ export function useAdminData(): AdminData {
         .select("*")
         .order("created_at", { ascending: false })
         .limit(1000),
+      // 끝난 일은 목록 아래로 내린다. 정렬은 화면이 아니라 여기서 한 번만 정한다.
+      supabase
+        .from("todos")
+        .select("*")
+        .order("done")
+        .order("due_on", { ascending: true, nullsFirst: false })
+        .order("sort")
+        .order("created_at"),
     ]);
 
     setBrands((b.data as Brand[]) ?? []);
@@ -74,6 +85,7 @@ export function useAdminData(): AdminData {
     setMoves((m.data as StockMove[]) ?? []);
     setInfluencers((i.data as Influencer[]) ?? []);
     setFinance((f.data as FinanceEntry[]) ?? []);
+    setTodos((td.data as Todo[]) ?? []);
     setSyncedAt(new Date());
     setLoading(false);
     setRefreshing(false);
@@ -108,6 +120,7 @@ export function useAdminData(): AdminData {
     moves,
     influencers,
     finance,
+    todos,
     loading,
     refreshing,
     syncedAt,
