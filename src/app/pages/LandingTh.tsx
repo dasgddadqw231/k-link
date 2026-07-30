@@ -88,6 +88,8 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
     { Icon: FileCheck2, title: c.biz2Title, body: c.biz2Body },
     { Icon: Sparkles, title: c.biz3Title, body: c.biz3Body },
     { Icon: Factory, title: c.biz4Title, body: c.biz4Body },
+    // 소량 발주. 도매와 셀렉트숍이 공통으로 가장 먼저 묻는 것인데 빠져 있었다.
+    { Icon: PackageCheck, title: c.biz5Title, body: c.biz5Body },
   ];
 
   const flow = [
@@ -285,7 +287,12 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 </span>
               </div>
 
-              <div className="mt-8 flex flex-1 flex-col items-center justify-center rounded-2xl border border-[#E3E7ED] bg-white px-7 py-14 text-center">
+              {/*
+                왼쪽 열 높이를 따라 늘리지 않는다. 다섯 장 옆에서 한 장이 억지로
+                늘어나면 빈 공간만 생기고, 높이 차이를 그대로 두는 편이 "우리가 더
+                많이 진다"는 말을 대신한다.
+              */}
+              <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-[#E3E7ED] bg-white px-7 py-14 text-center">
                 <span className="text-[#0C3F80]">
                   <Store size={22} strokeWidth={1.75} />
                 </span>

@@ -11,8 +11,31 @@ import {
 } from "lucide-react";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
 
-const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
+/**
+ * 이 페이지의 독자는 한국 브랜드 담당자다(docs/stp.md 페르소나 A). 연락 수단도
+ * 그 사람 것으로 둔다 — 이메일과 카카오톡. LINE은 두지 않는다. 태국 소비자의
+ * 메신저라 여기서는 "설치부터 하라"는 요구가 되고, stp.md도 한국어 페이지에서
+ * LINE 유도를 금지한다.
+ */
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string) || "";
+const KAKAO_URL = (import.meta.env.VITE_KAKAO_URL as string) || "";
+
+/**
+ * 상담 메일에 미리 채워 두는 항목.
+ *
+ * 카피가 "제품 카테고리와 국내 유통 상황만 알려주시면"이라고 요청하는데, 빈
+ * 메일창을 받으면 그걸 다시 떠올려 문장으로 만들어야 한다. 그 한 번의 부담에서
+ * 사람이 창을 닫는다.
+ */
+const MAIL_BODY = [
+  "브랜드명:",
+  "제품 카테고리:",
+  "국내 유통 채널(올리브영·쿠팡 등):",
+  "보유 서류(HACCP·자가품질검사 등):",
+  "연락처:",
+  "",
+  "— 위 항목만 채워 보내주시면 태국에서 등록 가능한 품목인지 먼저 확인해 드립니다.",
+].join("\n");
 
 const fadeUp = {
   initial: { opacity: 0, y: 14 },
@@ -136,18 +159,27 @@ const marketFacts = [
   },
 ];
 
+/**
+ * 진행 중인 브랜드. stp.md는 이 섹션을 "증거"로 요구한다 — 제품 소개가 아니라
+ * "어디까지 갔는지"가 증거다.
+ *
+ * stage는 푸터의 상태 문장과 같은 사실만 적는다(첫 제품군 태국 FDA 등록 진행 중).
+ * 확인되지 않은 단계를 앞당겨 쓰면 그 자리가 가장 먼저 의심받는다.
+ */
 const brands = [
   {
     name: "포지티바",
     kind: "올리브오일 스틱",
     desc: "올레샷(유기농 EVOO 65% + 유기농 레몬 착즙 35%)과 올토샷(올리브오일·토마토), 각 20ml 스틱",
     img: "/brands/sku-olleshot.webp",
+    stage: "태국 FDA 등록 진행 중",
   },
   {
     name: "은휘플로우",
     kind: "늙은호박즙",
     desc: "국내산 늙은호박 100%, 90ml 파우치, HACCP 인증 시설 생산",
     img: "/brands/sku-hobak.webp",
+    stage: "태국 FDA 등록 진행 중",
   },
 ];
 
@@ -223,6 +255,18 @@ export default function LandingKo() {
                     </dd>
                   </div>
                 </dl>
+
+                {/*
+                  비용 이야기를 맨 아래 상담 섹션에만 두면 늦다. 소규모 브랜드
+                  대표(stp.md 페르소나 A2)는 비용에 매우 민감해서, 읽기 시작할지
+                  말지를 여기서 정한다. 확정되지 않은 금액은 쓰지 않고 이미 사실인
+                  것만 적는다.
+                */}
+                <p className="mt-5 border-t border-[#E3E7ED] pt-5 text-[13px] leading-relaxed text-[#5A6373]">
+                  등록 가능 여부를 확인하는{" "}
+                  <strong className="font-semibold text-[#12161F]">검토 단계는 무료</strong>
+                  입니다.
+                </p>
               </div>
             </div>
           </motion.div>
@@ -458,6 +502,11 @@ export default function LandingKo() {
                       {b.kind}
                     </p>
                     <p className={`mt-3 ${T.body}`}>{b.desc}</p>
+                    {/* 어디까지 갔는지가 이 섹션의 요점이다. 제품 설명보다 이게 증거다. */}
+                    <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#F4F6F8] px-3 py-1.5 text-[12px] font-semibold text-[#0C3F80]">
+                      <span aria-hidden className="size-1.5 rounded-full bg-[#0C3F80]" />
+                      {b.stage}
+                    </p>
                   </div>
                 </Card>
               </motion.article>
@@ -511,21 +560,25 @@ export default function LandingKo() {
                 <Btn
                   href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
                     "태국 진출 상담 요청",
-                  )}`}
+                  )}&body=${encodeURIComponent(MAIL_BODY)}`}
                 >
                   <Mail size={17} />
                   이메일로 문의
                 </Btn>
               )}
-              {LINE_URL && (
-                <Btn href={LINE_URL} variant="secondary" external>
+              {KAKAO_URL && (
+                <Btn href={KAKAO_URL} variant="secondary" external>
                   <MessageCircle size={17} />
-                  LINE으로 문의
+                  카카오톡으로 문의
                 </Btn>
               )}
-              {!CONTACT_EMAIL && !LINE_URL && (
-                <p className="rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-center text-[13px] text-[#8B94A3]">
-                  연락처가 아직 설정되지 않았습니다
+              {!CONTACT_EMAIL && !KAKAO_URL && (
+                <p className="rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-[13px] leading-relaxed text-[#8B94A3]">
+                  연락처가 아직 설정되지 않았습니다.
+                  <br />
+                  <code className="text-[#5A6373]">VITE_CONTACT_EMAIL</code> 또는{" "}
+                  <code className="text-[#5A6373]">VITE_KAKAO_URL</code>을 설정하면
+                  버튼이 나옵니다.
                 </p>
               )}
             </div>

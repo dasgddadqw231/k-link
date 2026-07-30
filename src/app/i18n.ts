@@ -69,8 +69,11 @@ export const t = {
     biz3Body: "ป้ายหน้าร้าน สติกเกอร์ และสื่อออนไลน์ ใช้ได้ทันทีโดยไม่มีค่าลิขสิทธิ์",
     biz4Title: "ติดต่อโรงงานเกาหลีโดยตรง",
     biz4Body: "คัดและสั่งจากผู้ผลิตเกาหลีเอง ไม่ผ่านพ่อค้าคนกลาง",
-    /* 네 개를 지는 쪽과 하나만 하는 쪽. 이 비대칭이 이 섹션의 논지다. */
-    bizWeLabel: "รับไว้ 4 อย่าง",
+    /* 도매(Somchai)와 셀렉트숍(Nut) 모두가 가장 먼저 묻는 것. stp.md에 둘 다 적혀 있다. */
+    biz5Title: "สั่งจำนวนน้อยได้",
+    biz5Body: "เริ่มจากล็อตเล็กเพื่อทดลองวางขาย ไม่ต้องรับสต็อกก้อนใหญ่ตั้งแต่ต้น",
+    /* 다섯 개를 지는 쪽과 하나만 하는 쪽. 이 비대칭이 이 섹션의 논지다. */
+    bizWeLabel: "รับไว้ 5 อย่าง",
     bizYouWho: "คุณ",
     bizYouLabel: "หน้าที่เดียว",
     bizYouVerb: "ขาย",
@@ -138,7 +141,10 @@ export const t = {
     biz3Body: "Shelf POP, stickers and online assets, yours to use at no licence cost.",
     biz4Title: "Direct from Korean makers",
     biz4Body: "We select and order straight from the manufacturer, with no middlemen.",
-    bizWeLabel: "Four things we carry",
+    biz5Title: "Small orders welcome",
+    biz5Body:
+      "Start with a small lot to test the shelf. You do not have to take a large stock position up front.",
+    bizWeLabel: "Five things we carry",
     bizYouWho: "You",
     bizYouLabel: "One job",
     bizYouVerb: "Sell",
