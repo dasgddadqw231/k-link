@@ -31,7 +31,7 @@ export default function Landing({ lang }: { lang: Lang }) {
       {/* 현장에서 즉시 바꿀 수 있도록 항상 상단 고정. 두 페이지 모두 히어로가 밝아 어두운 글씨가 읽힌다. */}
       <nav
         aria-label="Language"
-        className="fixed right-4 top-4 z-50 flex items-center gap-0.5 rounded-full border border-black/10 bg-white/75 p-0.5 shadow-sm backdrop-blur-md"
+        className="fixed right-4 top-4 z-50 flex items-center gap-0.5 rounded-full border border-[#E3E7ED] bg-white/85 p-1 backdrop-blur-md"
       >
         {(Object.keys(LANG_LABEL) as Lang[]).map((l) => (
           <a
@@ -40,8 +40,10 @@ export default function Landing({ lang }: { lang: Lang }) {
             hrefLang={l}
             onClick={() => remember(l)}
             aria-current={lang === l ? "true" : undefined}
-            className={`rounded-full px-3 py-1.5 text-[11px] font-semibold tracking-wide transition-colors ${
-              lang === l ? "bg-[#2563EB] text-white" : "text-neutral-500"
+            className={`rounded-full px-3 py-1.5 text-[12px] font-semibold transition-colors ${
+              lang === l
+                ? "bg-[#0C3F80] text-white"
+                : "text-[#5A6373] hover:text-[#0C3F80]"
             }`}
           >
             {LANG_LABEL[l]}

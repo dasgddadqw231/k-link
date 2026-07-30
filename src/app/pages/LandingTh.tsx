@@ -13,6 +13,7 @@ import {
   Store,
 } from "lucide-react";
 import { t, type ThLang } from "../i18n";
+import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
 
 /** 값이 없으면 해당 버튼을 렌더링하지 않는다. 없는 연락처를 지어내지 않기 위함. */
 const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
@@ -24,33 +25,37 @@ const fadeUp = {
   viewport: { once: true, margin: "-60px" },
 };
 
-/** 태국 수요측 페이지 — 소비자(B1), 유통(B2), 오프라인 리테일(B3) 세 독자를 히어로에서 분기시킨다. */
+const CHARACTERS = [
+  "/brands/sku-olleshot.webp",
+  "/brands/sku-hobak.webp",
+  "/brands/sku-oltoshot.webp",
+];
+
+/**
+ * 태국 수요측 페이지 — 소비자(B1), 유통(B2), 오프라인 리테일(B3) 세 독자를 히어로에서 분기시킨다.
+ * 조판과 색은 LandingKo와 같은 시스템(./site)을 쓴다. 독자가 다르다고 톤까지
+ * 갈라지면 같은 회사로 보이지 않는다.
+ */
 export default function LandingTh({ lang }: { lang: ThLang }) {
   const c = t[lang];
 
-  /** 브랜드 캐릭터는 누끼 이미지다. 타일 배경색은 캐릭터 색에서 뽑아 맞춘다. */
   const brands = [
     {
       name: c.positivaName,
       kind: c.positivaKind,
       desc: c.positivaDesc,
-      accent: "#5E7241",
       items: [
         {
           name: c.olleName,
           sub: c.olleDesc,
           size: "20 ml",
           img: "/brands/sku-olleshot.webp",
-          tint: "#FBF3DF",
-          photo: true,
         },
         {
           name: c.oltoName,
           sub: c.oltoDesc,
           size: "20 ml",
           img: "/brands/sku-oltoshot.webp",
-          tint: "#FBF3DF",
-          photo: true,
         },
       ],
     },
@@ -58,23 +63,18 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.eunhwiName,
       kind: c.eunhwiKind,
       desc: c.eunhwiDesc,
-      accent: "#A6641B",
       items: [
         {
           name: c.eunhwiSkuName,
           sub: c.eunhwiSkuDesc,
           size: "90 ml",
           img: "/brands/sku-hobak.webp",
-          tint: "#F7EEDD",
-          photo: true,
         },
         {
           name: c.realPhotoLabel,
           sub: c.madeInKorea,
           size: "",
           img: "/brands/eunhwi-product.webp",
-          tint: "#F1F1EF",
-          photo: true,
         },
       ],
     },
@@ -86,16 +86,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
   const bizCards = [
     { Icon: Building2, title: c.biz1Title, body: c.biz1Body },
     { Icon: FileCheck2, title: c.biz2Title, body: c.biz2Body },
-    {
-      Icon: Sparkles,
-      title: c.biz3Title,
-      body: c.biz3Body,
-      art: [
-        "/brands/sku-olleshot.webp",
-        "/brands/sku-hobak.webp",
-        "/brands/sku-oltoshot.webp",
-      ],
-    },
+    { Icon: Sparkles, title: c.biz3Title, body: c.biz3Body },
     { Icon: Factory, title: c.biz4Title, body: c.biz4Body },
   ];
 
@@ -106,326 +97,220 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#0A0E1A] antialiased">
-      {/* HERO — 캐릭터를 첫 화면에 세운다. QR로 들어온 사람이 3초 안에 뭘 파는지 알아야 한다. */}
-      <section className="relative overflow-hidden bg-[#EDF3FE] px-6 pt-20">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(120% 75% at 50% 0%, rgba(37,99,235,0.18) 0%, rgba(237,243,254,0) 62%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-lg">
+    <div className="min-h-screen bg-[#FCFCFD] text-[#12161F] antialiased">
+      {/* HERO — QR로 들어온 사람이 3초 안에 뭘 파는지 알아야 한다 */}
+      <section className="border-b border-[#E3E7ED] bg-[#FCFCFD] pb-20 pt-24 md:pb-28 md:pt-32">
+        <Container>
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col items-center text-center"
+            className="grid items-end gap-12 md:grid-cols-12 md:gap-16"
           >
-            <img
-              src="/brands/klink-mark.webp"
-              alt="B&Y k-link"
-              className="mb-6 h-14 w-auto drop-shadow-[0_3px_10px_rgba(12,63,128,0.18)]"
-            />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[#2563EB]">
-              {c.eyebrow}
-            </span>
-            <h1 className="mt-4 whitespace-pre-line text-[2.6rem] font-bold leading-[1.12] tracking-tight sm:text-5xl">
-              {c.heroTitle}
-            </h1>
-            <p className="mt-5 text-[15px] leading-relaxed text-neutral-500">
-              {c.heroSub}
-            </p>
+            <div className="md:col-span-7">
+              <img
+                src="/brands/klink-mark.webp"
+                alt="B&Y k-link"
+                className="mb-8 h-10 w-auto"
+              />
+              <Eyebrow>{c.eyebrow}</Eyebrow>
+              <h1 className={`mt-5 whitespace-pre-line ${T.display}`}>
+                {c.heroTitle}
+              </h1>
+              <p className={`mt-7 max-w-[46ch] ${T.lead}`}>{c.heroSub}</p>
 
-            <div className="mt-8 flex w-full flex-col gap-2.5">
-              {LINE_URL && (
-                <a
-                  href={LINE_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold text-white transition-colors active:bg-[#05b34c]"
-                >
-                  <MessageCircle size={18} />
-                  {c.heroCtaConsumer}
-                </a>
-              )}
-              <a
-                href="#partner"
-                className="flex h-13 items-center justify-center gap-2 rounded-xl border border-[#2563EB]/30 py-3.5 font-bold text-[#1D4ED8] transition-colors active:bg-[#2563EB]/5"
-              >
-                {c.heroCtaPartner}
-                <ArrowRight size={17} />
-              </a>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                {LINE_URL && (
+                  <Btn href={LINE_URL} variant="line" external>
+                    <MessageCircle size={17} />
+                    {c.heroCtaConsumer}
+                  </Btn>
+                )}
+                <Btn href="#partner" variant="secondary">
+                  {c.heroCtaPartner}
+                  <ArrowRight size={17} />
+                </Btn>
+              </div>
+            </div>
+
+            {/* 한국어 페이지의 요약 패널 자리. 이 페이지에서는 제품 라인업이 그 역할을 한다. */}
+            <div className="md:col-span-5">
+              <div className="rounded-2xl border border-[#E3E7ED] bg-white p-5 md:p-6">
+                <div className="grid grid-cols-3 gap-2.5">
+                  {CHARACTERS.map((src) => (
+                    <Figure key={src} src={src} alt="" ratio="aspect-[4/5]" />
+                  ))}
+                </div>
+                <p className="mt-4 text-[12.5px] leading-relaxed text-[#8B94A3]">
+                  {c.productsNote}
+                </p>
+              </div>
             </div>
           </motion.div>
-        </div>
-
-        {/* 캐릭터 3종이 히어로 바닥에 선다. 누끼라 배경 위에 그대로 얹힌다. */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="relative mx-auto mt-10 flex max-w-lg items-end justify-center gap-1 pb-4"
-        >
-          {[
-            "/brands/sku-olleshot.webp",
-            "/brands/sku-hobak.webp",
-            "/brands/sku-oltoshot.webp",
-          ].map((src) => (
-            <img
-              key={src}
-              src={src}
-              alt=""
-              aria-hidden
-              className="w-1/3 rounded-2xl shadow-[0_12px_28px_rgba(12,63,128,0.18)]"
-            />
-          ))}
-        </motion.div>
+        </Container>
       </section>
 
-      {/* 제품 — 실물 3종이 현재 유일한 구체적 증거다. 캐릭터로 기억에 남긴다. */}
-      <section className="bg-[#FBF7EF] py-14">
-        <div className="mx-auto max-w-lg px-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-            {c.productsLabel}
-          </p>
-          <p className="mb-5 mt-2 text-[13.5px] leading-relaxed text-neutral-500">
-            {c.productsNote}
-          </p>
-          <div className="space-y-4">
-            {brands.map((brand, i) => (
-              <motion.article
-                key={brand.name}
-                {...fadeUp}
-                transition={{ delay: i * 0.08 }}
-                className="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-[0_2px_20px_rgba(10,14,26,0.05)]"
-              >
-                <header className="px-5 pt-5">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-baseline gap-x-2">
-                      <h3 className="text-lg font-bold tracking-tight">{brand.name}</h3>
-                      <span
-                        className="text-[12px] font-semibold"
-                        style={{ color: brand.accent }}
-                      >
-                        {brand.kind}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-[13px] leading-relaxed text-neutral-500">
-                      {brand.desc}
-                    </p>
-                  </div>
-                </header>
+      {/* 제품 — 실물 3종이 현재 유일한 구체적 증거다 */}
+      <Section tone="alt">
+        <Container>
+          <motion.div {...fadeUp}>
+            <SectionHead title={c.productsLabel} />
+          </motion.div>
 
-                <div className="grid grid-cols-2 gap-2.5 p-4">
-                  {brand.items.map((item) => (
-                    <div
-                      key={item.name}
-                      className="overflow-hidden rounded-2xl"
-                      style={{ backgroundColor: item.tint }}
-                    >
-                      <div className="relative h-44 overflow-hidden">
-                        <img
+          <div className="mt-14 grid gap-6 md:grid-cols-2">
+            {brands.map((brand, i) => (
+              <motion.article key={brand.name} {...fadeUp} transition={{ delay: i * 0.08 }}>
+                <Card className="h-full">
+                  <div className="flex flex-wrap items-baseline gap-x-2.5">
+                    <h3 className={T.h3}>{brand.name}</h3>
+                    <span className="text-[13px] font-medium text-[#0C3F80]">
+                      {brand.kind}
+                    </span>
+                  </div>
+                  <p className={`mt-2 ${T.body}`}>{brand.desc}</p>
+
+                  <div className="mt-6 grid grid-cols-2 gap-4">
+                    {brand.items.map((item) => (
+                      <div key={item.name}>
+                        <Figure
                           src={item.img}
                           alt={item.name}
-                          loading="lazy"
-                          className={
-                            item.photo
-                              ? "absolute inset-0 h-full w-full object-cover"
-                              : "absolute inset-0 h-full w-full object-contain p-3 drop-shadow-[0_6px_9px_rgba(0,0,0,0.12)]"
-                          }
+                          badge={item.size || undefined}
+                          ratio="aspect-[4/5]"
                         />
-                        {item.size && (
-                          <span className="absolute right-2 top-2 rounded-full bg-white/75 px-2 py-0.5 text-[10px] font-bold tracking-tight text-neutral-600 backdrop-blur-sm">
-                            {item.size}
-                          </span>
-                        )}
-                      </div>
-                      <div className="px-3 pb-3.5 pt-2.5">
-                        <p className="text-[13px] font-bold leading-tight tracking-tight">
+                        <p className="mt-3 text-[14px] font-semibold leading-snug">
                           {item.name}
                         </p>
-                        <p className="mt-1 text-[11.5px] leading-snug text-neutral-500">
+                        <p className="mt-1 text-[12.5px] leading-relaxed text-[#8B94A3]">
                           {item.sub}
                         </p>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </Card>
               </motion.article>
             ))}
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
-      {/* 소비자 훅 — 아직 못 파니까, 지금 당장 줄 수 있는 것 세 가지를 준다. */}
-      <section className="bg-white py-14">
-        <motion.div {...fadeUp} className="mx-auto max-w-lg px-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#06A047]">
-            {c.lineLabel}
-          </p>
-          <h2 className="mt-3 whitespace-pre-line text-[1.85rem] font-bold leading-[1.2] tracking-tight">
-            {c.lineTitle}
-          </h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-neutral-500">
-            {c.lineBody}
-          </p>
+      {/* 소비자 훅 — 아직 못 파니까, 지금 당장 줄 수 있는 것 세 가지를 준다 */}
+      <Section>
+        <Container>
+          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+            <motion.div {...fadeUp} className="md:col-span-6">
+              <SectionHead label={c.lineLabel} title={c.lineTitle} lead={c.lineBody} />
+            </motion.div>
 
-          <ul className="mt-7 space-y-3">
-            {perks.map((p) => (
-              <li key={p} className="flex items-start gap-3">
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#06C755]/12 text-[#06A047]">
-                  <Check size={14} strokeWidth={3} />
-                </span>
-                <span className="text-[14.5px] leading-relaxed">{p}</span>
-              </li>
-            ))}
-          </ul>
+            <motion.div {...fadeUp} transition={{ delay: 0.08 }} className="md:col-span-6">
+              <ul className="divide-y divide-[#E3E7ED] border-y border-[#E3E7ED]">
+                {perks.map((p) => (
+                  <li key={p} className="flex items-start gap-3.5 py-5">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#0C3F80] text-white">
+                      <Check size={12} strokeWidth={3} />
+                    </span>
+                    <span className="text-[15px] leading-relaxed">{p}</span>
+                  </li>
+                ))}
+              </ul>
 
-          {LINE_URL ? (
-            <a
-              href={LINE_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-8 flex h-14 items-center justify-center gap-2 rounded-xl bg-[#06C755] font-bold text-white transition-colors active:bg-[#05b34c]"
-            >
-              <MessageCircle size={19} />
-              {c.lineCta}
-            </a>
-          ) : (
-            <p className="mt-8 rounded-xl border border-dashed border-neutral-300 py-4 text-center text-[12px] text-neutral-400">
-              {c.lineMissing}
-            </p>
-          )}
-        </motion.div>
-      </section>
+              {LINE_URL ? (
+                <Btn href={LINE_URL} variant="line" external className="mt-8 w-full sm:w-auto">
+                  <MessageCircle size={18} />
+                  {c.lineCta}
+                </Btn>
+              ) : (
+                <p className="mt-8 rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-center text-[13px] text-[#8B94A3]">
+                  {c.lineMissing}
+                </p>
+              )}
+            </motion.div>
+          </div>
+        </Container>
+      </Section>
 
       {/* 유통 파트너 훅 — 태국 법인이라서 가능한 것들. 경쟁사가 복제할 수 없는 지점이다. */}
-      <section id="partner" className="scroll-mt-4 bg-[#2563EB] py-16 text-white">
-        <div className="mx-auto max-w-lg px-5">
+      <Section id="partner" tone="alt">
+        <Container>
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#BFD9FF]">
-              {c.bizLabel}
-            </p>
-            <h2 className="mt-3 whitespace-pre-line text-[1.95rem] font-bold leading-[1.18] tracking-tight">
-              {c.bizTitle}
-            </h2>
-            <p className="mt-3.5 text-[14.5px] leading-relaxed text-white/75">
-              {c.bizBody}
-            </p>
+            <SectionHead label={c.bizLabel} title={c.bizTitle} lead={c.bizBody} />
           </motion.div>
 
-          <div className="mt-8 grid gap-2.5 sm:grid-cols-2">
+          {/* 한국어 페이지의 '왜 혼자서는 안 되는가'와 같은 괘선 그리드 */}
+          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2">
             {bizCards.map((card, i) => (
-              <motion.div
-                key={card.title}
-                {...fadeUp}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/20 bg-white/[0.08] p-5"
-              >
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white text-[#2563EB]">
-                  <card.Icon size={17} />
-                </span>
-                <h3 className="mt-3.5 text-[15px] font-bold leading-snug tracking-tight">
-                  {card.title}
-                </h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-white/75">
-                  {card.body}
-                </p>
-                {card.art && (
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {card.art.map((src) => (
-                      <img
-                        key={src}
-                        src={src}
-                        alt=""
-                        aria-hidden
-                        loading="lazy"
-                        className="w-full rounded-lg"
-                      />
-                    ))}
-                  </div>
-                )}
+              <motion.div key={card.title} {...fadeUp} transition={{ delay: i * 0.06 }}>
+                <div className="border-t border-[#0C3F80] pt-6">
+                  <span className="text-[#0C3F80]">
+                    <card.Icon size={20} strokeWidth={1.75} />
+                  </span>
+                  <h3 className={`mt-5 ${T.h3}`}>{card.title}</h3>
+                  <p className={`mt-3 ${T.body}`}>{card.body}</p>
+                </div>
               </motion.div>
             ))}
           </div>
 
-          <div className="mt-7 space-y-2.5">
+          <motion.div {...fadeUp} className="mt-14 flex flex-col gap-3 sm:flex-row">
             {LINE_URL && (
-              <a
-                href={LINE_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-white font-bold text-[#1D4ED8] transition-colors active:bg-white/85"
-              >
+              <Btn href={LINE_URL} external>
                 {c.bizCta}
-                <ArrowRight size={18} />
-              </a>
+                <ArrowRight size={17} />
+              </Btn>
             )}
             {CONTACT_EMAIL && (
-              <a
-                href={`mailto:${CONTACT_EMAIL}`}
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-white/40 font-bold text-white transition-colors active:bg-white/10"
-              >
-                <Mail size={18} />
+              <Btn href={`mailto:${CONTACT_EMAIL}`} variant="secondary">
+                <Mail size={17} />
                 {c.emailCta}
-              </a>
+              </Btn>
             )}
-          </div>
-        </div>
-      </section>
+          </motion.div>
+        </Container>
+      </Section>
 
-      {/* 일하는 방식 — 서울에서 매대까지 한 팀이라는 것을 한 줄로 보여준다. */}
-      <section className="bg-[#F7F6F3] py-14">
-        <motion.div {...fadeUp} className="mx-auto max-w-lg px-5">
-          <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-            {c.flowLabel}
-          </p>
-          <ol className="flex items-stretch gap-2">
+      {/* 일하는 방식 — 서울에서 매대까지 한 팀이라는 것을 한 줄로 보여준다 */}
+      <Section>
+        <Container>
+          <motion.div {...fadeUp}>
+            <SectionHead title={c.flowLabel} />
+          </motion.div>
+
+          <div className="mt-12 border-t border-[#E3E7ED]">
             {flow.map((s, i) => (
-              <li key={s.title} className="flex flex-1 items-stretch gap-2">
-                <div className="flex flex-1 flex-col justify-center rounded-2xl border border-black/5 bg-white px-3 py-5 text-center">
-                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[#2563EB]/10 text-[#2563EB]">
-                    <s.Icon size={18} />
-                  </span>
-                  <p className="mt-3 text-[13px] font-bold leading-tight tracking-tight">
-                    {s.title}
-                  </p>
-                  <p className="mt-1 text-[11px] text-neutral-400">{s.sub}</p>
-                </div>
-                {i < flow.length - 1 && (
-                  <ArrowRight size={14} className="shrink-0 self-center text-neutral-300" />
-                )}
-              </li>
+              <motion.div
+                key={s.title}
+                {...fadeUp}
+                transition={{ delay: i * 0.05 }}
+                className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-[#E3E7ED] py-6"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#E3E7ED] bg-white text-[#0C3F80]">
+                  <s.Icon size={17} strokeWidth={1.75} />
+                </span>
+                <h3 className="text-[15.5px] font-semibold tracking-[-0.01em]">
+                  {s.title}
+                </h3>
+                <span className={T.small}>{s.sub}</span>
+              </motion.div>
             ))}
-          </ol>
+          </div>
 
-          {/* 아직 못 한 일은 지우지 않되, 헤드라인이 아니라 주석 자리에 둔다. */}
-          <p className="mt-8 border-t border-black/5 pt-6 text-center text-[12px] leading-relaxed text-neutral-400">
-            {c.statusNote}
-          </p>
-        </motion.div>
-      </section>
+          {/* 아직 못 한 일은 지우지 않되, 헤드라인이 아니라 주석 자리에 둔다 */}
+          <p className={`mt-10 max-w-[56ch] ${T.small}`}>{c.statusNote}</p>
+        </Container>
+      </Section>
 
-      <footer className="border-t border-black/5 px-6 py-8 pb-28 text-center sm:pb-8">
-        {/* 심볼만 — 사명은 바로 아래 텍스트로 나오므로 워드마크까지 넣으면 중복이다 */}
-        <img src="/brands/klink-mark.webp" alt="" className="mx-auto mb-3 h-8 w-auto opacity-40" />
-        <p className="text-[12px] text-neutral-400">{c.footerNote}</p>
-      </footer>
+      <Footer>{c.footerNote}</Footer>
+
+      {/* 고정 CTA가 푸터 마지막 줄을 덮지 않도록 모바일에서만 자리를 비운다 */}
+      {LINE_URL && <div aria-hidden className="h-20 sm:hidden" />}
 
       {/* 모바일 하단 고정 CTA — QR 유입의 이탈 지점을 막는다 */}
       {LINE_URL && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/5 bg-white/92 px-4 py-3 backdrop-blur-md sm:hidden">
-          <a
-            href={LINE_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold text-white"
-          >
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E3E7ED] bg-white/92 px-4 py-3 backdrop-blur-md sm:hidden">
+          <Btn href={LINE_URL} variant="line" external className="w-full">
             <MessageCircle size={18} />
             {c.lineCta}
-          </a>
+          </Btn>
         </div>
       )}
     </div>

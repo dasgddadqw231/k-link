@@ -1,0 +1,16 @@
+/*
+ * 폰트 스택은 한 곳에서만 정한다. Pretendard가 한글·라틴을, Noto Sans Thai가
+ * 태국어를 맡고, 각 스크립트는 자기 글리프가 있는 첫 폰트로 떨어진다.
+ * 실제 <link>는 index.html에 있다 — @import로 걸면 CSS를 받은 뒤에야
+ * 폰트를 받기 시작해서 한 왕복이 더 붙는다.
+ */
+:root {
+  --font-sans:
+    "Pretendard Variable", Pretendard, "Noto Sans Thai", -apple-system,
+    BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+}
+
+html {
+  font-family: var(--font-sans);
+}

@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { MessageCircle, Mail, ArrowRight, MapPin, Tag, BadgeCheck } from "lucide-react";
+import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
 
 const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string) || "";
@@ -65,15 +66,18 @@ const steps = [
 const alternatives = [
   {
     name: "KOTRA · 무역관",
-    body: "시장 정보와 바이어 매칭까지. 수입자가 되어주지는 않습니다.",
+    gives: "시장 정보, 바이어 매칭",
+    lacks: "수입자가 되어주지 않습니다",
   },
   {
     name: "수출 대행사",
-    body: "바이어는 찾아줍니다. 인허가 주체도 재고 리스크도 브랜드가 집니다.",
+    gives: "바이어 발굴, 중개",
+    lacks: "인허가 주체도 재고 리스크도 브랜드가 집니다",
   },
   {
     name: "대형 유통사",
-    body: "유통망은 넓지만 이미 검증된 브랜드만 받습니다.",
+    gives: "넓은 유통망",
+    lacks: "이미 검증된 브랜드만 받습니다",
   },
 ];
 
@@ -116,352 +120,336 @@ const brands = [
 
 export default function LandingKo() {
   return (
-    <div className="min-h-screen bg-[#F7F6F3] text-[#0A0E1A] antialiased">
+    <div className="min-h-screen bg-[#FCFCFD] text-[#12161F] antialiased">
       {/* HERO — 한국 브랜드 담당자에게 필요한 건 귀여움이 아니라 실행 능력의 증거다 */}
-      <section className="relative overflow-hidden bg-[#EDF3FE] px-6 pb-16 pt-24">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(120% 75% at 50% 0%, rgba(37,99,235,0.18) 0%, rgba(237,243,254,0) 62%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-lg">
+      <section className="border-b border-[#E3E7ED] bg-[#FCFCFD] pb-20 pt-24 md:pb-28 md:pt-32">
+        <Container>
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="grid items-end gap-12 md:grid-cols-12 md:gap-16"
           >
-            <img
-              src="/brands/klink-mark.webp"
-              alt="B&Y k-link"
-              className="mb-7 h-12 w-auto drop-shadow-[0_3px_10px_rgba(12,63,128,0.18)]"
-            />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563EB]">
-              한국 브랜드의 태국 진출
-            </span>
-            <h1 className="mt-4 text-[2.4rem] font-bold leading-[1.15] tracking-tight sm:text-[2.9rem]">
-              태국 진출을
-              <br />
-              대행하지 않습니다
-              <br />
-              <span className="text-[#2563EB]">수입자가 됩니다</span>
-            </h1>
-            <p className="mt-6 text-[15px] leading-relaxed text-neutral-500">
-              태국에 등록된 저희 법인 명의로 수입 허가를 갖고, 태국 FDA 등록부터
-              통관, 매대 입점까지 진행합니다. 브랜드는 한국에서 출고만 하시면
-              됩니다.
-            </p>
+            <div className="md:col-span-7">
+              <img
+                src="/brands/klink-mark.webp"
+                alt="B&Y k-link"
+                className="mb-8 h-10 w-auto"
+              />
+              <Eyebrow>한국 브랜드의 태국 진출</Eyebrow>
+              <h1 className={`mt-5 ${T.display}`}>
+                태국 진출을
+                <br />
+                대행하지 않습니다
+                <br />
+                <span className="text-[#0C3F80]">수입자가 됩니다</span>
+              </h1>
+              <p className={`mt-7 max-w-[46ch] ${T.lead}`}>
+                태국에 등록된 저희 법인 명의로 수입 허가를 갖고, 태국 FDA 등록부터
+                통관, 매대 입점까지 진행합니다. 브랜드는 한국에서 출고만 하시면
+                됩니다.
+              </p>
 
-            <div className="mt-8 flex flex-col gap-2.5">
-              <a
-                href="#contact"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#2563EB] font-bold text-white transition-colors active:bg-[#1D4ED8]"
-              >
-                진출 상담 신청
-                <ArrowRight size={18} />
-              </a>
-              <a
-                href="#process"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-[#2563EB]/30 font-bold text-[#1D4ED8] transition-colors active:bg-[#2563EB]/5"
-              >
-                어떻게 진행되는지 보기
-              </a>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Btn href="#contact">
+                  진출 상담 신청
+                  <ArrowRight size={17} />
+                </Btn>
+                <Btn href="#process" variant="secondary">
+                  어떻게 진행되는지 보기
+                </Btn>
+              </div>
+            </div>
+
+            {/* 데스크톱에서 오른쪽이 비지 않도록, 페이지의 핵심 주장을 요약해 세운다 */}
+            <div className="md:col-span-5">
+              <div className="rounded-2xl border border-[#E3E7ED] bg-white p-7">
+                <p className="text-[12.5px] font-semibold text-[#0C3F80]">
+                  역할 분담
+                </p>
+                <dl className="mt-5 divide-y divide-[#E3E7ED]">
+                  <div className="grid grid-cols-[5.5rem_1fr] gap-4 pb-4">
+                    <dt className="text-[13px] font-semibold text-[#8B94A3]">
+                      브랜드
+                    </dt>
+                    <dd className="text-[14px] leading-relaxed text-[#5A6373]">
+                      한국에서 제조하고 출고합니다
+                    </dd>
+                  </div>
+                  <div className="grid grid-cols-[5.5rem_1fr] gap-4 pt-4">
+                    <dt className="text-[13px] font-semibold text-[#0C3F80]">
+                      klink
+                    </dt>
+                    <dd className="text-[14px] leading-relaxed text-[#12161F]">
+                      태국에서 등록하고, 통관하고, 매대에 올립니다
+                    </dd>
+                  </div>
+                </dl>
+              </div>
             </div>
           </motion.div>
-        </div>
+        </Container>
       </section>
 
       {/* 문제 정의 — 규제 사실로 못박는다. 여기가 무너지면 나머지가 다 무의미하다. */}
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-lg px-5">
+      <Section>
+        <Container>
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2563EB]">
-              왜 혼자서는 안 되는가
-            </p>
-            <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-              허가는 회사가 아니라
-              <br />
-              주소에 붙습니다
-            </h2>
+            <SectionHead
+              label="왜 혼자서는 안 되는가"
+              title={"허가는 회사가 아니라\n주소에 붙습니다"}
+            />
           </motion.div>
 
-          <div className="mt-8 space-y-2.5">
+          {/* 카드 상자 대신 위쪽 괘선으로만 나눈다 — 같은 카드 스택의 반복을 끊는다 */}
+          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-3">
             {barriers.map((b, i) => (
-              <motion.div
-                key={b.title}
-                {...fadeUp}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-black/6 bg-[#FBFAF8] p-5"
-              >
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
-                  <b.Icon size={17} />
-                </span>
-                <h3 className="mt-3.5 text-[15.5px] font-bold leading-snug tracking-tight">
-                  {b.title}
-                </h3>
-                <p className="mt-2 text-[13.5px] leading-relaxed text-neutral-500">
-                  {b.body}
-                </p>
+              <motion.div key={b.title} {...fadeUp} transition={{ delay: i * 0.06 }}>
+                <div className="border-t border-[#0C3F80] pt-6">
+                  <span className="text-[#0C3F80]">
+                    <b.Icon size={20} strokeWidth={1.75} />
+                  </span>
+                  <h3 className={`mt-5 ${T.h3}`}>{b.title}</h3>
+                  <p className={`mt-3 ${T.body}`}>{b.body}</p>
+                </div>
               </motion.div>
             ))}
           </div>
 
-          <motion.p
+          <motion.blockquote
             {...fadeUp}
-            className="mt-6 border-l-2 border-[#2563EB] pl-4 text-[14.5px] font-semibold leading-relaxed"
+            className="mt-16 border-l-2 border-[#0C3F80] pl-6 md:pl-8"
           >
-            그래서 한국 브랜드가 단독으로 태국에 식품을 파는 방법은 존재하지
-            않습니다. 태국 법인을 수입자로 세우는 것이 유일한 경로입니다.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* 역할 분담 — "그래서 내가 뭘 해야 하나"에 답한다 */}
-      <section id="process" className="scroll-mt-4 bg-[#FBF7EF] py-16">
-        <div className="mx-auto max-w-lg px-5">
-          <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-              진행 방식
+            <p className="max-w-[52ch] text-[18px] font-semibold leading-[1.6] tracking-[-0.01em] md:text-[21px]">
+              그래서 한국 브랜드가 단독으로 태국에 식품을 파는 방법은 존재하지
+              않습니다. 태국 법인을 수입자로 세우는 것이 유일한 경로입니다.
             </p>
-            <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-              브랜드가 하는 일과
-              <br />
-              저희가 하는 일
-            </h2>
+          </motion.blockquote>
+        </Container>
+      </Section>
+
+      {/* 역할 분담 — "그래서 내가 뭘 해야 하나"에 답한다. 카드가 아니라 표로 읽힌다. */}
+      <Section id="process" tone="alt">
+        <Container>
+          <motion.div {...fadeUp}>
+            <SectionHead
+              label="진행 방식"
+              title={"브랜드가 하는 일과\n저희가 하는 일"}
+            />
           </motion.div>
 
-          <ol className="mt-8 space-y-2.5">
+          <div className="mt-14 border-t border-[#D7DCE4]">
+            {/* 표 머리는 데스크톱에서만 — 모바일에서는 각 행이 스스로 라벨을 단다 */}
+            <div className="hidden grid-cols-12 gap-6 border-b border-[#D7DCE4] py-3 md:grid">
+              <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
+                단계
+              </span>
+              <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
+                브랜드가 하는 일
+              </span>
+              <span className="col-span-4 text-[12px] font-semibold text-[#0C3F80]">
+                klink가 하는 일
+              </span>
+            </div>
+
             {steps.map((s, i) => (
-              <motion.li
+              <motion.div
                 key={s.no}
                 {...fadeUp}
                 transition={{ delay: i * 0.05 }}
-                className="rounded-2xl border border-black/5 bg-white p-5"
+                className="grid gap-4 border-b border-[#D7DCE4] py-7 md:grid-cols-12 md:gap-6"
               >
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[12px] font-black tracking-tight text-[#2563EB]">
+                <div className="flex items-baseline gap-3 md:col-span-4">
+                  <span className="text-[12px] font-semibold tabular-nums text-[#0C3F80]">
                     {s.no}
                   </span>
-                  <h3 className="text-[16px] font-bold tracking-tight">{s.title}</h3>
+                  <h3 className={T.h3}>{s.title}</h3>
                 </div>
-                <dl className="mt-4 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-neutral-50 p-3">
-                    <dt className="text-[10.5px] font-bold uppercase tracking-wider text-neutral-400">
-                      브랜드
-                    </dt>
-                    <dd className="mt-1.5 text-[13px] leading-snug text-neutral-600">
-                      {s.brand}
-                    </dd>
-                  </div>
-                  <div className="rounded-xl bg-[#2563EB]/8 p-3">
-                    <dt className="text-[10.5px] font-bold uppercase tracking-wider text-[#2563EB]">
-                      klink
-                    </dt>
-                    <dd className="mt-1.5 text-[13px] font-medium leading-snug">
-                      {s.klink}
-                    </dd>
-                  </div>
-                </dl>
-              </motion.li>
+                <div className="md:col-span-4">
+                  <span className="mb-1 block text-[12px] font-semibold text-[#8B94A3] md:hidden">
+                    브랜드
+                  </span>
+                  <p className="text-[14.5px] leading-relaxed text-[#5A6373]">
+                    {s.brand}
+                  </p>
+                </div>
+                <div className="md:col-span-4">
+                  <span className="mb-1 block text-[12px] font-semibold text-[#0C3F80] md:hidden">
+                    klink
+                  </span>
+                  <p className="text-[14.5px] leading-relaxed text-[#12161F]">
+                    {s.klink}
+                  </p>
+                </div>
+              </motion.div>
             ))}
-          </ol>
-        </div>
-      </section>
+          </div>
+        </Container>
+      </Section>
 
       {/* 대안 비교 — 담당자는 이미 KOTRA를 다녀왔다. 그 경험과 대조시킨다. */}
-      <section className="bg-white py-16">
-        <div className="mx-auto max-w-lg px-5">
+      <Section>
+        <Container>
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-              다른 선택지와 비교
-            </p>
-            <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-              어디까지 해주는가
-            </h2>
+            <SectionHead label="다른 선택지와 비교" title="어디까지 해주는가" />
           </motion.div>
 
-          <div className="mt-8 space-y-2.5">
+          <div className="mt-14 border-t border-[#E3E7ED]">
+            <div className="hidden grid-cols-12 gap-6 border-b border-[#E3E7ED] py-3 md:grid">
+              <span className="col-span-3 text-[12px] font-semibold text-[#8B94A3]" />
+              <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
+                해주는 것
+              </span>
+              <span className="col-span-5 text-[12px] font-semibold text-[#8B94A3]">
+                안 해주는 것
+              </span>
+            </div>
+
             {alternatives.map((a, i) => (
               <motion.div
                 key={a.name}
                 {...fadeUp}
                 transition={{ delay: i * 0.05 }}
-                className="rounded-2xl border border-black/6 bg-[#FBFAF8] px-5 py-4"
+                className="grid gap-2 border-b border-[#E3E7ED] py-6 md:grid-cols-12 md:gap-6"
               >
-                <h3 className="text-[14.5px] font-bold tracking-tight text-neutral-500">
+                <h3 className="text-[15px] font-semibold text-[#12161F] md:col-span-3">
                   {a.name}
                 </h3>
-                <p className="mt-1 text-[13.5px] leading-relaxed text-neutral-400">
-                  {a.body}
+                <p className="text-[14.5px] leading-relaxed text-[#5A6373] md:col-span-4">
+                  {a.gives}
+                </p>
+                <p className="text-[14.5px] leading-relaxed text-[#8B94A3] md:col-span-5">
+                  {a.lacks}
                 </p>
               </motion.div>
             ))}
 
+            {/* 우리 행만 네이비로 — 큰 색면 대신 글자색과 옅은 배경으로 구분한다 */}
             <motion.div
               {...fadeUp}
               transition={{ delay: 0.15 }}
-              className="rounded-2xl bg-[#2563EB] px-5 py-5 text-white"
+              className="grid gap-2 rounded-b-2xl bg-[#0C3F80]/[0.045] px-5 py-7 md:grid-cols-12 md:gap-6 md:px-6"
             >
-              <h3 className="text-[15.5px] font-bold tracking-tight">B&amp;Y k-link</h3>
-              <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/70">
-                저희 법인 명의로 수입하고 등록합니다. 인허가 주체가 저희이므로
-                통관에서 막힐 위험을 브랜드가 지지 않습니다.
+              <h3 className="text-[15px] font-bold text-[#0C3F80] md:col-span-3">
+                B&amp;Y k-link
+              </h3>
+              <p className="text-[14.5px] font-medium leading-relaxed text-[#12161F] md:col-span-4">
+                태국 FDA 등록, 통관, 유통 입점까지
+              </p>
+              <p className="text-[14.5px] leading-relaxed text-[#5A6373] md:col-span-5">
+                인허가 주체가 저희이므로 통관에서 막힐 위험을 브랜드가 지지 않습니다.
+                한국 내 제조와 품질은 브랜드 몫입니다.
               </p>
             </motion.div>
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
       {/* 준비 중인 브랜드 — 캐릭터를 "우리가 만드는 마케팅 자산" 문맥에 놓는다 */}
-      <section className="bg-[#FBF7EF] py-16">
-        <div className="mx-auto max-w-lg px-5">
+      <Section tone="alt">
+        <Container>
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
-              지금 준비 중인 브랜드
-            </p>
-            <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-              브랜드마다 캐릭터를
-              <br />
-              같이 만듭니다
-            </h2>
-            <p className="mt-3.5 text-[14px] leading-relaxed text-neutral-500">
-              태국은 마스코트로 브랜드를 세우는 문법이 이미 자리잡은 시장입니다.
-              수입 식품 대부분은 매대에서 쓸 자산이 없습니다. 저희는 캐릭터를
-              만들어 진열 POP과 온라인 소재로 씁니다.
-            </p>
+            <SectionHead
+              label="지금 준비 중인 브랜드"
+              title={"브랜드마다 캐릭터를\n같이 만듭니다"}
+              lead="태국은 마스코트로 브랜드를 세우는 문법이 이미 자리잡은 시장입니다. 수입 식품 대부분은 매대에서 쓸 자산이 없습니다. 저희는 캐릭터를 만들어 진열 POP과 온라인 소재로 씁니다."
+            />
           </motion.div>
 
-          <div className="mt-8 space-y-2.5">
+          <div className="mt-14 grid gap-6 md:grid-cols-2">
             {brands.map((b, i) => (
-              <motion.article
-                key={b.name}
-                {...fadeUp}
-                transition={{ delay: i * 0.06 }}
-                className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white p-4"
-              >
-                <img
-                  src={b.img}
-                  alt=""
-                  aria-hidden
-                  loading="lazy"
-                  className="h-24 w-20 shrink-0 rounded-xl object-cover"
-                />
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-baseline gap-x-2">
-                    <h3 className="text-[16px] font-bold tracking-tight">{b.name}</h3>
-                    <span className="text-[12px] font-semibold text-[#2563EB]">
+              <motion.article key={b.name} {...fadeUp} transition={{ delay: i * 0.06 }}>
+                <Card className="flex h-full flex-col gap-6 sm:flex-row sm:items-start">
+                  <Figure
+                    src={b.img}
+                    alt={b.name}
+                    ratio="aspect-[4/5]"
+                    className="w-full shrink-0 sm:w-32"
+                  />
+                  <div className="min-w-0">
+                    <h3 className={T.h3}>{b.name}</h3>
+                    <p className="mt-1 text-[13px] font-medium text-[#0C3F80]">
                       {b.kind}
-                    </span>
+                    </p>
+                    <p className={`mt-3 ${T.body}`}>{b.desc}</p>
                   </div>
-                  <p className="mt-1 text-[13px] leading-relaxed text-neutral-500">
-                    {b.desc}
-                  </p>
-                </div>
+                </Card>
               </motion.article>
             ))}
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
       {/* 왜 지금 태국인가 — 숫자는 전부 출처를 붙인다 */}
-      <section className="bg-[#2563EB] py-16 text-white">
-        <div className="mx-auto max-w-lg px-5">
+      <Section>
+        <Container>
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#BFD9FF]">
-              왜 지금 태국인가
-            </p>
-            <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-              대형 리테일 없이도
-              <br />
-              시작할 수 있습니다
-            </h2>
+            <SectionHead
+              label="왜 지금 태국인가"
+              title={"대형 리테일 없이도\n시작할 수 있습니다"}
+            />
           </motion.div>
 
-          <div className="mt-8 space-y-2.5">
+          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-3">
             {marketFacts.map((f, i) => (
-              <motion.div
-                key={f.label}
-                {...fadeUp}
-                transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/20 bg-white/[0.08] p-5"
-              >
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[1.7rem] font-bold leading-none tracking-tight text-white">
+              <motion.div key={f.label} {...fadeUp} transition={{ delay: i * 0.06 }}>
+                <div className="border-t border-[#E3E7ED] pt-6">
+                  <p className="text-[34px] font-bold leading-none tracking-[-0.03em] text-[#0C3F80] md:text-[40px]">
                     {f.value}
-                  </span>
-                  <span className="text-[13px] font-semibold text-white/85">
+                  </p>
+                  <p className="mt-4 text-[14px] font-semibold text-[#12161F]">
                     {f.label}
-                  </span>
+                  </p>
+                  <p className={`mt-2.5 ${T.body}`}>{f.body}</p>
+                  <p className={`mt-4 ${T.small}`}>{f.source}</p>
                 </div>
-                <p className="mt-3 text-[13.5px] leading-relaxed text-white/75">
-                  {f.body}
-                </p>
-                <p className="mt-2 text-[11px] text-white/50">{f.source}</p>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
 
       {/* 상담 */}
-      <section id="contact" className="scroll-mt-4 bg-white py-16">
-        <motion.div {...fadeUp} className="mx-auto max-w-lg px-5">
-          <h2 className="text-[1.9rem] font-bold leading-[1.2] tracking-tight">
-            태국, 한번 보시겠습니까
-          </h2>
-          <p className="mt-3.5 text-[14.5px] leading-relaxed text-neutral-500">
-            제품 카테고리와 현재 국내 유통 상황만 알려주시면, 태국에서 등록이
-            가능한 품목인지부터 확인해 드립니다. 검토 단계에서는 비용이 들지
-            않습니다.
-          </p>
+      <Section id="contact" tone="alt">
+        <Container>
+          <motion.div {...fadeUp} className="max-w-[52ch]">
+            <h2 className={T.h2}>태국, 한번 보시겠습니까</h2>
+            <p className={`mt-5 ${T.lead}`}>
+              제품 카테고리와 현재 국내 유통 상황만 알려주시면, 태국에서 등록이
+              가능한 품목인지부터 확인해 드립니다. 검토 단계에서는 비용이 들지
+              않습니다.
+            </p>
 
-          <div className="mt-7 space-y-2.5">
-            {CONTACT_EMAIL && (
-              <a
-                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                  "태국 진출 상담 요청",
-                )}`}
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#2563EB] font-bold text-white transition-colors active:bg-[#1D4ED8]"
-              >
-                <Mail size={18} />
-                이메일로 문의
-              </a>
-            )}
-            {LINE_URL && (
-              <a
-                href={LINE_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-neutral-200 font-bold transition-colors active:bg-neutral-50"
-              >
-                <MessageCircle size={18} />
-                LINE으로 문의
-              </a>
-            )}
-            {!CONTACT_EMAIL && !LINE_URL && (
-              <p className="rounded-xl border border-dashed border-neutral-300 py-4 text-center text-[12px] text-neutral-400">
-                연락처가 아직 설정되지 않았습니다
-              </p>
-            )}
-          </div>
-        </motion.div>
-      </section>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              {CONTACT_EMAIL && (
+                <Btn
+                  href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+                    "태국 진출 상담 요청",
+                  )}`}
+                >
+                  <Mail size={17} />
+                  이메일로 문의
+                </Btn>
+              )}
+              {LINE_URL && (
+                <Btn href={LINE_URL} variant="secondary" external>
+                  <MessageCircle size={17} />
+                  LINE으로 문의
+                </Btn>
+              )}
+              {!CONTACT_EMAIL && !LINE_URL && (
+                <p className="rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-center text-[13px] text-[#8B94A3]">
+                  연락처가 아직 설정되지 않았습니다
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </Container>
+      </Section>
 
-      <footer className="border-t border-black/5 px-6 py-10 text-center">
-        <img
-          src="/brands/klink-mark.webp"
-          alt=""
-          className="mx-auto mb-3 h-8 w-auto opacity-40"
-        />
-        <p className="text-[12px] leading-relaxed text-neutral-400">
-          B&amp;Y k-link co., ltd. — 태국 방콕
-        </p>
-        <p className="mx-auto mt-4 max-w-sm text-[11.5px] leading-relaxed text-neutral-300">
-          현재 첫 제품군의 태국 FDA 등록을 진행 중이며 아직 판매를 시작하지
-          않았습니다. 2026년 출시 예정.
-        </p>
-      </footer>
+      <Footer note="현재 첫 제품군의 태국 FDA 등록을 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정.">
+        B&amp;Y k-link co., ltd. — 태국 방콕
+      </Footer>
     </div>
   );
 }

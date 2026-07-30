@@ -29,7 +29,8 @@ export default function LangRedirect({ children }: { children: ReactNode }) {
     }
   }, [navigate]);
 
-  // 리다이렉트가 확정된 순간에는 태국어 화면이 깜빡이지 않게 비운다
-  if (redirecting) return <div className="min-h-screen bg-[#0A0E1A]" />;
+  // 리다이렉트가 확정된 순간에는 태국어 화면이 깜빡이지 않게 비운다.
+  // 배경은 랜딩의 종이색과 같아야 한다 — 다른 색이면 그 색이 한 프레임 번쩍인다.
+  if (redirecting) return <div className="min-h-screen bg-[#FCFCFD]" />;
   return <>{children}</>;
 }
