@@ -89,22 +89,28 @@ const steps: {
   },
   {
     no: "02",
+    title: "시장 검증",
+    brand: "소량 물량",
+    klink: "FDA 등록 전 소량으로 현지 반응 확인, 인플루언서 시딩",
+  },
+  {
+    no: "03",
     title: "태국 FDA 등록",
     brand: "제조사 발급 서류 협조",
     klink: "저희 법인 명의로 신고, 라벨 사전승인",
   },
   {
-    no: "03",
+    no: "04",
     title: "수입 · 통관",
     brand: "한국에서 출고",
     klink: "수입자로서 통관, 태국어 라벨 부착",
     handoff: true,
   },
   {
-    no: "04",
+    no: "05",
     title: "유통 · 판매",
     brand: null,
-    klink: "도매·리테일 입점, 캐릭터 기반 매대 마케팅",
+    klink: "도매·리테일 입점, 인플루언서 시딩",
   },
 ];
 
@@ -117,6 +123,7 @@ const STEP_COL = [
   "md:col-start-3",
   "md:col-start-4",
   "md:col-start-5",
+  "md:col-start-6",
 ];
 
 const alternatives = [
@@ -335,7 +342,7 @@ export default function LandingKo() {
 
             색면은 쓰지 않는다(site.tsx의 원칙). 레인은 괘선 색과 라벨로만 나눈다.
           */}
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-[6.5rem_repeat(4,minmax(0,1fr))] md:gap-x-5 md:gap-y-7">
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-[5.5rem_repeat(5,minmax(0,1fr))] md:gap-x-4 md:gap-y-7">
             {steps.map((s, i) => (
               <Fragment key={s.no}>
                 <motion.div
@@ -464,7 +471,7 @@ export default function LandingKo() {
                 B&amp;Y k-link
               </h3>
               <p className="text-[14.5px] font-medium leading-relaxed text-[#12161F] md:col-span-4">
-                태국 FDA 등록, 통관, 유통 입점까지
+                시장 검증, 태국 FDA 등록, 통관, 유통 입점까지
               </p>
               <p className="text-[14.5px] leading-relaxed text-[#5A6373] md:col-span-5">
                 인허가 주체가 저희이므로 통관에서 막힐 위험을 브랜드가 지지 않습니다.
@@ -475,14 +482,21 @@ export default function LandingKo() {
         </Container>
       </Section>
 
-      {/* 준비 중인 브랜드 — 캐릭터를 "우리가 만드는 마케팅 자산" 문맥에 놓는다 */}
+      {/*
+        준비 중인 브랜드 — stp.md가 요구하는 "증거" 섹션이다.
+
+        예전에는 여기서 "브랜드마다 캐릭터를 같이 만듭니다"라고 했는데 사실이
+        아니다. 캐릭터 제작은 저희가 브랜드에 제공하는 서비스가 아니다. 대신
+        실제로 하는 일(FDA 전 소량 시장 검증, 인플루언서 시딩)을 둔다 — 초도
+        물량을 떠안는 것이 페르소나 A의 가장 큰 두려움이라 이쪽이 훨씬 세다.
+      */}
       <Section tone="alt">
         <Container>
           <motion.div {...fadeUp}>
             <SectionHead
               label="지금 준비 중인 브랜드"
-              title={"브랜드마다 캐릭터를\n같이 만듭니다"}
-              lead="태국은 마스코트로 브랜드를 세우는 문법이 이미 자리잡은 시장입니다. 수입 식품 대부분은 매대에서 쓸 자산이 없습니다. 저희는 캐릭터를 만들어 진열 POP과 온라인 소재로 씁니다."
+              title={"큰 물량을 넣기 전에\n먼저 확인합니다"}
+              lead="태국 FDA 등록이 끝나기 전에 소량 물량을 들여와 현지 반응을 봅니다. 인플루언서 시딩으로 초기 반응을 확인하고, 그 결과를 보고 본물량을 정합니다. 지금 두 브랜드가 이 과정에 있습니다."
             />
           </motion.div>
 
