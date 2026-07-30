@@ -1,5 +1,14 @@
+import { Fragment } from "react";
 import { motion } from "motion/react";
-import { MessageCircle, Mail, ArrowRight, MapPin, Tag, BadgeCheck } from "lucide-react";
+import {
+  MessageCircle,
+  Mail,
+  ArrowRight,
+  ArrowDown,
+  MapPin,
+  Tag,
+  BadgeCheck,
+} from "lucide-react";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
 
 const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
@@ -35,8 +44,20 @@ const barriers = [
   },
 ];
 
-/** 각 단계에서 누가 무엇을 하는지. 브랜드의 가장 큰 불안은 "그래서 내가 뭘 해야 하나"다. */
-const steps = [
+/**
+ * 각 단계에서 누가 무엇을 하는지. 브랜드의 가장 큰 불안은 "그래서 내가 뭘 해야 하나"다.
+ *
+ * brand가 null인 단계는 브랜드가 손댈 일이 없다는 뜻이고, handoff는 일이 넘어오는
+ * 지점이다. 둘 다 이 표의 결론이라 데이터에 적어 둔다 — 화면에서 문자열을 보고
+ * 짐작하지 않는다.
+ */
+const steps: {
+  no: string;
+  title: string;
+  brand: string | null;
+  klink: string;
+  handoff?: boolean;
+}[] = [
   {
     no: "01",
     title: "제품 검토",
@@ -54,13 +75,25 @@ const steps = [
     title: "수입 · 통관",
     brand: "한국에서 출고",
     klink: "수입자로서 통관, 태국어 라벨 부착",
+    handoff: true,
   },
   {
     no: "04",
     title: "유통 · 판매",
-    brand: "—",
+    brand: null,
     klink: "도매·리테일 입점, 캐릭터 기반 매대 마케팅",
   },
+];
+
+/**
+ * 단계마다 격자에서 앉을 열. 문자열을 조립하면 Tailwind가 훑을 때 못 찾으니
+ * 완성된 클래스명으로 적어 둔다.
+ */
+const STEP_COL = [
+  "md:col-start-2",
+  "md:col-start-3",
+  "md:col-start-4",
+  "md:col-start-5",
 ];
 
 const alternatives = [
@@ -120,7 +153,12 @@ const brands = [
 
 export default function LandingKo() {
   return (
-    <div className="min-h-screen bg-[#FCFCFD] text-[#12161F] antialiased">
+    /*
+      한글은 단어 안에서 끊지 않는다. 기본값이면 "사전승인"이 "사전승/인"으로,
+      "태국"이 "태/국"으로 갈라져서 읽다가 걸린다. 페이지 전체에 걸어 둔다 —
+      한국어 본문뿐인 페이지라 예외를 둘 곳이 없다.
+    */
+    <div className="min-h-screen bg-[#FCFCFD] text-[#12161F] antialiased [word-break:keep-all]">
       {/* HERO — 한국 브랜드 담당자에게 필요한 건 귀여움이 아니라 실행 능력의 증거다 */}
       <section className="border-b border-[#E3E7ED] bg-[#FCFCFD] pb-20 pt-24 md:pb-28 md:pt-32">
         <Container>
@@ -238,51 +276,99 @@ export default function LandingKo() {
             />
           </motion.div>
 
-          <div className="mt-14 border-t border-[#D7DCE4]">
-            {/* 표 머리는 데스크톱에서만 — 모바일에서는 각 행이 스스로 라벨을 단다 */}
-            <div className="hidden grid-cols-12 gap-6 border-b border-[#D7DCE4] py-3 md:grid">
-              <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
-                단계
-              </span>
-              <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
-                브랜드가 하는 일
-              </span>
-              <span className="col-span-4 text-[12px] font-semibold text-[#0C3F80]">
-                klink가 하는 일
-              </span>
-            </div>
+          {/*
+            표가 아니라 도식으로 읽힌다.
 
+            데스크톱은 두 레인(대한민국·태국)이 네 단계를 가로지른다. 격자가 행
+            높이를 맞춰 주니 칸마다 그은 윗괘선이 한 줄로 이어지고, 그래서 "이 줄은
+            브랜드 것, 저 줄은 우리 것"이 글을 읽기 전에 잡힌다.
+
+            모바일은 단계별로 쌓는다. 좁은 화면에서 레인을 지키려면 가로 스크롤이
+            되고, 그러면 네 단계 중 하나만 보인다.
+
+            글은 DOM에 한 번만 넣고 데스크톱에서는 격자 좌표로 자리를 잡는다. 두
+            레이아웃을 각각 쓰면 크롤러와 스크린리더가 같은 문장을 두 번 읽는다.
+
+            색면은 쓰지 않는다(site.tsx의 원칙). 레인은 괘선 색과 라벨로만 나눈다.
+          */}
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-[6.5rem_repeat(4,minmax(0,1fr))] md:gap-x-5 md:gap-y-7">
             {steps.map((s, i) => (
-              <motion.div
-                key={s.no}
-                {...fadeUp}
-                transition={{ delay: i * 0.05 }}
-                className="grid gap-4 border-b border-[#D7DCE4] py-7 md:grid-cols-12 md:gap-6"
-              >
-                <div className="flex items-baseline gap-3 md:col-span-4">
+              <Fragment key={s.no}>
+                <motion.div
+                  {...fadeUp}
+                  transition={{ delay: i * 0.05 }}
+                  className={`${STEP_COL[i]} border-t-2 border-[#0C3F80] pt-4 md:row-start-1 ${
+                    i === 0 ? "" : "mt-12 md:mt-0"
+                  }`}
+                >
                   <span className="text-[12px] font-semibold tabular-nums text-[#0C3F80]">
                     {s.no}
                   </span>
-                  <h3 className={T.h3}>{s.title}</h3>
-                </div>
-                <div className="md:col-span-4">
-                  <span className="mb-1 block text-[12px] font-semibold text-[#8B94A3] md:hidden">
+                  <h3 className={`mt-1.5 ${T.h3}`}>{s.title}</h3>
+                </motion.div>
+
+                {/*
+                  한 단계의 세 조각은 같은 지연으로 함께 들어온다. 제목만 움직이게
+                  두면 스크롤 중에 본문이 먼저 서 있고 제목이 뒤늦게 나타난다.
+                */}
+                <motion.div
+                  {...fadeUp}
+                  transition={{ delay: i * 0.05 }}
+                  className={`${STEP_COL[i]} mt-5 border-t border-[#D7DCE4] pt-4 md:row-start-2 md:mt-0`}
+                >
+                  <span className="mb-1.5 block text-[12px] font-semibold text-[#8B94A3] md:hidden">
                     브랜드
                   </span>
-                  <p className="text-[14.5px] leading-relaxed text-[#5A6373]">
-                    {s.brand}
-                  </p>
-                </div>
-                <div className="md:col-span-4">
-                  <span className="mb-1 block text-[12px] font-semibold text-[#0C3F80] md:hidden">
+                  {s.brand ? (
+                    <p className="text-[14.5px] leading-relaxed text-[#5A6373]">
+                      {s.brand}
+                    </p>
+                  ) : (
+                    <p className="text-[13.5px] leading-relaxed text-[#8B94A3]">
+                      브랜드가 할 일 없음
+                    </p>
+                  )}
+                  {/* 일이 넘어오는 지점. 이 페이지에서 브랜드가 가장 알고 싶은 한 줄이다. */}
+                  {s.handoff && (
+                    <p className="mt-3 flex items-start gap-1.5 text-[12.5px] font-semibold text-[#0C3F80]">
+                      <ArrowDown size={14} strokeWidth={2.5} className="mt-px shrink-0" />
+                      브랜드의 일은 여기서 끝납니다
+                    </p>
+                  )}
+                </motion.div>
+
+                <motion.div
+                  {...fadeUp}
+                  transition={{ delay: i * 0.05 }}
+                  className={`${STEP_COL[i]} mt-4 border-t border-[#0C3F80] pt-4 md:row-start-3 md:mt-0`}
+                >
+                  <span className="mb-1.5 block text-[12px] font-semibold text-[#0C3F80] md:hidden">
                     klink
                   </span>
                   <p className="text-[14.5px] leading-relaxed text-[#12161F]">
                     {s.klink}
                   </p>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Fragment>
             ))}
+
+            {/* 레인 축 — 데스크톱에서만. 모바일에서는 각 칸이 스스로 라벨을 단다. */}
+            <div className="hidden md:col-start-1 md:row-start-2 md:block md:border-t md:border-[#D7DCE4] md:pt-4">
+              <span className="block text-[11.5px] font-semibold text-[#8B94A3]">
+                대한민국
+              </span>
+              <span className="mt-0.5 block text-[13.5px] font-semibold text-[#5A6373]">
+                브랜드
+              </span>
+            </div>
+            <div className="hidden md:col-start-1 md:row-start-3 md:block md:border-t md:border-[#0C3F80] md:pt-4">
+              <span className="block text-[11.5px] font-semibold text-[#8B94A3]">
+                태국
+              </span>
+              <span className="mt-0.5 block text-[13.5px] font-semibold text-[#0C3F80]">
+                klink
+              </span>
+            </div>
           </div>
         </Container>
       </Section>

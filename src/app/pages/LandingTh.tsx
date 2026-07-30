@@ -236,19 +236,67 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             <SectionHead label={c.bizLabel} title={c.bizTitle} lead={c.bizBody} />
           </motion.div>
 
-          {/* 한국어 페이지의 '왜 혼자서는 안 되는가'와 같은 괘선 그리드 */}
-          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-2">
-            {bizCards.map((card, i) => (
-              <motion.div key={card.title} {...fadeUp} transition={{ delay: i * 0.06 }}>
-                <div className="border-t border-[#0C3F80] pt-6">
-                  <span className="text-[#0C3F80]">
-                    <card.Icon size={20} strokeWidth={1.75} />
-                  </span>
-                  <h3 className={`mt-5 ${T.h3}`}>{card.title}</h3>
-                  <p className={`mt-3 ${T.body}`}>{card.body}</p>
-                </div>
-              </motion.div>
-            ))}
+          {/*
+            여기 독자는 태국의 유통·리테일이다. 한국어 페이지처럼 단계별 역할표를
+            쓰지 않는다 — 저쪽 독자는 "내가 뭘 해야 하나"를 묻지만, 이쪽은 "내가 뭘
+            안 해도 되나"를 묻는다.
+
+            그래서 우리가 지는 넉 장과 상대가 하는 한 장을 나란히 놓는다. 폭과 개수의
+            차이가 그대로 논지가 된다. 넉 장을 다 읽지 않아도 오른쪽 한 칸만 보면
+            이 거래가 무엇인지 안다.
+          */}
+          <div className="mt-14 grid gap-y-12 md:grid-cols-[1fr_1px_17rem] md:gap-x-9 md:gap-y-0">
+            <div>
+              {/* 열 머리는 회색 괘선으로 둔다 — 네이비는 아래 카드들이 쓰고 있다. */}
+              <div className="flex items-baseline gap-2.5 border-b border-[#D7DCE4] pb-3">
+                <span className="text-[15px] font-bold tracking-[-0.01em] text-[#0C3F80]">
+                  klink
+                </span>
+                <span className="text-[12px] font-semibold text-[#8B94A3]">
+                  {c.bizWeLabel}
+                </span>
+              </div>
+
+              <div className="mt-8 grid gap-x-9 gap-y-10 sm:grid-cols-2">
+                {bizCards.map((card, i) => (
+                  <motion.div key={card.title} {...fadeUp} transition={{ delay: i * 0.06 }}>
+                    <div className="border-t border-[#0C3F80] pt-6">
+                      <span className="text-[#0C3F80]">
+                        <card.Icon size={20} strokeWidth={1.75} />
+                      </span>
+                      <h3 className={`mt-5 ${T.h3}`}>{card.title}</h3>
+                      <p className={`mt-3 ${T.body}`}>{card.body}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* 리스크가 갈리는 선. 모바일에서는 세로선이 설 자리가 없어 지운다. */}
+            <div aria-hidden className="hidden bg-[#E3E7ED] md:block" />
+
+            <motion.div {...fadeUp} transition={{ delay: 0.24 }} className="flex flex-col">
+              <div className="flex items-baseline gap-2.5 border-b border-[#D7DCE4] pb-3">
+                <span className="text-[15px] font-bold tracking-[-0.01em] text-[#5A6373]">
+                  {c.bizYouWho}
+                </span>
+                <span className="text-[12px] font-semibold text-[#8B94A3]">
+                  {c.bizYouLabel}
+                </span>
+              </div>
+
+              <div className="mt-8 flex flex-1 flex-col items-center justify-center rounded-2xl border border-[#E3E7ED] bg-white px-7 py-14 text-center">
+                <span className="text-[#0C3F80]">
+                  <Store size={22} strokeWidth={1.75} />
+                </span>
+                <p className="mt-6 text-[40px] leading-none font-bold tracking-[-0.03em] text-[#12161F]">
+                  {c.bizYouVerb}
+                </p>
+                <p className="mt-6 text-[12px] font-semibold tracking-[0.02em] text-[#8B94A3]">
+                  {c.bizYouOnly}
+                </p>
+              </div>
+            </motion.div>
           </div>
 
           <motion.div {...fadeUp} className="mt-14 flex flex-col gap-3 sm:flex-row">

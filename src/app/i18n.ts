@@ -69,6 +69,12 @@ export const t = {
     biz3Body: "ป้ายหน้าร้าน สติกเกอร์ และสื่อออนไลน์ ใช้ได้ทันทีโดยไม่มีค่าลิขสิทธิ์",
     biz4Title: "ติดต่อโรงงานเกาหลีโดยตรง",
     biz4Body: "คัดและสั่งจากผู้ผลิตเกาหลีเอง ไม่ผ่านพ่อค้าคนกลาง",
+    /* 네 개를 지는 쪽과 하나만 하는 쪽. 이 비대칭이 이 섹션의 논지다. */
+    bizWeLabel: "รับไว้ 4 อย่าง",
+    bizYouWho: "คุณ",
+    bizYouLabel: "หน้าที่เดียว",
+    bizYouVerb: "ขาย",
+    bizYouOnly: "เท่านั้น",
     bizCta: "ขอข้อมูลและเงื่อนไข",
     emailCta: "ส่งอีเมล",
 
@@ -132,6 +138,11 @@ export const t = {
     biz3Body: "Shelf POP, stickers and online assets, yours to use at no licence cost.",
     biz4Title: "Direct from Korean makers",
     biz4Body: "We select and order straight from the manufacturer, with no middlemen.",
+    bizWeLabel: "Four things we carry",
+    bizYouWho: "You",
+    bizYouLabel: "One job",
+    bizYouVerb: "Sell",
+    bizYouOnly: "That is all",
     bizCta: "Request terms",
     emailCta: "Send email",
 
