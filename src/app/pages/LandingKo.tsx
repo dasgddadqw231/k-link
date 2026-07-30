@@ -118,12 +118,12 @@ export default function LandingKo() {
   return (
     <div className="min-h-screen bg-[#F7F6F3] text-[#0A0E1A] antialiased">
       {/* HERO — 한국 브랜드 담당자에게 필요한 건 귀여움이 아니라 실행 능력의 증거다 */}
-      <section className="relative overflow-hidden bg-[#0A0E1A] px-6 pb-16 pt-24 text-white">
+      <section className="relative overflow-hidden bg-[#EDF3FE] px-6 pb-16 pt-24">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 75% at 50% 0%, rgba(12,63,128,0.6) 0%, rgba(10,14,26,0) 62%)",
+              "radial-gradient(120% 75% at 50% 0%, rgba(37,99,235,0.18) 0%, rgba(237,243,254,0) 62%)",
           }}
         />
         <div className="relative mx-auto max-w-lg">
@@ -135,9 +135,9 @@ export default function LandingKo() {
             <img
               src="/brands/klink-mark.webp"
               alt="B&Y k-link"
-              className="mb-7 h-12 w-auto drop-shadow-[0_4px_14px_rgba(0,0,0,0.5)]"
+              className="mb-7 h-12 w-auto drop-shadow-[0_3px_10px_rgba(12,63,128,0.18)]"
             />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/45">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#2563EB]">
               한국 브랜드의 태국 진출
             </span>
             <h1 className="mt-4 text-[2.4rem] font-bold leading-[1.15] tracking-tight sm:text-[2.9rem]">
@@ -145,9 +145,9 @@ export default function LandingKo() {
               <br />
               대행하지 않습니다
               <br />
-              <span className="text-[#7FB2F0]">수입자가 됩니다</span>
+              <span className="text-[#2563EB]">수입자가 됩니다</span>
             </h1>
-            <p className="mt-6 text-[15px] leading-relaxed text-white/60">
+            <p className="mt-6 text-[15px] leading-relaxed text-neutral-500">
               태국에 등록된 저희 법인 명의로 수입 허가를 갖고, 태국 FDA 등록부터
               통관, 매대 입점까지 진행합니다. 브랜드는 한국에서 출고만 하시면
               됩니다.
@@ -156,14 +156,14 @@ export default function LandingKo() {
             <div className="mt-8 flex flex-col gap-2.5">
               <a
                 href="#contact"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-white font-bold text-[#0A0E1A] transition-colors active:bg-white/85"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#2563EB] font-bold text-white transition-colors active:bg-[#1D4ED8]"
               >
                 진출 상담 신청
                 <ArrowRight size={18} />
               </a>
               <a
                 href="#process"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-white/20 font-bold text-white/90 transition-colors active:bg-white/10"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-[#2563EB]/30 font-bold text-[#1D4ED8] transition-colors active:bg-[#2563EB]/5"
               >
                 어떻게 진행되는지 보기
               </a>
@@ -176,7 +176,7 @@ export default function LandingKo() {
       <section className="bg-white py-16">
         <div className="mx-auto max-w-lg px-5">
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#0C3F80]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2563EB]">
               왜 혼자서는 안 되는가
             </p>
             <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
@@ -194,7 +194,7 @@ export default function LandingKo() {
                 transition={{ delay: i * 0.06 }}
                 className="rounded-2xl border border-black/6 bg-[#FBFAF8] p-5"
               >
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0C3F80]/8 text-[#0C3F80]">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#2563EB]/10 text-[#2563EB]">
                   <b.Icon size={17} />
                 </span>
                 <h3 className="mt-3.5 text-[15.5px] font-bold leading-snug tracking-tight">
@@ -209,7 +209,7 @@ export default function LandingKo() {
 
           <motion.p
             {...fadeUp}
-            className="mt-6 border-l-2 border-[#0C3F80] pl-4 text-[14.5px] font-semibold leading-relaxed"
+            className="mt-6 border-l-2 border-[#2563EB] pl-4 text-[14.5px] font-semibold leading-relaxed"
           >
             그래서 한국 브랜드가 단독으로 태국에 식품을 파는 방법은 존재하지
             않습니다. 태국 법인을 수입자로 세우는 것이 유일한 경로입니다.
@@ -240,7 +240,7 @@ export default function LandingKo() {
                 className="rounded-2xl border border-black/5 bg-white p-5"
               >
                 <div className="flex items-baseline gap-3">
-                  <span className="text-[12px] font-black tracking-tight text-[#0C3F80]">
+                  <span className="text-[12px] font-black tracking-tight text-[#2563EB]">
                     {s.no}
                   </span>
                   <h3 className="text-[16px] font-bold tracking-tight">{s.title}</h3>
@@ -254,8 +254,8 @@ export default function LandingKo() {
                       {s.brand}
                     </dd>
                   </div>
-                  <div className="rounded-xl bg-[#0C3F80]/6 p-3">
-                    <dt className="text-[10.5px] font-bold uppercase tracking-wider text-[#0C3F80]">
+                  <div className="rounded-xl bg-[#2563EB]/8 p-3">
+                    <dt className="text-[10.5px] font-bold uppercase tracking-wider text-[#2563EB]">
                       klink
                     </dt>
                     <dd className="mt-1.5 text-[13px] font-medium leading-snug">
@@ -301,7 +301,7 @@ export default function LandingKo() {
             <motion.div
               {...fadeUp}
               transition={{ delay: 0.15 }}
-              className="rounded-2xl bg-[#0A0E1A] px-5 py-5 text-white"
+              className="rounded-2xl bg-[#2563EB] px-5 py-5 text-white"
             >
               <h3 className="text-[15.5px] font-bold tracking-tight">B&amp;Y k-link</h3>
               <p className="mt-1.5 text-[13.5px] leading-relaxed text-white/70">
@@ -350,7 +350,7 @@ export default function LandingKo() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-baseline gap-x-2">
                     <h3 className="text-[16px] font-bold tracking-tight">{b.name}</h3>
-                    <span className="text-[12px] font-semibold text-[#0C3F80]">
+                    <span className="text-[12px] font-semibold text-[#2563EB]">
                       {b.kind}
                     </span>
                   </div>
@@ -365,10 +365,10 @@ export default function LandingKo() {
       </section>
 
       {/* 왜 지금 태국인가 — 숫자는 전부 출처를 붙인다 */}
-      <section className="bg-[#0A0E1A] py-16 text-white">
+      <section className="bg-[#2563EB] py-16 text-white">
         <div className="mx-auto max-w-lg px-5">
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#5B9BE8]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#BFD9FF]">
               왜 지금 태국인가
             </p>
             <h2 className="mt-3 text-[1.9rem] font-bold leading-[1.2] tracking-tight">
@@ -384,20 +384,20 @@ export default function LandingKo() {
                 key={f.label}
                 {...fadeUp}
                 transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+                className="rounded-2xl border border-white/20 bg-white/[0.08] p-5"
               >
                 <div className="flex items-baseline gap-3">
-                  <span className="text-[1.7rem] font-bold leading-none tracking-tight text-[#7FB2F0]">
+                  <span className="text-[1.7rem] font-bold leading-none tracking-tight text-white">
                     {f.value}
                   </span>
-                  <span className="text-[13px] font-semibold text-white/80">
+                  <span className="text-[13px] font-semibold text-white/85">
                     {f.label}
                   </span>
                 </div>
-                <p className="mt-3 text-[13.5px] leading-relaxed text-white/55">
+                <p className="mt-3 text-[13.5px] leading-relaxed text-white/75">
                   {f.body}
                 </p>
-                <p className="mt-2 text-[11px] text-white/30">{f.source}</p>
+                <p className="mt-2 text-[11px] text-white/50">{f.source}</p>
               </motion.div>
             ))}
           </div>
@@ -422,7 +422,7 @@ export default function LandingKo() {
                 href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
                   "태국 진출 상담 요청",
                 )}`}
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#0A0E1A] font-bold text-white transition-colors active:bg-[#0A0E1A]/85"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-[#2563EB] font-bold text-white transition-colors active:bg-[#1D4ED8]"
               >
                 <Mail size={18} />
                 이메일로 문의

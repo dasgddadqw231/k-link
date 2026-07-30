@@ -108,12 +108,12 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
   return (
     <div className="min-h-screen bg-[#F7F6F3] text-[#0A0E1A] antialiased">
       {/* HERO — 캐릭터를 첫 화면에 세운다. QR로 들어온 사람이 3초 안에 뭘 파는지 알아야 한다. */}
-      <section className="relative overflow-hidden bg-[#0A0E1A] px-6 pt-20 text-white">
+      <section className="relative overflow-hidden bg-[#EDF3FE] px-6 pt-20">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 75% at 50% 0%, rgba(12,63,128,0.6) 0%, rgba(10,14,26,0) 62%)",
+              "radial-gradient(120% 75% at 50% 0%, rgba(37,99,235,0.18) 0%, rgba(237,243,254,0) 62%)",
           }}
         />
         <div className="relative mx-auto max-w-lg">
@@ -126,15 +126,15 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             <img
               src="/brands/klink-mark.webp"
               alt="B&Y k-link"
-              className="mb-6 h-14 w-auto drop-shadow-[0_4px_14px_rgba(0,0,0,0.5)]"
+              className="mb-6 h-14 w-auto drop-shadow-[0_3px_10px_rgba(12,63,128,0.18)]"
             />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-white/45">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[#2563EB]">
               {c.eyebrow}
             </span>
             <h1 className="mt-4 whitespace-pre-line text-[2.6rem] font-bold leading-[1.12] tracking-tight sm:text-5xl">
               {c.heroTitle}
             </h1>
-            <p className="mt-5 text-[15px] leading-relaxed text-white/60">
+            <p className="mt-5 text-[15px] leading-relaxed text-neutral-500">
               {c.heroSub}
             </p>
 
@@ -144,7 +144,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   href={LINE_URL}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold transition-colors active:bg-[#05b34c]"
+                  className="flex h-13 items-center justify-center gap-2 rounded-xl bg-[#06C755] py-3.5 font-bold text-white transition-colors active:bg-[#05b34c]"
                 >
                   <MessageCircle size={18} />
                   {c.heroCtaConsumer}
@@ -152,7 +152,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
               )}
               <a
                 href="#partner"
-                className="flex h-13 items-center justify-center gap-2 rounded-xl border border-white/20 py-3.5 font-bold text-white/90 transition-colors active:bg-white/10"
+                className="flex h-13 items-center justify-center gap-2 rounded-xl border border-[#2563EB]/30 py-3.5 font-bold text-[#1D4ED8] transition-colors active:bg-[#2563EB]/5"
               >
                 {c.heroCtaPartner}
                 <ArrowRight size={17} />
@@ -178,7 +178,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
               src={src}
               alt=""
               aria-hidden
-              className="w-1/3 rounded-2xl shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
+              className="w-1/3 rounded-2xl shadow-[0_12px_28px_rgba(12,63,128,0.18)]"
             />
           ))}
         </motion.div>
@@ -302,16 +302,16 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       </section>
 
       {/* 유통 파트너 훅 — 태국 법인이라서 가능한 것들. 경쟁사가 복제할 수 없는 지점이다. */}
-      <section id="partner" className="scroll-mt-4 bg-[#0A0E1A] py-16 text-white">
+      <section id="partner" className="scroll-mt-4 bg-[#2563EB] py-16 text-white">
         <div className="mx-auto max-w-lg px-5">
           <motion.div {...fadeUp}>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#5B9BE8]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#BFD9FF]">
               {c.bizLabel}
             </p>
             <h2 className="mt-3 whitespace-pre-line text-[1.95rem] font-bold leading-[1.18] tracking-tight">
               {c.bizTitle}
             </h2>
-            <p className="mt-3.5 text-[14.5px] leading-relaxed text-white/60">
+            <p className="mt-3.5 text-[14.5px] leading-relaxed text-white/75">
               {c.bizBody}
             </p>
           </motion.div>
@@ -322,15 +322,15 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 key={card.title}
                 {...fadeUp}
                 transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+                className="rounded-2xl border border-white/20 bg-white/[0.08] p-5"
               >
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0C3F80] text-white">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white text-[#2563EB]">
                   <card.Icon size={17} />
                 </span>
                 <h3 className="mt-3.5 text-[15px] font-bold leading-snug tracking-tight">
                   {card.title}
                 </h3>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-white/55">
+                <p className="mt-1.5 text-[13px] leading-relaxed text-white/75">
                   {card.body}
                 </p>
                 {card.art && (
@@ -357,7 +357,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 href={LINE_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-white font-bold text-[#0A0E1A] transition-colors active:bg-white/85"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl bg-white font-bold text-[#1D4ED8] transition-colors active:bg-white/85"
               >
                 {c.bizCta}
                 <ArrowRight size={18} />
@@ -366,7 +366,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             {CONTACT_EMAIL && (
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-white/20 font-bold text-white/90 transition-colors active:bg-white/10"
+                className="flex h-14 items-center justify-center gap-2 rounded-xl border border-white/40 font-bold text-white transition-colors active:bg-white/10"
               >
                 <Mail size={18} />
                 {c.emailCta}
@@ -386,7 +386,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             {flow.map((s, i) => (
               <li key={s.title} className="flex flex-1 items-stretch gap-2">
                 <div className="flex flex-1 flex-col justify-center rounded-2xl border border-black/5 bg-white px-3 py-5 text-center">
-                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[#0C3F80]/8 text-[#0C3F80]">
+                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[#2563EB]/10 text-[#2563EB]">
                     <s.Icon size={18} />
                   </span>
                   <p className="mt-3 text-[13px] font-bold leading-tight tracking-tight">
