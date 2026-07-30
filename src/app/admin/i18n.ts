@@ -23,13 +23,20 @@ const ko = {
   remove: "삭제",
   confirmRemove: "삭제할까요? 되돌릴 수 없습니다.",
   search: "검색",
+  noMatch: "검색 결과가 없습니다",
   all: "전체",
   none: "-",
   note: "메모",
   date: "날짜",
   saveFailed: "저장하지 못했습니다",
+  saved: "저장했습니다",
+  removed: "삭제했습니다",
+  refresh: "새로 고침",
+  syncedAt: "갱신",
+  continue: "계속",
 
   navHome: "홈",
+  navBrand: "브랜드사",
   navStock: "재고",
   navInf: "인플루언서",
   navFin: "재무",
@@ -39,12 +46,76 @@ const ko = {
   homeNetMonth: "이번 달 순현금",
   homeInfActive: "진행 중 인플루언서",
   homeSalesMonth: "이번 달 매출",
-  homeSku: "개 SKU",
-  homePeople: "명",
+  // {n}은 숫자가 들어갈 자리. 언어마다 숫자와 단위 사이 띄어쓰기가 달라 통째로 둔다.
+  homeSkuCount: "{n}개 SKU",
+  homePeopleCount: "{n}명",
   homeTodo: "지금 챙길 일",
   homeTodoEmpty: "챙길 일이 없습니다",
   homeLowStockTodo: "재고 보충 필요",
   homeInfDueTodo: "연락할 날짜가 지났습니다",
+  homeExpiryTodo: "유통기한이 다가옵니다",
+  homeExpiredTodo: "유통기한이 지났습니다",
+
+  brandTitle: "브랜드사",
+  brandNew: "새 브랜드사",
+  brandNone: "등록된 브랜드사가 없습니다",
+  brandName: "브랜드명",
+  brandNameTh: "브랜드명 (태국어)",
+  brandLegalName: "법인명",
+  brandStatus: "진행 단계",
+  brandContract: "계약 조건",
+  brandCommission: "수수료율 (%)",
+  brandMonthlyFee: "월 피 (THB)",
+  brandContractFrom: "계약 시작",
+  brandContractTo: "계약 종료",
+  brandContact: "담당자",
+  brandContactName: "이름",
+  brandContactRole: "직책",
+  brandContactLine: "카톡·라인 ID",
+  brandContactEmail: "이메일",
+  brandContactPhone: "전화",
+  brandProducts: "제품",
+  brandProductsNone: "연결된 제품이 없습니다",
+  brandFda: "Thai FDA 등록",
+  brandFdaDone: "등록 완료",
+  brandAssets: "콘텐츠 아카이브",
+  brandAssetsNone: "올린 파일이 없습니다",
+  brandAssetAdd: "파일 올리기",
+  brandAssetHint: "제품컷·상세페이지·영상 모두 됩니다. 한 파일 50MB까지.",
+  brandAssetFailed: "파일을 올리지 못했습니다",
+  brandAssetTitle: "제목",
+  brandAssetKind: "종류",
+  brandSettlement: "정산",
+  brandSettlementNone: "정산 기록이 없습니다",
+  brandRevenue: "매출",
+  brandPaidOut: "정산 지급",
+  brandCommissionIn: "수수료 수입",
+  brandDeleteBlockedTitle: "삭제할 수 없습니다",
+  brandDeleteBlockedBody:
+    "제품이나 거래가 걸려 있는 브랜드사는 지울 수 없습니다. 계약이 끝났다면 진행 단계를 '종료'로 두세요.",
+  brandDeleteAssets: "함께 삭제될 파일",
+
+  bLead: "리드",
+  bMeeting: "미팅",
+  bContracted: "계약",
+  bActive: "진행 중",
+  bEnded: "종료",
+
+  fNone: "미신고",
+  fPreparing: "서류 준비",
+  fSubmitted: "신고 접수",
+  fApproved: "등록 완료",
+  fRejected: "반려",
+  fdaNumber: "등록번호",
+  fdaOn: "등록일",
+
+  aProduct_shot: "제품컷",
+  aDetail_page: "상세페이지",
+  aVideo: "영상",
+  aLogo: "로고",
+  aDoc: "서류",
+  aContent: "콘텐츠",
+  aOther: "기타",
 
   stockTitle: "재고",
   stockOnHand: "현재고",
@@ -74,7 +145,27 @@ const ko = {
   stockInactive: "판매 중지",
   stockShowInactive: "중지 포함",
   stockTotalValue: "재고 판매가 합계",
+  stockCostValue: "매입원가",
   stockExpirySoon: "유통기한 임박",
+  stockExpired: "유통기한 지남",
+  stockAfter: "저장 후",
+  stockNoChange: "현재고와 같아 조정할 것이 없습니다",
+  stockNegativeTitle: "현재고보다 많이 출고합니다",
+  stockNegativeBody: "계속하면 재고가 마이너스로 남습니다. 수량을 다시 확인해 주세요.",
+  stockDeleteBlockedTitle: "삭제할 수 없습니다",
+  stockDeleteBlockedBody:
+    "입출고 내역이 있는 제품은 지우면 그 기록도 함께 사라집니다. 판매를 멈추려면 '판매 중지'로 두세요 — 목록에서 숨겨지고 기록은 남습니다.",
+  stockDeleteMoves: "함께 삭제될 입출고 내역",
+  stockSeedingFor: "인플루언서 발송 기록",
+  stockPickProduct: "보낼 제품을 고르세요",
+  stockMargin: "마진",
+
+  stockAlsoFinance: "재무에 매입 지출도 함께 기록",
+  stockAlsoFinanceHint: "매입가 × 수량으로 계산합니다. 한 번만 적으면 두 곳에 남습니다.",
+  stockFinancePartial:
+    "입고는 저장했지만 재무 기록에 실패했습니다. 재무 탭에서 직접 넣어 주세요.",
+  stockDeleteRestricted:
+    "입출고 내역이 있어 삭제할 수 없습니다. 판매 중지로 두면 목록에서 숨겨지고 기록은 남습니다.",
 
   rImport: "한국 입고",
   rReturn: "반품 입고",
@@ -98,6 +189,10 @@ const ko = {
   infNone: "등록된 인플루언서가 없습니다",
   infOpenPost: "게시물 열기",
   infTotalFee: "확정 비용 합계",
+  infTotalFeeSub: "재무에 실제로 지출한 금액",
+  infSeedRecord: "재고에서 발송 기록",
+  infSent: "보낸 제품",
+  infSentNone: "아직 보낸 제품이 없습니다",
 
   sLead: "발굴",
   sContacted: "컨택",
@@ -127,6 +222,13 @@ const ko = {
   finEntries: "거래 목록",
   finPrevMonth: "이전 달",
   finNextMonth: "다음 달",
+  finThisMonth: "이번 달",
+  finRateRecent: "가장 최근에 쓴 환율을 채워 두었습니다",
+  finReceipts: "영수증",
+  finReceiptAdd: "사진 추가",
+  finReceiptHint: "여러 장 붙일 수 있습니다. 사진과 PDF 모두 됩니다.",
+  finReceiptFailed: "사진을 올리지 못했습니다",
+  finReceiptOpen: "새 탭에서 열기",
 
   catSales: "매출",
   catOther_in: "기타 수입",
@@ -136,7 +238,10 @@ const ko = {
   catMarketing: "마케팅",
   catInfluencer: "인플루언서",
   catPayroll: "인건비",
-  catOps: "사무·기타",
+  catOps: "사무 운영",
+  catSettlement: "브랜드사 정산",
+  catCommission: "수수료 수입",
+  catOther: "기타",
 };
 
 export type AdminDict = typeof ko;
@@ -155,13 +260,20 @@ const th: AdminDict = {
   remove: "ลบ",
   confirmRemove: "ต้องการลบหรือไม่ ไม่สามารถย้อนกลับได้",
   search: "ค้นหา",
+  noMatch: "ไม่พบรายการที่ค้นหา",
   all: "ทั้งหมด",
   none: "-",
   note: "บันทึกเพิ่มเติม",
   date: "วันที่",
   saveFailed: "บันทึกไม่สำเร็จ",
+  saved: "บันทึกแล้ว",
+  removed: "ลบแล้ว",
+  refresh: "รีเฟรช",
+  syncedAt: "อัปเดต",
+  continue: "ดำเนินการต่อ",
 
   navHome: "หน้าแรก",
+  navBrand: "แบรนด์",
   navStock: "สต็อก",
   navInf: "อินฟลูเอนเซอร์",
   navFin: "การเงิน",
@@ -171,12 +283,75 @@ const th: AdminDict = {
   homeNetMonth: "เงินสดสุทธิเดือนนี้",
   homeInfActive: "อินฟลูฯ ที่กำลังดำเนินการ",
   homeSalesMonth: "ยอดขายเดือนนี้",
-  homeSku: "รายการ",
-  homePeople: "คน",
+  homeSkuCount: "{n} รายการ",
+  homePeopleCount: "{n} คน",
   homeTodo: "สิ่งที่ต้องจัดการ",
   homeTodoEmpty: "ไม่มีสิ่งที่ต้องจัดการ",
   homeLowStockTodo: "ต้องเติมสต็อก",
   homeInfDueTodo: "เลยกำหนดติดต่อแล้ว",
+  homeExpiryTodo: "ใกล้วันหมดอายุแล้ว",
+  homeExpiredTodo: "เลยวันหมดอายุแล้ว",
+
+  brandTitle: "แบรนด์",
+  brandNew: "เพิ่มแบรนด์",
+  brandNone: "ยังไม่มีแบรนด์",
+  brandName: "ชื่อแบรนด์",
+  brandNameTh: "ชื่อแบรนด์ (ไทย)",
+  brandLegalName: "ชื่อนิติบุคคล",
+  brandStatus: "สถานะ",
+  brandContract: "เงื่อนไขสัญญา",
+  brandCommission: "ค่าคอมมิชชั่น (%)",
+  brandMonthlyFee: "ค่าบริการรายเดือน (THB)",
+  brandContractFrom: "เริ่มสัญญา",
+  brandContractTo: "สิ้นสุดสัญญา",
+  brandContact: "ผู้ติดต่อ",
+  brandContactName: "ชื่อ",
+  brandContactRole: "ตำแหน่ง",
+  brandContactLine: "ไอดีคาคาโอ·ไลน์",
+  brandContactEmail: "อีเมล",
+  brandContactPhone: "โทรศัพท์",
+  brandProducts: "สินค้า",
+  brandProductsNone: "ยังไม่มีสินค้าที่ผูกไว้",
+  brandFda: "การขึ้นทะเบียน อย.",
+  brandFdaDone: "ขึ้นทะเบียนแล้ว",
+  brandAssets: "คลังคอนเทนต์",
+  brandAssetsNone: "ยังไม่มีไฟล์",
+  brandAssetAdd: "อัปโหลดไฟล์",
+  brandAssetHint: "รองรับภาพสินค้า หน้ารายละเอียด และวิดีโอ ไฟล์ละไม่เกิน 50MB",
+  brandAssetFailed: "อัปโหลดไฟล์ไม่สำเร็จ",
+  brandAssetTitle: "ชื่อเรื่อง",
+  brandAssetKind: "ประเภท",
+  brandSettlement: "การชำระบัญชี",
+  brandSettlementNone: "ไม่มีรายการชำระบัญชี",
+  brandRevenue: "ยอดขาย",
+  brandPaidOut: "จ่ายคืนแบรนด์",
+  brandCommissionIn: "รายรับค่าคอมมิชชั่น",
+  brandDeleteBlockedTitle: "ลบไม่ได้",
+  brandDeleteBlockedBody:
+    "แบรนด์ที่มีสินค้าหรือรายการเงินผูกอยู่จะลบไม่ได้ หากสัญญาสิ้นสุดแล้ว ให้ตั้งสถานะเป็น 'สิ้นสุด'",
+  brandDeleteAssets: "ไฟล์ที่จะถูกลบด้วย",
+
+  bLead: "ลูกค้าเป้าหมาย",
+  bMeeting: "นัดคุยแล้ว",
+  bContracted: "ทำสัญญาแล้ว",
+  bActive: "ดำเนินการอยู่",
+  bEnded: "สิ้นสุด",
+
+  fNone: "ยังไม่ยื่น",
+  fPreparing: "เตรียมเอกสาร",
+  fSubmitted: "ยื่นแล้ว",
+  fApproved: "ขึ้นทะเบียนแล้ว",
+  fRejected: "ไม่ผ่าน",
+  fdaNumber: "เลขทะเบียน",
+  fdaOn: "วันขึ้นทะเบียน",
+
+  aProduct_shot: "ภาพสินค้า",
+  aDetail_page: "หน้ารายละเอียด",
+  aVideo: "วิดีโอ",
+  aLogo: "โลโก้",
+  aDoc: "เอกสาร",
+  aContent: "คอนเทนต์",
+  aOther: "อื่น ๆ",
 
   stockTitle: "สต็อก",
   stockOnHand: "คงเหลือ",
@@ -206,7 +381,27 @@ const th: AdminDict = {
   stockInactive: "หยุดขาย",
   stockShowInactive: "รวมที่หยุดขาย",
   stockTotalValue: "มูลค่าสต็อกตามราคาขาย",
+  stockCostValue: "ต้นทุนรวม",
   stockExpirySoon: "ใกล้วันหมดอายุ",
+  stockExpired: "หมดอายุแล้ว",
+  stockAfter: "หลังบันทึก",
+  stockNoChange: "เท่ากับยอดคงเหลือ จึงไม่มีอะไรต้องปรับ",
+  stockNegativeTitle: "จ่ายออกมากกว่ายอดคงเหลือ",
+  stockNegativeBody: "หากดำเนินการต่อ ยอดสต็อกจะติดลบ กรุณาตรวจสอบจำนวนอีกครั้ง",
+  stockDeleteBlockedTitle: "ลบไม่ได้",
+  stockDeleteBlockedBody:
+    "สินค้าที่มีประวัติรับ-จ่าย หากลบ ประวัติจะหายไปด้วย หากต้องการเลิกขาย ให้ตั้งเป็น 'หยุดขาย' — จะซ่อนจากรายการแต่ประวัติยังอยู่",
+  stockDeleteMoves: "ประวัติรับ-จ่ายที่จะถูกลบด้วย",
+  stockSeedingFor: "บันทึกการส่งให้อินฟลูเอนเซอร์",
+  stockPickProduct: "เลือกสินค้าที่จะส่ง",
+  stockMargin: "กำไรขั้นต้น",
+
+  stockAlsoFinance: "บันทึกค่าซื้อสินค้าในการเงินด้วย",
+  stockAlsoFinanceHint: "คำนวณจากต้นทุน × จำนวน กรอกครั้งเดียว บันทึกทั้งสองที่",
+  stockFinancePartial:
+    "บันทึกการรับเข้าแล้ว แต่บันทึกการเงินไม่สำเร็จ กรุณาเพิ่มในแท็บการเงินด้วยตนเอง",
+  stockDeleteRestricted:
+    "ลบไม่ได้เพราะมีประวัติรับ-จ่าย หากตั้งเป็นหยุดขาย จะซ่อนจากรายการแต่ประวัติยังอยู่",
 
   rImport: "รับเข้าจากเกาหลี",
   rReturn: "รับคืน",
@@ -230,6 +425,10 @@ const th: AdminDict = {
   infNone: "ยังไม่มีอินฟลูเอนเซอร์",
   infOpenPost: "เปิดโพสต์",
   infTotalFee: "ค่าตอบแทนที่ยืนยันแล้ว",
+  infTotalFeeSub: "ยอดที่จ่ายจริงในบันทึกการเงิน",
+  infSeedRecord: "บันทึกการจ่ายของในสต็อก",
+  infSent: "สินค้าที่ส่งแล้ว",
+  infSentNone: "ยังไม่ได้ส่งสินค้า",
 
   sLead: "ค้นหาแล้ว",
   sContacted: "ติดต่อแล้ว",
@@ -259,6 +458,13 @@ const th: AdminDict = {
   finEntries: "รายการทั้งหมด",
   finPrevMonth: "เดือนก่อน",
   finNextMonth: "เดือนถัดไป",
+  finThisMonth: "เดือนนี้",
+  finRateRecent: "เติมอัตราที่ใช้ล่าสุดไว้ให้แล้ว",
+  finReceipts: "ใบเสร็จ",
+  finReceiptAdd: "เพิ่มรูป",
+  finReceiptHint: "แนบได้หลายรูป รองรับทั้งรูปภาพและ PDF",
+  finReceiptFailed: "อัปโหลดรูปไม่สำเร็จ",
+  finReceiptOpen: "เปิดในแท็บใหม่",
 
   catSales: "ยอดขาย",
   catOther_in: "รายรับอื่น",
@@ -268,7 +474,10 @@ const th: AdminDict = {
   catMarketing: "การตลาด",
   catInfluencer: "อินฟลูเอนเซอร์",
   catPayroll: "เงินเดือน",
-  catOps: "สำนักงาน·อื่น ๆ",
+  catOps: "ค่าดำเนินงานสำนักงาน",
+  catSettlement: "จ่ายคืนแบรนด์",
+  catCommission: "รายรับค่าคอมมิชชั่น",
+  catOther: "อื่น ๆ",
 };
 
 const en: AdminDict = {
@@ -285,13 +494,20 @@ const en: AdminDict = {
   remove: "Delete",
   confirmRemove: "Delete this? It cannot be undone.",
   search: "Search",
+  noMatch: "No matches",
   all: "All",
   none: "-",
   note: "Note",
   date: "Date",
   saveFailed: "Could not save",
+  saved: "Saved",
+  removed: "Deleted",
+  refresh: "Refresh",
+  syncedAt: "Synced",
+  continue: "Continue",
 
   navHome: "Home",
+  navBrand: "Brands",
   navStock: "Stock",
   navInf: "Influencers",
   navFin: "Finance",
@@ -301,12 +517,75 @@ const en: AdminDict = {
   homeNetMonth: "Net cash this month",
   homeInfActive: "Influencers in progress",
   homeSalesMonth: "Sales this month",
-  homeSku: "SKUs",
-  homePeople: "people",
+  homeSkuCount: "{n} SKU",
+  homePeopleCount: "{n} people",
   homeTodo: "Needs attention",
   homeTodoEmpty: "Nothing needs attention",
   homeLowStockTodo: "Needs restocking",
   homeInfDueTodo: "Follow-up date has passed",
+  homeExpiryTodo: "Expiry date is approaching",
+  homeExpiredTodo: "Past its expiry date",
+
+  brandTitle: "Brands",
+  brandNew: "New brand",
+  brandNone: "No brands yet",
+  brandName: "Brand name",
+  brandNameTh: "Brand name (Thai)",
+  brandLegalName: "Legal entity",
+  brandStatus: "Stage",
+  brandContract: "Contract terms",
+  brandCommission: "Commission (%)",
+  brandMonthlyFee: "Monthly fee (THB)",
+  brandContractFrom: "Contract starts",
+  brandContractTo: "Contract ends",
+  brandContact: "Contact",
+  brandContactName: "Name",
+  brandContactRole: "Role",
+  brandContactLine: "KakaoTalk / LINE ID",
+  brandContactEmail: "Email",
+  brandContactPhone: "Phone",
+  brandProducts: "Products",
+  brandProductsNone: "No products linked yet",
+  brandFda: "Thai FDA registration",
+  brandFdaDone: "Registered",
+  brandAssets: "Content archive",
+  brandAssetsNone: "No files yet",
+  brandAssetAdd: "Upload files",
+  brandAssetHint: "Product shots, detail pages and video all work. Up to 50MB per file.",
+  brandAssetFailed: "Could not upload that file",
+  brandAssetTitle: "Title",
+  brandAssetKind: "Type",
+  brandSettlement: "Settlement",
+  brandSettlementNone: "No settlement entries",
+  brandRevenue: "Sales",
+  brandPaidOut: "Paid to brand",
+  brandCommissionIn: "Commission earned",
+  brandDeleteBlockedTitle: "Cannot delete",
+  brandDeleteBlockedBody:
+    "A brand with products or finance entries cannot be deleted. If the contract is over, set the stage to Ended.",
+  brandDeleteAssets: "Files that would be deleted",
+
+  bLead: "Lead",
+  bMeeting: "Met",
+  bContracted: "Signed",
+  bActive: "Active",
+  bEnded: "Ended",
+
+  fNone: "Not filed",
+  fPreparing: "Preparing documents",
+  fSubmitted: "Filed",
+  fApproved: "Registered",
+  fRejected: "Rejected",
+  fdaNumber: "Registration no.",
+  fdaOn: "Registered on",
+
+  aProduct_shot: "Product shot",
+  aDetail_page: "Detail page",
+  aVideo: "Video",
+  aLogo: "Logo",
+  aDoc: "Document",
+  aContent: "Content",
+  aOther: "Other",
 
   stockTitle: "Stock",
   stockOnHand: "On hand",
@@ -336,7 +615,27 @@ const en: AdminDict = {
   stockInactive: "Discontinued",
   stockShowInactive: "Include discontinued",
   stockTotalValue: "Stock at retail value",
+  stockCostValue: "At cost",
   stockExpirySoon: "Expiring soon",
+  stockExpired: "Expired",
+  stockAfter: "After saving",
+  stockNoChange: "Same as on hand — nothing to adjust",
+  stockNegativeTitle: "This is more than you have on hand",
+  stockNegativeBody: "Continuing leaves stock negative. Please check the quantity again.",
+  stockDeleteBlockedTitle: "Cannot delete",
+  stockDeleteBlockedBody:
+    "Deleting a product with movement history removes that history too. To stop selling it, mark it Discontinued — it leaves the list but the records stay.",
+  stockDeleteMoves: "Movements that would be deleted",
+  stockSeedingFor: "Recording a shipment to",
+  stockPickProduct: "Pick the product you sent",
+  stockMargin: "Margin",
+
+  stockAlsoFinance: "Also record the purchase in Finance",
+  stockAlsoFinanceHint: "Calculated as cost × quantity. Enter it once, it lands in both places.",
+  stockFinancePartial:
+    "Stock was saved but the finance entry failed. Please add it from the Finance tab.",
+  stockDeleteRestricted:
+    "Cannot delete — this product has movement history. Mark it Discontinued to hide it from the list and keep the records.",
 
   rImport: "Inbound from Korea",
   rReturn: "Returned",
@@ -360,6 +659,10 @@ const en: AdminDict = {
   infNone: "No influencers yet",
   infOpenPost: "Open post",
   infTotalFee: "Committed fees",
+  infTotalFeeSub: "Actually paid out in Finance",
+  infSeedRecord: "Record the shipment in Stock",
+  infSent: "Products sent",
+  infSentNone: "Nothing sent yet",
 
   sLead: "Lead",
   sContacted: "Contacted",
@@ -389,6 +692,13 @@ const en: AdminDict = {
   finEntries: "All entries",
   finPrevMonth: "Previous month",
   finNextMonth: "Next month",
+  finThisMonth: "This month",
+  finRateRecent: "Filled in with the rate you used most recently",
+  finReceipts: "Receipts",
+  finReceiptAdd: "Add photo",
+  finReceiptHint: "Attach as many as you need. Images and PDFs both work.",
+  finReceiptFailed: "Could not upload that file",
+  finReceiptOpen: "Open in a new tab",
 
   catSales: "Sales",
   catOther_in: "Other income",
@@ -398,7 +708,10 @@ const en: AdminDict = {
   catMarketing: "Marketing",
   catInfluencer: "Influencers",
   catPayroll: "Payroll",
-  catOps: "Office & other",
+  catOps: "Office running costs",
+  catSettlement: "Brand settlement",
+  catCommission: "Commission income",
+  catOther: "Other",
 };
 
 export const a: Record<AdminLang, AdminDict> = { ko, th, en };
@@ -416,6 +729,16 @@ export function initialAdminLang(): AdminLang {
   if (nav.startsWith("th")) return "th";
   if (nav.startsWith("en")) return "en";
   return "ko";
+}
+
+/**
+ * "{n}개 SKU" 같은 틀에 숫자를 끼운다.
+ *
+ * 언어마다 숫자와 단위 사이 띄어쓰기가 다르다 — 한국어는 "3개", 태국어는 "3 คน".
+ * 코드에서 숫자와 단위를 공백으로 이어 붙이면 한쪽이 반드시 틀린다.
+ */
+export function count(template: string, n: number): string {
+  return template.replace("{n}", n.toLocaleString("en-US"));
 }
 
 /** 제품명은 언어별 필드가 따로 있고, 비어 있으면 한국어로 되돌린다. */
@@ -453,6 +776,9 @@ const CATEGORY_KEYS: Record<string, keyof AdminDict> = {
   influencer: "catInfluencer",
   payroll: "catPayroll",
   ops: "catOps",
+  settlement: "catSettlement",
+  commission: "catCommission",
+  other: "catOther",
 };
 
 export function categoryLabel(category: string, c: AdminDict): string {
@@ -483,4 +809,50 @@ const PLATFORM_KEYS = {
 
 export function platformLabel(p: keyof typeof PLATFORM_KEYS, c: AdminDict): string {
   return c[PLATFORM_KEYS[p]];
+}
+
+const BRAND_STATUS_KEYS = {
+  lead: "bLead",
+  meeting: "bMeeting",
+  contracted: "bContracted",
+  active: "bActive",
+  ended: "bEnded",
+} as const;
+
+export function brandStatusLabel(
+  s: keyof typeof BRAND_STATUS_KEYS,
+  c: AdminDict,
+): string {
+  return c[BRAND_STATUS_KEYS[s]];
+}
+
+const FDA_KEYS = {
+  none: "fNone",
+  preparing: "fPreparing",
+  submitted: "fSubmitted",
+  approved: "fApproved",
+  rejected: "fRejected",
+} as const;
+
+export function fdaLabel(s: keyof typeof FDA_KEYS, c: AdminDict): string {
+  return c[FDA_KEYS[s]];
+}
+
+const ASSET_KIND_KEYS = {
+  product_shot: "aProduct_shot",
+  detail_page: "aDetail_page",
+  video: "aVideo",
+  logo: "aLogo",
+  doc: "aDoc",
+  content: "aContent",
+  other: "aOther",
+} as const;
+
+export function assetKindLabel(k: keyof typeof ASSET_KIND_KEYS, c: AdminDict): string {
+  return c[ASSET_KIND_KEYS[k]];
+}
+
+/** 브랜드명도 태국어 칸이 있고, 비어 있으면 기본 이름으로 되돌린다. */
+export function brandName(b: { name: string; name_th: string }, lang: AdminLang): string {
+  return lang === "th" ? b.name_th || b.name : b.name;
 }

@@ -4,8 +4,15 @@
  * 반응형 원칙: 모바일에서는 창이 아래에서 올라오고(엄지로 닫기 쉬움) PC에서는
  * 가운데 뜬다. 같은 컴포넌트 하나로 처리해서 화면마다 분기하지 않는다.
  */
-import { useEffect, type ReactNode } from "react";
-import { X } from "lucide-react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { AlertTriangle, Check, Search, X } from "lucide-react";
 
 export const BLUE = "#0C3F80";
 
@@ -165,7 +172,12 @@ export function Sheet({
         className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px]"
         onClick={onClose}
       />
-      <div className="relative flex max-h-[92vh] w-full flex-col rounded-t-3xl bg-white shadow-xl md:max-h-[85vh] md:max-w-lg md:rounded-2xl">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="relative flex max-h-[92vh] w-full flex-col rounded-t-3xl bg-white shadow-xl md:max-h-[85vh] md:max-w-lg md:rounded-2xl"
+      >
         <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
           <h2 className="font-bold text-neutral-900">{title}</h2>
           <button
@@ -188,7 +200,12 @@ export function Sheet({
   );
 }
 
-/** 숫자 하나가 주인공인 타일. 색은 뜻이 있을 때만 쓴다. */
+/**
+ * 숫자 하나가 주인공인 타일. 색은 뜻이 있을 때만 쓴다.
+ *
+ * 누를 곳이 없으면 button이 아니라 div로 낸다 — 눌리지 않는 버튼은 키보드
+ * 순서에서 헛걸음을 만들고, 마우스 커서도 거짓말을 한다.
+ */
 export function Tile({
   label,
   value,
@@ -210,16 +227,24 @@ export function Tile({
         : tone === "warn"
           ? "text-amber-600"
           : "text-neutral-900";
+  const box = "rounded-2xl border border-neutral-200 bg-white p-4 text-left md:p-5";
+  const body = (
+    <>
+      <p className="mb-1.5 text-xs font-semibold text-neutral-500">{label}</p>
+      <p className={`text-xl font-black tabular-nums md:text-2xl ${color}`}>{value}</p>
+      {sub && <p className="mt-1 text-[11px] text-neutral-400">{sub}</p>}
+    </>
+  );
+
+  if (!onClick) return <div className={box}>{body}</div>;
+
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={!onClick}
-      className="rounded-2xl border border-neutral-200 bg-white p-4 text-left transition-colors enabled:hover:border-neutral-300 md:p-5"
+      className={`${box} w-full transition-colors hover:border-neutral-300`}
     >
-      <p className="mb-1.5 text-xs font-semibold text-neutral-500">{label}</p>
-      <p className={`text-xl font-black tabular-nums md:text-2xl ${color}`}>{value}</p>
-      {sub && <p className="mt-1 text-[11px] text-neutral-400">{sub}</p>}
+      {body}
     </button>
   );
 }
@@ -284,6 +309,200 @@ export function Page({ title, action, children }: { title: string; action?: Reac
         {action}
       </div>
       {children}
+    </div>
+  );
+}
+
+/**
+ * 저장했다는 확인.
+ *
+ * 왜 필요한가: 입고를 잡는 화면은 저장 후에도 열려 있다(로트마다 한 번씩 적으니까).
+ * 아무 반응이 없으면 팀원이 한 번 더 누르고, 그러면 재고가 두 배로 들어온다.
+ * 눌린 자리에서 가장 가까운 곳 — 모바일은 하단 탭 위, PC는 오른쪽 아래 — 에 띄운다.
+ */
+type ToastTone = "ok" | "bad";
+const ToastCtx = createContext<(msg: string, tone?: ToastTone) => void>(() => {});
+
+export function useToast() {
+  return useContext(ToastCtx);
+}
+
+export function ToastHost({ children }: { children: ReactNode }) {
+  const [toast, setToast] = useState<{ msg: string; tone: ToastTone; at: number } | null>(
+    null,
+  );
+
+  const show = useCallback((msg: string, tone: ToastTone = "ok") => {
+    setToast({ msg, tone, at: performance.now() });
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2600);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  return (
+    <ToastCtx.Provider value={show}>
+      {children}
+      {toast && (
+        <div
+          key={toast.at}
+          role="status"
+          aria-live="polite"
+          className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[60] flex justify-center px-5 md:inset-x-auto md:right-6 md:bottom-6 md:px-0"
+        >
+          <div
+            className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-lg ${
+              toast.tone === "ok" ? "bg-neutral-900" : "bg-rose-600"
+            }`}
+          >
+            {toast.tone === "ok" ? <Check size={15} /> : <AlertTriangle size={15} />}
+            {toast.msg}
+          </div>
+        </div>
+      )}
+    </ToastCtx.Provider>
+  );
+}
+
+/**
+ * 되돌릴 수 없는 일을 하기 전에 묻는 창.
+ *
+ * 브라우저 기본 confirm()을 쓰지 않는다. 저 창은 세 언어를 못 따라가고, 무엇이
+ * 함께 사라지는지(입출고 기록 몇 건) 같은 실제 대가를 보여줄 자리가 없다.
+ */
+export function Confirm({
+  open,
+  title,
+  body,
+  detail,
+  confirmLabel,
+  cancelLabel,
+  tone = "danger",
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  body?: string;
+  detail?: ReactNode;
+  confirmLabel: string;
+  cancelLabel: string;
+  tone?: "danger" | "warn";
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onCancel();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onCancel]);
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-[70] grid place-items-center px-6">
+      <div className="absolute inset-0 bg-neutral-900/50" onClick={onCancel} />
+      <div
+        role="alertdialog"
+        aria-modal="true"
+        className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+      >
+        <div className="mb-3 flex items-start gap-3">
+          <span
+            className={`mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg ${
+              tone === "danger" ? "bg-rose-50 text-rose-600" : "bg-amber-50 text-amber-600"
+            }`}
+          >
+            <AlertTriangle size={16} />
+          </span>
+          <h2 className="pt-1 font-bold text-neutral-900">{title}</h2>
+        </div>
+
+        {body && <p className="mb-4 text-sm leading-relaxed text-neutral-500">{body}</p>}
+        {detail && <div className="mb-4">{detail}</div>}
+
+        <div className="flex items-center justify-end gap-2">
+          <Btn onClick={onCancel} variant="ghost">
+            {cancelLabel}
+          </Btn>
+          <button
+            type="button"
+            onClick={onConfirm}
+            className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors ${
+              tone === "danger"
+                ? "bg-rose-600 hover:bg-rose-700"
+                : "bg-amber-600 hover:bg-amber-700"
+            }`}
+          >
+            {confirmLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** 목록이 열 줄을 넘어가면 필터 칩만으로는 못 찾는다. */
+export function SearchBox({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+}) {
+  return (
+    <div className="relative mb-4">
+      <Search
+        size={15}
+        className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-neutral-400"
+      />
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`${inputCls} pl-9`}
+      />
+    </div>
+  );
+}
+
+/** 다른 탭에서 넘어온 작업이 진행 중임을 알리는 띠. */
+export function Banner({
+  label,
+  value,
+  hint,
+  onCancel,
+  cancelLabel,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  onCancel: () => void;
+  cancelLabel: string;
+}) {
+  return (
+    <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#0C3F80]/20 bg-blue-50/60 px-4 py-3.5">
+      <div className="min-w-0 flex-1">
+        <p className="text-[11px] font-bold tracking-wide text-[#0C3F80]/70 uppercase">
+          {label}
+        </p>
+        <p className="truncate text-sm font-bold text-[#0C3F80]">{value}</p>
+        {hint && <p className="mt-0.5 text-xs text-[#0C3F80]/70">{hint}</p>}
+      </div>
+      <button
+        type="button"
+        onClick={onCancel}
+        title={cancelLabel}
+        className="-mr-1 -mt-0.5 shrink-0 rounded-lg p-1.5 text-[#0C3F80]/50 transition-colors hover:bg-white/70 hover:text-[#0C3F80]"
+      >
+        <X size={16} />
+      </button>
     </div>
   );
 }

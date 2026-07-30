@@ -21,7 +21,8 @@ export const MOVE_REASONS = {
   adjust: ["count"],
 } as const;
 
-export const IN_CATEGORIES = ["sales", "other_in"] as const;
+export const IN_CATEGORIES = ["sales", "commission", "other_in"] as const;
+/** 마지막의 other는 어디에도 안 맞는 지출을 위한 자리. 분류를 억지로 고르게 하면 장부가 거짓말을 한다. */
 export const OUT_CATEGORIES = [
   "goods",
   "logistics",
@@ -30,14 +31,93 @@ export const OUT_CATEGORIES = [
   "influencer",
   "payroll",
   "ops",
+  "settlement",
+  "other",
 ] as const;
 
+/** 브랜드사를 달아 두는 것이 뜻있는 분류. 정산과 수수료는 언제나 상대가 있다. */
+export const BRAND_CATEGORIES = ["settlement", "commission", "sales"] as const;
+
 export const INF_FLOW: InfStatus[] = ["lead", "contacted", "confirmed", "shipped", "posted"];
+
+export type BrandStatus = "lead" | "meeting" | "contracted" | "active" | "ended";
+export type FdaStatus = "none" | "preparing" | "submitted" | "approved" | "rejected";
+export type AssetKind =
+  | "product_shot"
+  | "detail_page"
+  | "video"
+  | "logo"
+  | "doc"
+  | "content"
+  | "other";
+
+export const BRAND_FLOW: BrandStatus[] = [
+  "lead",
+  "meeting",
+  "contracted",
+  "active",
+  "ended",
+];
+export const FDA_FLOW: FdaStatus[] = [
+  "none",
+  "preparing",
+  "submitted",
+  "approved",
+  "rejected",
+];
+export const ASSET_KINDS: AssetKind[] = [
+  "product_shot",
+  "detail_page",
+  "video",
+  "logo",
+  "doc",
+  "content",
+  "other",
+];
+
+export const ASSET_BUCKET = "brand-assets";
+
+export interface Brand {
+  id: string;
+  name: string;
+  name_th: string;
+  legal_name: string;
+  status: BrandStatus;
+  commission_pct: number;
+  monthly_fee_thb: number;
+  contract_from: string | null;
+  contract_to: string | null;
+  contact_name: string;
+  contact_role: string;
+  contact_line: string;
+  contact_email: string;
+  contact_phone: string;
+  note: string;
+  sort: number;
+  updated_at: string;
+}
+
+export interface BrandAsset {
+  id: string;
+  brand_id: string;
+  kind: AssetKind;
+  title: string;
+  path: string;
+  mime: string;
+  size_bytes: number;
+  note: string;
+  created_at: string;
+}
 
 export interface Product {
   id: string;
   sku: string;
+  /** 예전부터 있던 자유 입력 브랜드명. brand_id가 비었을 때만 쓴다. */
   brand: string;
+  brand_id: string | null;
+  fda_status: FdaStatus;
+  fda_number: string;
+  fda_on: string | null;
   name_ko: string;
   name_th: string;
   name_en: string;
@@ -59,6 +139,11 @@ export interface StockMove {
   expiry: string | null;
   note: string;
   moved_on: string;
+  /**
+   * 시딩 출고가 어느 인플루언서에게 갔는지. 이름이 아니라 키로 잇는다 —
+   * 이름은 바뀌고 겹친다. 인플루언서를 지워도 이 값만 비고 출고 기록은 남는다.
+   */
+  influencer_id: string | null;
 }
 
 export interface ProductStock {
@@ -92,7 +177,13 @@ export interface FinanceEntry {
   rate_to_thb: number;
   amount_thb: number;
   memo: string;
+  /** receipts 버킷 안의 파일 경로들. 비공개 버킷이라 볼 때 서명 URL을 받아 쓴다. */
+  receipts: string[];
+  /** 정산·수수료·매출처럼 상대가 있는 거래에 달아 두는 브랜드사. */
+  brand_id: string | null;
 }
+
+export const RECEIPT_BUCKET = "receipts";
 
 /** 방콕 기준 오늘. 서버가 어디에 있든 팀이 보는 날짜와 맞춘다. */
 export function todayBkk(): string {
