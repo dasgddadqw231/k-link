@@ -8,6 +8,7 @@
  * 줄이기·서명 URL 같은 공용 부분은 storage.ts에 있다.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FileText, ImagePlus, Loader2, Paperclip, X } from "lucide-react";
 import { RECEIPT_BUCKET } from "../../lib/admin";
 import type { AdminDict } from "./i18n";
@@ -208,8 +209,10 @@ export function ReceiptViewer({
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  return (
-    <div className="fixed inset-0 z-[80] flex flex-col bg-neutral-900/95">
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[80] flex animate-in flex-col bg-neutral-900/95 fade-in duration-200 motion-reduce:animate-none">
       <div className="flex justify-end p-4 pt-[max(1rem,env(safe-area-inset-top))]">
         <button
           onClick={onClose}
@@ -222,7 +225,11 @@ export function ReceiptViewer({
         {!url ? (
           <Loader2 size={22} className="animate-spin text-white/50" />
         ) : image ? (
-          <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+          <img
+            src={url}
+            alt=""
+            className="max-h-full max-w-full animate-in object-contain zoom-in-95 duration-200 ease-out motion-reduce:animate-none"
+          />
         ) : video ? (
           <video src={url} controls className="max-h-full max-w-full" />
         ) : (
@@ -232,7 +239,8 @@ export function ReceiptViewer({
           </a>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

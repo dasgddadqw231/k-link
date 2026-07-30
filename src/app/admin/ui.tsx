@@ -9,12 +9,62 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import { AlertTriangle, Check, Search, X } from "lucide-react";
 
 export const BLUE = "#0C3F80";
+
+/**
+ * 뜨는 것들의 여닫는 시간.
+ *
+ * 나갈 때를 들어올 때보다 짧게 둔다 — 닫기는 이미 결정한 동작이라 기다리면
+ * 느리게 느껴지고, 열기는 눈이 따라올 시간이 필요하다.
+ */
+const OVERLAY_OUT_MS = 160;
+
+/**
+ * 화면을 덮는 것들은 <body> 밑으로 내보낸다.
+ *
+ * 탭을 넘길 때 본문에 transform이 걸린다. transform이 걸린 조상이 있으면
+ * position: fixed가 화면이 아니라 그 조상을 기준으로 잡혀서, 열려 있던 창이
+ * 어긋난 자리에 그려진다. 포털로 빼 두면 본문이 무엇을 하든 상관이 없다.
+ */
+function Overlay({ children }: { children: ReactNode }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
+
+/**
+ * 닫힘을 애니메이션으로 넘긴다.
+ *
+ * 부모는 창을 조건부로 그리고 있어서, 닫으라는 신호가 오면 그 즉시 사라진다.
+ * 그래서 먼저 나가는 모습을 보여 주고, 끝난 뒤에 부모에게 알린다. 저장처럼
+ * 부모가 스스로 닫는 경우는 그대로 즉시 사라진다 — 토스트가 결과를 말해 주니
+ * 굳이 붙잡아 둘 이유가 없다.
+ */
+function useLeave(onClose: () => void) {
+  const [leaving, setLeaving] = useState(false);
+  const timer = useRef<number | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  const close = useCallback(() => {
+    if (timer.current !== null) return; // 두 번 눌러도 한 번만 닫는다
+    setLeaving(true);
+    timer.current = window.setTimeout(onClose, OVERLAY_OUT_MS);
+  }, [onClose]);
+
+  return { leaving, close };
+}
 
 export const inputCls =
   "w-full rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-[15px] outline-none transition-colors focus:border-[#0C3F80] md:text-sm";
@@ -152,9 +202,11 @@ export function Sheet({
   children: ReactNode;
   footer?: ReactNode;
 }) {
+  const { leaving, close } = useLeave(onClose);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -162,41 +214,56 @@ export function Sheet({
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [open, onClose]);
+  }, [open, close]);
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
-      <div
-        className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px]"
-        onClick={onClose}
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        className="relative flex max-h-[92vh] w-full flex-col rounded-t-3xl bg-white shadow-xl md:max-h-[85vh] md:max-w-lg md:rounded-2xl"
-      >
-        <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
-          <h2 className="font-bold text-neutral-900">{title}</h2>
-          <button
-            onClick={onClose}
-            className="-mr-1.5 rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
-
-        {footer && (
-          <div className="border-t border-neutral-100 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-4">
-            {footer}
+    <Overlay>
+      <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
+        <div
+          className={`absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] motion-reduce:animate-none ${
+            leaving
+              ? "animate-out fade-out fill-mode-forwards duration-150"
+              : "animate-in fade-in duration-200"
+          }`}
+          onClick={close}
+        />
+        {/*
+          모바일은 아래에서 올라온다 — 손이 닿는 곳에서 자라나는 것처럼 보여야
+          어디서 온 창인지 알 수 있다. PC는 가운데 뜨는 창이라 올라올 아래가
+          없으니 살짝 커지며 나타난다.
+        */}
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+          className={`relative flex max-h-[92vh] w-full flex-col rounded-t-3xl bg-white shadow-xl motion-reduce:animate-none md:max-h-[85vh] md:max-w-lg md:rounded-2xl ${
+            leaving
+              ? "animate-out slide-out-to-bottom-full fill-mode-forwards duration-150 ease-in md:slide-out-to-bottom-0 md:fade-out md:zoom-out-95"
+              : "animate-in slide-in-from-bottom-full duration-300 ease-out md:slide-in-from-bottom-0 md:fade-in md:zoom-in-95 md:duration-200"
+          }`}
+        >
+          <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
+            <h2 className="font-bold text-neutral-900">{title}</h2>
+            <button
+              onClick={close}
+              className="-mr-1.5 rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+            >
+              <X size={18} />
+            </button>
           </div>
-        )}
+
+          <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
+
+          {footer && (
+            <div className="border-t border-neutral-100 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-4">
+              {footer}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Overlay>
   );
 }
 
@@ -332,35 +399,49 @@ export function ToastHost({ children }: { children: ReactNode }) {
     null,
   );
 
+  const [leaving, setLeaving] = useState(false);
+
   const show = useCallback((msg: string, tone: ToastTone = "ok") => {
     setToast({ msg, tone, at: performance.now() });
   }, []);
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(null), 2600);
-    return () => clearTimeout(t);
+    setLeaving(false);
+    // 사라질 때도 스르르 나간다. 툭 없어지면 뭔가 잘못된 것처럼 보인다.
+    const out = setTimeout(() => setLeaving(true), 2400);
+    const gone = setTimeout(() => setToast(null), 2400 + OVERLAY_OUT_MS);
+    return () => {
+      clearTimeout(out);
+      clearTimeout(gone);
+    };
   }, [toast]);
 
   return (
     <ToastCtx.Provider value={show}>
       {children}
       {toast && (
-        <div
-          key={toast.at}
-          role="status"
-          aria-live="polite"
-          className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[60] flex justify-center px-5 md:inset-x-auto md:right-6 md:bottom-6 md:px-0"
-        >
+        <Overlay>
           <div
-            className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-lg ${
-              toast.tone === "ok" ? "bg-neutral-900" : "bg-rose-600"
-            }`}
+            key={toast.at}
+            role="status"
+            aria-live="polite"
+            className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[60] flex justify-center px-5 md:inset-x-auto md:right-6 md:bottom-6 md:px-0"
           >
-            {toast.tone === "ok" ? <Check size={15} /> : <AlertTriangle size={15} />}
-            {toast.msg}
+            <div
+              className={`flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-lg motion-reduce:animate-none ${
+                toast.tone === "ok" ? "bg-neutral-900" : "bg-rose-600"
+              } ${
+                leaving
+                  ? "animate-out fade-out slide-out-to-bottom-2 fill-mode-forwards duration-150"
+                  : "animate-in fade-in slide-in-from-bottom-3 duration-250 ease-out"
+              }`}
+            >
+              {toast.tone === "ok" ? <Check size={15} /> : <AlertTriangle size={15} />}
+              {toast.msg}
+            </div>
           </div>
-        </div>
+        </Overlay>
       )}
     </ToastCtx.Provider>
   );
@@ -393,22 +474,36 @@ export function Confirm({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const { leaving, close } = useLeave(onCancel);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onCancel();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, onCancel]);
+  }, [open, close]);
 
   if (!open) return null;
 
   return (
+    <Overlay>
     <div className="fixed inset-0 z-[70] grid place-items-center px-6">
-      <div className="absolute inset-0 bg-neutral-900/50" onClick={onCancel} />
+      <div
+        className={`absolute inset-0 bg-neutral-900/50 motion-reduce:animate-none ${
+          leaving
+            ? "animate-out fade-out fill-mode-forwards duration-150"
+            : "animate-in fade-in duration-150"
+        }`}
+        onClick={close}
+      />
       <div
         role="alertdialog"
         aria-modal="true"
-        className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+        className={`relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl motion-reduce:animate-none ${
+          leaving
+            ? "animate-out fade-out zoom-out-95 fill-mode-forwards duration-150 ease-in"
+            : "animate-in fade-in zoom-in-95 duration-200 ease-out"
+        }`}
       >
         <div className="mb-3 flex items-start gap-3">
           <span
@@ -425,7 +520,7 @@ export function Confirm({
         {detail && <div className="mb-4">{detail}</div>}
 
         <div className="flex items-center justify-end gap-2">
-          <Btn onClick={onCancel} variant="ghost">
+          <Btn onClick={close} variant="ghost">
             {cancelLabel}
           </Btn>
           <button
@@ -442,6 +537,7 @@ export function Confirm({
         </div>
       </div>
     </div>
+    </Overlay>
   );
 }
 

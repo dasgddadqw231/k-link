@@ -264,6 +264,16 @@ function Shell({
     }
   }, [tab]);
 
+  /**
+   * 탭을 바꾸면 맨 위에서 시작한다.
+   *
+   * 재무를 한참 내려 보다가 홈으로 넘어가면 홈의 중간부터 보이던 문제가 있었다.
+   * 새 화면이 페이드로 들어오는 동안 이미 위로 올라와 있어서 튀지 않는다.
+   */
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [tab]);
+
   /** 주소를 직접 고쳐 들어오는 경우도 따라간다. */
   useEffect(() => {
     function onHash() {
@@ -280,7 +290,8 @@ function Shell({
 
   return (
     <ToastHost>
-      <div className="min-h-screen bg-neutral-50">
+      {/* 로그인 화면에서 여기로 넘어오는 것도 한 번 스며들게 한다. */}
+      <div className="min-h-screen animate-in bg-neutral-50 fade-in duration-500 motion-reduce:animate-none">
         {/* PC 사이드바 */}
         <aside className="fixed top-0 left-0 hidden h-screen w-56 flex-col border-r border-neutral-200 bg-white md:flex">
           <div className="px-5 py-5">
@@ -339,22 +350,37 @@ function Shell({
         <main className="md:ml-56">
           {data.loading ? (
             <p className="py-24 text-center text-sm text-neutral-400">{c.loading}...</p>
-          ) : tab === "home" ? (
-            <Dashboard lang={lang} data={data} go={go} />
-          ) : tab === "brand" ? (
-            <Brands lang={lang} data={data} />
-          ) : tab === "stock" ? (
-            <Inventory
-              lang={lang}
-              data={data}
-              focusProductId={nav.productId}
-              seedingId={nav.seedingId}
-              onSeedingDone={() => setNav({ tab: "stock" })}
-            />
-          ) : tab === "inf" ? (
-            <Influencers lang={lang} data={data} go={go} />
           ) : (
-            <Finance lang={lang} data={data} />
+            /*
+              탭이 바뀔 때 새 화면이 자라 들어온다. key가 탭이라 탭이 바뀔 때만
+              다시 그려지고, 같은 탭 안에서 상태가 변하는 동안(예: 발송 기록을
+              끝냈을 때)에는 화면이 깜빡이지 않는다.
+
+              여기에 transform이 걸리는 동안 position: fixed가 이 요소를 기준으로
+              잡힌다. 그래서 창·확인·토스트는 모두 포털로 <body> 밑에 그린다.
+            */
+            <div
+              key={tab}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-300 ease-out motion-reduce:animate-none"
+            >
+              {tab === "home" ? (
+                <Dashboard lang={lang} data={data} go={go} />
+              ) : tab === "brand" ? (
+                <Brands lang={lang} data={data} />
+              ) : tab === "stock" ? (
+                <Inventory
+                  lang={lang}
+                  data={data}
+                  focusProductId={nav.productId}
+                  seedingId={nav.seedingId}
+                  onSeedingDone={() => setNav({ tab: "stock" })}
+                />
+              ) : tab === "inf" ? (
+                <Influencers lang={lang} data={data} go={go} />
+              ) : (
+                <Finance lang={lang} data={data} />
+              )}
+            </div>
           )}
         </main>
 
