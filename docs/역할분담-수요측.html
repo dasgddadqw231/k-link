@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" />
+<style>
+  /*
+    태국어·영어판 도식.
+
+    한국판과 모양이 다르다. 저쪽 독자는 태국 진출을 검토하는 브랜드라 "내 일이
+    어디서 끝나나"를 알아야 해서 2레인 핸드오프로 그렸다. 이쪽 독자는 태국의
+    유통·리테일이고, 카피가 하는 말은 "수입 리스크는 우리가 진다, 당신은 판다"다.
+    그래서 네 개를 지는 쪽과 하나만 하는 쪽의 비대칭이 곧 그림이 된다.
+  */
+  :root {
+    --blue: #0C3F80;
+    --ink: #12161F;
+    --body: #5A6373;
+    --mute: #8B94A3;
+    --line: #E3E7ED;
+    --line2: #D7DCE4;
+    --kbg: #EDF2F9;
+    --kline: #B3C6DE;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff; color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    font-family: "Pretendard Variable", Pretendard, sans-serif;
+  }
+  /* 태국어는 성조 부호가 위아래로 붙어서 행간을 넉넉히 줘야 글자가 겹치지 않는다. */
+  body.th { font-family: "Noto Sans Thai", "Pretendard Variable", sans-serif; }
+  body.th .sub, body.th .cardBody { line-height: 1.9; }
+  body.th h1 { line-height: 1.35; }
+
+  .sheet { width: 1600px; padding: 72px 80px 56px; }
+
+  .eyebrow { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: .04em; }
+  h1 { margin-top: 13px; font-size: 46px; font-weight: 800; letter-spacing: -.02em; line-height: 1.18; white-space: pre-line; }
+  .sub { margin-top: 16px; font-size: 17px; line-height: 1.7; color: var(--body); max-width: 66ch; }
+
+  /* 본체 — 네 개를 지는 쪽(넓게) 대 하나만 하는 쪽(좁게). 폭 차이가 논지다. */
+  .split { margin-top: 48px; display: grid; grid-template-columns: 1fr 1px 420px; gap: 40px; align-items: stretch; }
+  .colHead { display: flex; align-items: baseline; gap: 10px; padding-bottom: 14px; border-bottom: 2px solid var(--blue); }
+  .colHead.plain { border-bottom-color: var(--line2); }
+  .colWho { font-size: 17px; font-weight: 800; letter-spacing: -.01em; color: var(--blue); }
+  .colHead.plain .colWho { color: var(--mute); }
+  .colCount { font-size: 12.5px; font-weight: 700; color: var(--mute); letter-spacing: .04em; }
+
+  .cards { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .card { background: var(--kbg); border: 1px solid var(--kline); border-radius: 12px; padding: 18px 19px; }
+  .cardNo {
+    display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 999px;
+    background: var(--blue); color: #fff; font-size: 11.5px; font-weight: 800;
+  }
+  .cardTitle { margin-top: 11px; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; }
+  .cardBody { margin-top: 7px; font-size: 14px; line-height: 1.65; color: var(--body); }
+
+  .rule { background: var(--line); }
+
+  /* 당신의 일 — 한 장뿐이고 크다. 옆의 넉 장과 대비되어 읽힌다. */
+  .you { display: flex; flex-direction: column; }
+  .youCard {
+    margin-top: 18px; flex: 1;
+    border: 1px solid var(--line2); border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 32px 28px;
+  }
+  .youVerb { font-size: 52px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+  .youNote { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--body); max-width: 30ch; }
+  .youOnly { margin-top: 22px; font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--mute); }
+
+  .foot {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: var(--blue); color: #fff; border-radius: 999px;
+    padding: 13px 24px; font-size: 15px; font-weight: 700;
+  }
+  .mark { font-size: 15px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; }
+  .mark span { color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <p class="eyebrow" id="eyebrow"></p>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+
+  <div class="split">
+    <div>
+      <div class="colHead">
+        <span class="colWho">klink</span>
+        <span class="colCount" id="weLabel"></span>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="you">
+      <div class="colHead plain">
+        <span class="colWho" id="youWho"></span>
+        <span class="colCount" id="youLabel"></span>
+      </div>
+      <div class="youCard">
+        <p class="youVerb" id="youVerb"></p>
+        <p class="youNote" id="youNote"></p>
+        <p class="youOnly" id="youOnly"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="cta" id="cta"></span>
+    <p class="mark">B&amp;Y <span>k-link</span></p>
+  </div>
+</div>
+
+<script>
+/* 문구는 src/app/i18n.ts의 biz* 키를 그대로 옮긴 것이다. 새로 쓰지 않는다. */
+const DATA = {
+  th: {
+    eyebrow: "สำหรับผู้จัดจำหน่ายและร้านค้า",
+    title: "ความเสี่ยงเรื่องนำเข้า\nเรารับไว้เอง",
+    sub: "คุณไม่ต้องยุ่งกับเอกสารนำเข้าหรือการขึ้นทะเบียน หน้าที่ของคุณคือขาย",
+    weLabel: "รับไว้ 4 อย่าง",
+    cards: [
+      ["นิติบุคคลไทย", "เราเป็นผู้นำเข้าเอง (Importer of Record) ไม่ใช่คนกลางที่ฝากคนอื่นนำเข้า"],
+      ["ขึ้นทะเบียน อย. เอง", "ยื่นขึ้นทะเบียนกับ อย. ไทยในนามบริษัทเราโดยตรง ไม่ผ่านตัวแทน"],
+      ["คาแรกเตอร์เป็นของเรา", "ป้ายหน้าร้าน สติกเกอร์ และสื่อออนไลน์ ใช้ได้ทันทีโดยไม่มีค่าลิขสิทธิ์"],
+      ["ติดต่อโรงงานเกาหลีโดยตรง", "คัดและสั่งจากผู้ผลิตเกาหลีเอง ไม่ผ่านพ่อค้าคนกลาง"],
+    ],
+    youWho: "คุณ",
+    youLabel: "หน้าที่เดียว",
+    youVerb: "ขาย",
+    youNote: "ไม่ต้องยุ่งกับเอกสารนำเข้า ไม่ต้องขึ้นทะเบียน",
+    youOnly: "เท่านั้น",
+    cta: "ขอข้อมูลและเงื่อนไข",
+  },
+  en: {
+    eyebrow: "For distributors and retailers",
+    title: "We carry\nthe import risk",
+    sub: "No import paperwork, no registration burden on your side. You sell; we handle the rest.",
+    weLabel: "FOUR THINGS WE CARRY",
+    cards: [
+      ["Thai-registered entity", "We are the Importer of Record ourselves — not a broker borrowing someone else's licence."],
+      ["Thai FDA filing in-house", "Registered under our own company name, without an agency in between."],
+      ["We own the characters", "Shelf POP, stickers and online assets, yours to use at no licence cost."],
+      ["Direct from Korean makers", "We select and order straight from the manufacturer, with no middlemen."],
+    ],
+    youWho: "You",
+    youLabel: "ONE JOB",
+    youVerb: "Sell",
+    youNote: "No import paperwork. No registration burden.",
+    youOnly: "THAT IS ALL",
+    cta: "Request terms",
+  },
+};
+
+const lang = (location.hash.replace("#", "") || "en");
+const d = DATA[lang];
+document.body.className = lang;
+document.documentElement.lang = lang;
+
+eyebrow.textContent = d.eyebrow;
+title.textContent = d.title;
+sub.textContent = d.sub;
+weLabel.textContent = d.weLabel;
+youWho.textContent = d.youWho;
+youLabel.textContent = d.youLabel;
+youVerb.textContent = d.youVerb;
+youNote.textContent = d.youNote;
+youOnly.textContent = d.youOnly;
+cta.textContent = d.cta;
+
+cards.innerHTML = d.cards.map(([t, b], i) => `
+  <div class="card">
+    <span class="cardNo">${i + 1}</span>
+    <p class="cardTitle">${t}</p>
+    <p class="cardBody">${b}</p>
+  </div>`).join("");
+</script>
+</body>
+</html>

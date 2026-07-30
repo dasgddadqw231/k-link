@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  /* 랜딩과 같은 토큰만 쓴다 — 이 그림이 사이트에서 떨어져 나온 것처럼 보이면 안 된다. */
+  :root {
+    --blue: #0C3F80;
+    --ink: #12161F;
+    --body: #5A6373;
+    --mute: #8B94A3;
+    --line: #E3E7ED;
+    --line2: #D7DCE4;
+    --kbg: #EDF2F9;
+    --kline: #B3C6DE;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Pretendard Variable", Pretendard, sans-serif;
+    background: #fff;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    /* 한글은 단어 안에서 끊지 않는다. 없으면 "태국"이 "태/국"으로 갈라진다. */
+    word-break: keep-all;
+    line-break: strict;
+  }
+  .sheet { width: 1600px; padding: 72px 80px 56px; }
+
+  .eyebrow { font-size: 13px; font-weight: 700; color: var(--blue); letter-spacing: .04em; }
+  h1 { margin-top: 13px; font-size: 43px; font-weight: 800; letter-spacing: -.025em; line-height: 1.2; }
+  .sub { margin-top: 15px; font-size: 16.5px; line-height: 1.7; color: var(--body); max-width: 60ch; }
+
+  /* 결론 두 줄. 그림을 안 읽어도 이것만 읽으면 되게 맨 위에 둔다. */
+  .claim { margin-top: 38px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .claim > div { border-top: 2px solid var(--line2); padding-top: 17px; }
+  .claim > div.k { border-top-color: var(--blue); }
+  .who { font-size: 12.5px; font-weight: 700; color: var(--mute); letter-spacing: .06em; }
+  .claim .k .who { color: var(--blue); }
+  .what { margin-top: 9px; font-size: 24px; font-weight: 700; letter-spacing: -.02em; line-height: 1.45; color: var(--body); }
+  .claim .k .what { color: var(--ink); }
+
+  /* 본체 — 4단계 × 2레인. 열 구성: [축][01][02][03][04] */
+  .row { display: grid; grid-template-columns: 122px repeat(4, 1fr); column-gap: 16px; }
+
+  .head { margin-top: 50px; }
+  .head .cell { padding-bottom: 13px; border-bottom: 1px solid var(--line2); }
+  .axis { font-size: 12px; font-weight: 700; color: var(--mute); letter-spacing: .06em; }
+  .no { font-size: 12px; font-weight: 700; color: var(--blue); letter-spacing: .08em; }
+  .stage { margin-top: 6px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+
+  .laneLabel { display: flex; flex-direction: column; justify-content: center; padding-left: 13px; position: relative; }
+  /* 레인마다 왼쪽에 색 레일. 어느 줄이 누구 것인지 눈으로 먼저 잡힌다. */
+  .laneLabel::before {
+    content: ""; position: absolute; left: 0; top: 16px; bottom: 16px; width: 3px; border-radius: 2px;
+    background: var(--line2);
+  }
+  .k .laneLabel::before { background: var(--blue); }
+  .flag { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; color: var(--mute); }
+  .laneWho { margin-top: 4px; font-size: 16px; font-weight: 800; letter-spacing: -.015em; }
+  .k .laneWho { color: var(--blue); }
+
+  .box {
+    margin: 13px 0; padding: 16px 17px; border-radius: 12px;
+    font-size: 14.5px; line-height: 1.6; min-height: 84px;
+    display: flex; align-items: center;
+  }
+  /* 브랜드는 흰 바탕, klink는 파란 바탕. 둘을 확실히 다른 것으로 본다. */
+  .b .box { background: #fff; border: 1px solid var(--line); color: var(--body); }
+  .k .box { background: var(--kbg); border: 1px solid var(--kline); color: var(--ink); font-weight: 500; }
+  .b .box.none {
+    border: 1px dashed var(--line2); background: #FCFCFD;
+    color: var(--mute); font-size: 13.5px; justify-content: center; text-align: center;
+  }
+
+  /* 손이 바뀌는 지점만 표시한다. 03에서 브랜드가 내보내고 klink가 받는다. */
+  .bridge { margin: 2px 0 -2px; }
+  .bridge .at3 { grid-column: 4; display: flex; align-items: center; gap: 10px; }
+  .bridge .at3 .chev { color: var(--blue); font-size: 15px; line-height: 1; font-weight: 900; }
+  .bridge .at3 .lbl { font-size: 12.5px; font-weight: 700; color: var(--blue); }
+  .bridge .at3 .rule { flex: 1; height: 1px; background: var(--kline); }
+
+  .foot {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+  }
+  .note { font-size: 14.5px; line-height: 1.75; color: var(--body); max-width: 76ch; }
+  .note b { color: var(--ink); font-weight: 700; }
+  .mark { font-size: 15px; font-weight: 800; letter-spacing: -.01em; white-space: nowrap; }
+  .mark span { color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <p class="eyebrow">역할 분담</p>
+  <h1>브랜드가 하는 일과 klink가 하는 일</h1>
+  <p class="sub">
+    태국에서 식품 수입 허가는 회사가 아니라 태국 내 주소에 붙습니다. 그래서 등록·통관·유통은
+    태국 법인이 맡아야 하고, 브랜드는 한국에서 하던 일을 그대로 하시면 됩니다.
+  </p>
+
+  <div class="claim">
+    <div>
+      <p class="who">브랜드</p>
+      <p class="what">한국에서 제조하고 출고합니다</p>
+    </div>
+    <div class="k">
+      <p class="who">klink</p>
+      <p class="what">태국에서 등록하고, 통관하고, 매대에 올립니다</p>
+    </div>
+  </div>
+
+  <div class="row head">
+    <div class="cell"><p class="axis">단계</p></div>
+    <div class="cell"><p class="no">01</p><p class="stage">제품 검토</p></div>
+    <div class="cell"><p class="no">02</p><p class="stage">태국 FDA 등록</p></div>
+    <div class="cell"><p class="no">03</p><p class="stage">수입 · 통관</p></div>
+    <div class="cell"><p class="no">04</p><p class="stage">유통 · 판매</p></div>
+  </div>
+
+  <div class="row b">
+    <div class="laneLabel">
+      <p class="flag">대한민국</p>
+      <p class="laneWho">브랜드</p>
+    </div>
+    <div class="box">샘플, 성분표, 제조공정서</div>
+    <div class="box">제조사 발급 서류 협조</div>
+    <div class="box">한국에서 출고</div>
+    <div class="box none">브랜드가 할 일 없음</div>
+  </div>
+
+  <div class="row bridge">
+    <div></div>
+    <div class="at3">
+      <span class="chev">&#8595;</span>
+      <span class="lbl">브랜드의 일은 출고에서 끝납니다</span>
+      <span class="rule"></span>
+    </div>
+  </div>
+
+  <div class="row k">
+    <div class="laneLabel">
+      <p class="flag">태국</p>
+      <p class="laneWho">klink</p>
+    </div>
+    <div class="box">태국 시장 적합성과<br />등록 가능 여부 확인</div>
+    <div class="box">저희 법인 명의로 신고,<br />라벨 사전승인</div>
+    <div class="box">수입자로서 통관,<br />태국어 라벨 부착</div>
+    <div class="box">도매·리테일 입점,<br />캐릭터 기반 매대 마케팅</div>
+  </div>
+
+  <div class="foot">
+    <p class="note">
+      인허가 주체가 klink이므로 <b>통관에서 막힐 위험을 브랜드가 지지 않습니다.</b>
+      한국 내 제조와 품질은 브랜드 몫입니다.
+    </p>
+    <p class="mark">B&amp;Y <span>k-link</span></p>
+  </div>
+</div>
+</body>
+</html>
