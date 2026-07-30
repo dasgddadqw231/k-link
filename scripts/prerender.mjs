@@ -78,15 +78,18 @@ for (const lang of ["th", "en", "ko"]) {
 }
 
 /**
- * 보드는 색인 대상이 아니라 프리렌더하지 않는다. 다만 빈 셸을 따로 두지 않으면
- * dist/index.html(태국어 랜딩)을 받아 보드가 뜨기 전에 랜딩이 한 번 번쩍인다.
+ * 내부 도구는 색인 대상이 아니라 프리렌더하지 않는다. 다만 빈 셸을 따로 두지
+ * 않으면 dist/index.html(태국어 랜딩)을 받아, 도구가 뜨기 전에 랜딩이 한 번
+ * 번쩍인다.
  */
-mkdirSync(resolve(dist, "board"), { recursive: true });
-writeFileSync(
-  resolve(dist, "board/index.html"),
-  template.replace(
-    "<title>",
-    '<meta name="robots" content="noindex, nofollow" />\n    <title>',
-  ),
-);
-console.log("board shell (noindex, 프리렌더 없음)");
+for (const route of ["board", "admin"]) {
+  mkdirSync(resolve(dist, route), { recursive: true });
+  writeFileSync(
+    resolve(dist, `${route}/index.html`),
+    template.replace(
+      "<title>",
+      '<meta name="robots" content="noindex, nofollow" />\n    <title>',
+    ),
+  );
+  console.log(`${route} shell (noindex, 프리렌더 없음)`);
+}

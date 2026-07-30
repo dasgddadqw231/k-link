@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import Landing from "./pages/Landing";
 import BoardApp from "./board/BoardApp";
+import AdminApp from "./admin/AdminApp";
 import LangRedirect from "./LangRedirect";
 
 /**
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/en" element={<Landing lang="en" />} />
         <Route path="/ko" element={<Landing lang="ko" />} />
         <Route path="/board" element={<BoardApp />} />
+        <Route path="/admin" element={<AdminApp />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

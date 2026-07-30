@@ -13,6 +13,10 @@
       "destination": "/board/index.html"
     },
     {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
       "source": "/((?!assets/|brands/).*)",
       "destination": "/index.html"
     }
@@ -20,6 +24,15 @@
   "headers": [
     {
       "source": "/board",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
       "headers": [
         {
           "key": "X-Robots-Tag",
