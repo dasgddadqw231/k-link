@@ -49,10 +49,9 @@ export const t = {
 
     lineLabel: "สำหรับผู้บริโภค",
     lineTitle: "รู้ก่อน ชิมก่อน",
-    lineBody: "เพิ่มเพื่อนใน LINE วันนี้ แล้วรับสามอย่างนี้",
+    lineBody: "เพิ่มเพื่อนใน LINE วันนี้ แล้วรับสองอย่างนี้",
     linePerk1: "รู้วันวางจำหน่ายและจุดจำหน่ายก่อนใคร",
     linePerk2: "ได้รับเชิญร่วมงานชิมสินค้า",
-    linePerk3: "ดาวน์โหลดสติกเกอร์และวอลเปเปอร์คาแรกเตอร์",
     lineCta: "เพิ่มเพื่อนใน LINE",
     lineMissing: "ยังไม่ได้ตั้งค่าลิงก์ LINE",
 
@@ -65,8 +64,8 @@ export const t = {
       "เราเป็นผู้นำเข้าเอง (Importer of Record) ไม่ใช่คนกลางที่ฝากคนอื่นนำเข้า",
     biz2Title: "ขึ้นทะเบียน อย. เอง",
     biz2Body: "ยื่นขึ้นทะเบียนกับ อย. ไทยในนามบริษัทเราโดยตรง ไม่ผ่านตัวแทน",
-    biz3Title: "คาแรกเตอร์เป็นของเรา",
-    biz3Body: "ป้ายหน้าร้าน สติกเกอร์ และสื่อออนไลน์ ใช้ได้ทันทีโดยไม่มีค่าลิขสิทธิ์",
+    biz3Title: "เราทำอินฟลูเอนเซอร์ซีดดิ้งเอง",
+    biz3Body: "เราส่งสินค้าให้ครีเอเตอร์ไทยเอง คุณไม่ต้องจัดการเรื่องการตลาดเอง",
     biz4Title: "ติดต่อโรงงานเกาหลีโดยตรง",
     biz4Body: "คัดและสั่งจากผู้ผลิตเกาหลีเอง ไม่ผ่านพ่อค้าคนกลาง",
     /* 도매(Somchai)와 셀렉트숍(Nut) 모두가 가장 먼저 묻는 것. stp.md에 둘 다 적혀 있다. */
@@ -121,10 +120,9 @@ export const t = {
 
     lineLabel: "For shoppers",
     lineTitle: "Know it first,\ntaste it first",
-    lineBody: "Add us on LINE today and get three things",
+    lineBody: "Add us on LINE today and get two things",
     linePerk1: "Launch date and stockists, before anyone else",
     linePerk2: "Invitations to tasting events",
-    linePerk3: "Character stickers and wallpapers to download",
     lineCta: "Add us on LINE",
     lineMissing: "LINE link is not configured yet",
 
@@ -137,8 +135,8 @@ export const t = {
       "We are the Importer of Record ourselves — not a broker borrowing someone else's licence.",
     biz2Title: "Thai FDA filing in-house",
     biz2Body: "Registered under our own company name, without an agency in between.",
-    biz3Title: "We own the characters",
-    biz3Body: "Shelf POP, stickers and online assets, yours to use at no licence cost.",
+    biz3Title: "We run influencer seeding",
+    biz3Body: "We send product to Thai creators ourselves. Marketing is not something you have to arrange.",
     biz4Title: "Direct from Korean makers",
     biz4Body: "We select and order straight from the manufacturer, with no middlemen.",
     biz5Title: "Small orders welcome",

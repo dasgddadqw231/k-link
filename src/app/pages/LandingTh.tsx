@@ -6,7 +6,7 @@ import {
   Check,
   Building2,
   FileCheck2,
-  Sparkles,
+  Megaphone,
   Factory,
   Search,
   PackageCheck,
@@ -80,13 +80,13 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
     },
   ];
 
-  const perks = [c.linePerk1, c.linePerk2, c.linePerk3];
+  const perks = [c.linePerk1, c.linePerk2];
 
   /** 유통 파트너가 계산기를 두드릴 근거. 전부 태국 법인이라서 가능한 것들이다. */
   const bizCards = [
     { Icon: Building2, title: c.biz1Title, body: c.biz1Body },
     { Icon: FileCheck2, title: c.biz2Title, body: c.biz2Body },
-    { Icon: Sparkles, title: c.biz3Title, body: c.biz3Body },
+    { Icon: Megaphone, title: c.biz3Title, body: c.biz3Body },
     { Icon: Factory, title: c.biz4Title, body: c.biz4Body },
     // 소량 발주. 도매와 셀렉트숍이 공통으로 가장 먼저 묻는 것인데 빠져 있었다.
     { Icon: PackageCheck, title: c.biz5Title, body: c.biz5Body },
