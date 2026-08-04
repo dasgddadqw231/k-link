@@ -23,6 +23,7 @@ import {
   Megaphone,
   Wallet,
   Store,
+  Route,
   LogOut,
   Lock,
   RefreshCw,
@@ -38,12 +39,13 @@ import {
 import { useAdminData, type AdminData } from "./data";
 import { BLUE, ToastHost, inputCls } from "./ui";
 import Dashboard from "./Dashboard";
+import Flow from "./Flow";
 import Brands from "./Brands";
 import Inventory from "./Inventory";
 import Influencers from "./Influencers";
 import Finance from "./Finance";
 
-export type Tab = "home" | "brand" | "stock" | "inf" | "fin";
+export type Tab = "home" | "flow" | "brand" | "stock" | "inf" | "fin";
 
 /** 탭 이동에 딸려 가는 맥락. 어디로 갈지와, 가서 무엇을 열지를 같이 넘긴다. */
 export interface Jump {
@@ -59,6 +61,8 @@ export interface Jump {
 
 const TABS = [
   { key: "home" as Tab, icon: Home, label: "navHome" as const },
+  // 홈 바로 옆에 둔다. 처음 들어온 사람이 숫자를 보기 전에 읽어야 할 화면이다.
+  { key: "flow" as Tab, icon: Route, label: "navFlow" as const },
   { key: "brand" as Tab, icon: Store, label: "navBrand" as const },
   { key: "stock" as Tab, icon: Package, label: "navStock" as const },
   { key: "inf" as Tab, icon: Megaphone, label: "navInf" as const },
@@ -365,6 +369,8 @@ function Shell({
             >
               {tab === "home" ? (
                 <Dashboard lang={lang} data={data} go={go} />
+              ) : tab === "flow" ? (
+                <Flow lang={lang} data={data} go={go} />
               ) : tab === "brand" ? (
                 <Brands lang={lang} data={data} />
               ) : tab === "stock" ? (
@@ -391,12 +397,16 @@ function Shell({
               key={key}
               onClick={() => go(key)}
               aria-current={tab === key ? "page" : undefined}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-bold transition-colors ${
+              className={`flex min-w-0 flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-bold transition-colors ${
                 tab === key ? "text-[#0C3F80]" : "text-neutral-400"
               }`}
             >
               <Icon size={20} strokeWidth={tab === key ? 2.4 : 2} />
-              {c[label]}
+              {/*
+                여섯 칸이라 한 칸이 좁다. 태국어 라벨은 길어서 그냥 두면 다음 줄로
+                넘어가 탭 높이가 들쭉날쭉해진다. 잘리더라도 줄은 하나로 지킨다.
+              */}
+              <span className="w-full truncate px-0.5 text-center">{c[label]}</span>
             </button>
           ))}
         </nav>

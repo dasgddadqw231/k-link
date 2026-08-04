@@ -36,6 +36,7 @@ const ko = {
   continue: "계속",
 
   navHome: "홈",
+  navFlow: "프로세스",
   navBrand: "브랜드사",
   navStock: "재고",
   navInf: "인플루언서",
@@ -273,6 +274,7 @@ const th: AdminDict = {
   continue: "ดำเนินการต่อ",
 
   navHome: "หน้าแรก",
+  navFlow: "ขั้นตอน",
   navBrand: "แบรนด์",
   navStock: "สต็อก",
   navInf: "อินฟลูเอนเซอร์",
@@ -507,6 +509,7 @@ const en: AdminDict = {
   continue: "Continue",
 
   navHome: "Home",
+  navFlow: "Process",
   navBrand: "Brands",
   navStock: "Stock",
   navInf: "Influencers",
