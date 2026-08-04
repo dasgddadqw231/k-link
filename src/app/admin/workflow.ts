@@ -116,6 +116,12 @@ export interface Stage {
   takes: T;
   gate: T;
   risk: T;
+  /**
+   * 규정이 아니라 실무에서 돈과 시간이 새는 자리. risk 는 그 단계에서 가장 크게
+   * 터지는 것 하나를 문장으로 적고, 여기는 포워더·관세사가 체크리스트로 훑는
+   * 항목들을 짧게 나열한다. 둘을 섞으면 제일 중요한 경고가 목록에 묻힌다.
+   */
+  watch?: T[];
   lanes: Lanes;
   /** 어느 규정·기관에 근거한 단계인지. 아래 SOURCES와 짝이다. */
   basis: T;
@@ -227,6 +233,14 @@ export const STAGES: Stage[] = [
           en: "Set the HS code to establish the duty rate and whether excise (the sugar tax, for drinks) applies",
         },
       },
+      {
+        actor: "kr",
+        text: {
+          ko: "분류가 애매하면 세관에 품목분류 사전심사를 넣어 번호를 확정한다",
+          th: "หากจัดประเภทไม่ชัดเจน ให้ยื่นขอคำวินิจฉัยพิกัดล่วงหน้ากับศุลกากรเพื่อยืนยันรหัส",
+          en: "If the classification is ambiguous, file for an advance tariff ruling with customs to lock the code",
+        },
+      },
     ],
     docs: [
       { ko: "성분 배합표 (%)", th: "สูตรส่วนผสม (%)", en: "Ingredient formula (%)" },
@@ -250,6 +264,18 @@ export const STAGES: Stage[] = [
       th: "ถ้าสูตรไม่ระบุเป็น % จะตัดสินไม่ได้เลย และถ้าจัดกลุ่มผิด อีกสองเดือนต้องเริ่มใหม่ทั้งหมด สำหรับเครื่องดื่ม ถ้าน้ำตาลเกิน 6 กรัมต่อ 100 มล. จะมีภาษีความหวาน ทำให้ต้นทุนเปลี่ยน จึงควรคำนวณตั้งแต่ขั้นนี้",
       en: "Without percentages in the formula there is nothing to judge. Misplace the group and you restart two months later. For drinks, sugar above 6 g per 100 ml triggers the sugar tax and changes the landed cost — work it out here.",
     },
+    watch: [
+      {
+        ko: "HS 코드는 나중에 바꾸면 지난 신고까지 다시 봐야 한다. 애매하면 사전심사로 확정",
+        th: "การแก้พิกัดภายหลังทำให้ต้องย้อนดูใบขนเดิมทั้งหมด ถ้าไม่ชัดเจนให้ยืนยันด้วยคำวินิจฉัยล่วงหน้า",
+        en: "Changing the HS code later drags every past declaration back into review — lock it with an advance ruling if unsure",
+      },
+      {
+        ko: "관세는 Form AK가 있느냐로 갈린다. 원산지 기준을 이 단계에서 같이 본다",
+        th: "อัตราอากรขึ้นกับว่ามี Form AK หรือไม่ จึงควรดูเกณฑ์ถิ่นกำเนิดตั้งแต่ขั้นนี้",
+        en: "Duty depends on whether Form AK exists, so check the origin rule at this stage too",
+      },
+    ],
     lanes: {
       goods: { ko: "샘플만 이동", th: "เคลื่อนเฉพาะตัวอย่าง", en: "Samples only" },
       paper: { ko: "성분표 · 공정서 · 성적서", th: "สูตร · กรรมวิธี · ผลตรวจ", en: "Formula, process, lab report" },
@@ -303,16 +329,25 @@ export const STAGES: Stage[] = [
         },
       },
       {
+        actor: "kr",
+        text: {
+          ko: "인코텀즈(예: FOB 부산 / CIF 방콕)와 결제 조건·결제 통화를 정한다",
+          th: "กำหนดอินโคเทอมส์ (เช่น FOB ปูซาน / CIF กรุงเทพฯ) เงื่อนไขการชำระเงิน และสกุลเงิน",
+          en: "Fix the Incoterm (e.g. FOB Busan / CIF Bangkok), the payment terms and the currency",
+        },
+      },
+      {
         actor: "th",
         text: {
-          ko: "등록 명의와 계약 종료 시 등록번호 처리를 조항으로 넣는다",
-          th: "ใส่ข้อสัญญาเรื่องชื่อผู้ถือทะเบียน และการจัดการเลขทะเบียนเมื่อสัญญาสิ้นสุด",
-          en: "Add clauses on who holds the registration and what happens to it at termination",
+          ko: "등록 명의와 계약 종료 시 등록번호 처리, 원산지 사후검증 책임 분담을 조항으로 넣는다",
+          th: "ใส่ข้อสัญญาเรื่องชื่อผู้ถือทะเบียน การจัดการเลขทะเบียนเมื่อสัญญาสิ้นสุด และการแบ่งความรับผิดกรณีถูกตรวจสอบถิ่นกำเนิดย้อนหลัง",
+          en: "Add clauses on who holds the registration, what happens to it at termination, and who carries an origin-verification claw-back",
         },
       },
     ],
     docs: [
       { ko: "계약서", th: "สัญญา", en: "Contract" },
+      { ko: "가격·결제 조건 (인코텀즈)", th: "เงื่อนไขราคาและการชำระเงิน (อินโคเทอมส์)", en: "Price and payment terms (Incoterms)" },
       { ko: "사업자등록증", th: "หนังสือรับรองบริษัท", en: "Business registration" },
       { ko: "제조사 정보", th: "ข้อมูลโรงงานผู้ผลิต", en: "Manufacturer details" },
     ],
@@ -327,14 +362,36 @@ export const STAGES: Stage[] = [
       th: "ถ้าไม่ระบุขอบเขตสิทธิ์และยอดสั่งขั้นต่ำ จะมีข้อพิพาทแน่นอนในภายหลัง และเนื่องจากเลขทะเบียนอยู่ในชื่อผู้นำเข้า เมื่อสัญญาสิ้นสุดแบรนด์จะนำเลขนั้นไปไม่ได้ ถ้าไม่บอกกันตั้งแต่ตอนทำสัญญา จะกลายเป็นปัญหาตอนเลิกสัญญา",
       en: "Leaving exclusivity and minimum order unwritten guarantees a dispute later. The registration sits in the importer's name, so the brand cannot take it along when the contract ends — say so at signing or it becomes the fight at termination.",
     },
+    watch: [
+      {
+        ko: "인코텀즈를 안 정하면 운임·보험을 누가 내는지, 물건이 어디서부터 누구 위험인지가 안 정해진다",
+        th: "ถ้าไม่กำหนดอินโคเทอมส์ จะไม่ชัดว่าใครจ่ายค่าระวางและประกัน และความเสี่ยงในสินค้าโอนที่จุดใด",
+        en: "Without an Incoterm, nobody has agreed who pays freight and insurance or where risk in the goods passes",
+      },
+      {
+        ko: "결제 통화를 원·바트·달러 중 무엇으로 하느냐가 곧 환위험을 누가 지느냐다",
+        th: "การเลือกสกุลเงินระหว่างวอน บาท หรือดอลลาร์ คือการตัดสินว่าใครรับความเสี่ยงอัตราแลกเปลี่ยน",
+        en: "Choosing won, baht or dollar as the settlement currency is the same as choosing who carries the FX risk",
+      },
+      {
+        ko: "FTA 특혜세율은 수입자가 신청한다. 사후검증에서 원산지가 부인되면 태국 세관은 klink에 추징하는데, 증빙은 브랜드가 갖고 있다",
+        th: "อัตรา FTA ผู้นำเข้าเป็นผู้ขอใช้ หากถูกตรวจสอบย้อนหลังแล้วถิ่นกำเนิดไม่ผ่าน ศุลกากรไทยจะเรียกเก็บจาก klink ทั้งที่หลักฐานอยู่กับแบรนด์",
+        en: "The FTA rate is claimed by the importer, so if origin fails a later verification Thai customs bills klink — while the evidence sits with the brand",
+      },
+      {
+        ko: "원산지 증빙은 수입자·수출자·생산자 모두 5년 보관 의무가 있다",
+        th: "หลักฐานถิ่นกำเนิดต้องเก็บไว้ 5 ปี ทั้งผู้นำเข้า ผู้ส่งออก และผู้ผลิต",
+        en: "Origin evidence must be kept for five years by importer, exporter and producer alike",
+      },
+    ],
     lanes: {
-      paper: { ko: "계약서 · 사업자등록증", th: "สัญญา · หนังสือรับรองบริษัท", en: "Contract, business registration" },
-      money: { ko: "수수료 · 월 피 조건 확정", th: "สรุปคอมมิชชั่นและค่ารายเดือน", en: "Commission and monthly fee fixed" },
+      paper: { ko: "계약서 · 인코텀즈 · 결제 조건", th: "สัญญา · อินโคเทอมส์ · เงื่อนไขชำระเงิน", en: "Contract, Incoterms, payment terms" },
+      money: { ko: "수수료 · 월 피 · 결제 통화 확정", th: "สรุปคอมมิชชั่น ค่ารายเดือน และสกุลเงิน", en: "Commission, monthly fee and currency fixed" },
     },
     basis: {
-      ko: "규정이 아니라 상거래 조건 — 등록이 수입자 명의로 나오는 구조에서 따라온다",
-      th: "ไม่ใช่ข้อกฎหมาย แต่เป็นเงื่อนไขทางการค้า ซึ่งมาจากโครงสร้างที่ทะเบียนออกในชื่อผู้นำเข้า",
-      en: "Not a regulation but a commercial term, following from registration being held by the importer",
+      ko: "인코텀즈 2020 · FTA 원산지증빙 5년 보관 의무와 사후검증 제도 · 등록이 수입자 명의로 나오는 구조",
+      th: "อินโคเทอมส์ 2020 · หน้าที่เก็บหลักฐานถิ่นกำเนิด 5 ปีและระบบตรวจสอบย้อนหลัง · โครงสร้างที่ทะเบียนออกในชื่อผู้นำเข้า",
+      en: "Incoterms 2020 · the five-year origin record-keeping duty and post-clearance verification · registration being held by the importer",
     },
     record: {
       tab: "brand",
@@ -543,11 +600,19 @@ export const STAGES: Stage[] = [
         },
       },
       {
+        actor: "kr",
+        text: {
+          ko: "출고 전에 실물을 검품한다 — 라벨 15개 표시 항목, 알레르기 표시, 로트·유통기한 인쇄",
+          th: "ตรวจสินค้าจริงก่อนส่งออก — ฉลากครบ 15 รายการ การแจ้งสารก่อภูมิแพ้ และการพิมพ์ล็อตกับวันหมดอายุ",
+          en: "Inspect the actual goods before they leave — the 15 label items, the allergen statement, and the printed lot and expiry",
+        },
+      },
+      {
         actor: "th",
         text: {
-          ko: "라벨 15개 표시 항목과 알레르기 표시를 실물로 확인한다",
-          th: "ตรวจฉลากจริงว่าครบ 15 รายการและมีการแจ้งสารก่อภูมิแพ้",
-          en: "Check the physical label against the 15 required items and the allergen list",
+          ko: "검품 사진을 승인 도안과 대조하고, 남은 유통기한이 채널 요구를 넘는지 본다",
+          th: "เทียบภาพจากการตรวจกับอาร์ตเวิร์กที่อนุมัติ และดูว่าอายุสินค้าที่เหลือผ่านเกณฑ์ของช่องทางขายหรือไม่",
+          en: "Compare the inspection photos against the approved artwork and check the remaining shelf life against what the channel demands",
         },
       },
     ],
@@ -555,6 +620,7 @@ export const STAGES: Stage[] = [
       { ko: "발주서 (PO)", th: "ใบสั่งซื้อ (PO)", en: "Purchase order (PO)" },
       { ko: "승인된 라벨 도안", th: "อาร์ตเวิร์กฉลากที่อนุมัติแล้ว", en: "Approved label artwork" },
       { ko: "로트 · 유통기한 표기안", th: "แบบระบุล็อตและวันหมดอายุ", en: "Lot and expiry marking plan" },
+      { ko: "검품 사진 · 검품 보고", th: "ภาพและรายงานการตรวจสินค้า", en: "Inspection photos and report" },
     ],
     takes: { ko: "생산 2~4주", th: "ผลิต 2–4 สัปดาห์", en: "2–4 weeks of production" },
     gate: {
@@ -567,6 +633,23 @@ export const STAGES: Stage[] = [
       th: "ระยะผ่อนผันของประกาศฉลากฉบับที่ 450 สิ้นสุดในเดือนกรกฎาคม 2569 แม้ยังมีอาร์ตเวิร์กเดิมค้างอยู่ในคลัง ก็ใช้ขายไม่ได้แล้ว และมีการเพิ่มหอยและหมึกเข้าในรายการสารก่อภูมิแพ้ จึงห้ามใช้ข้อความเดิม",
       en: "The grace period under labelling Notification 450 ended in July 2026. Old artwork sitting in a warehouse can no longer be sold. Shellfish and squid were added to the allergen list, so do not reuse the old wording.",
     },
+    watch: [
+      {
+        ko: "검품은 한국에서 한다. 배에 실린 뒤에 발견한 라벨 오류는 고칠 방법이 없다",
+        th: "การตรวจสินค้าทำในเกาหลี ความผิดพลาดของฉลากที่พบหลังขึ้นเรือแล้วแก้ไม่ได้",
+        en: "Inspection happens in Korea — a label error found after loading cannot be fixed",
+      },
+      {
+        ko: "리테일은 입고 시 남은 유통기한을 계약으로 요구한다. 규정이 아니라 거래 조건이라 채널마다 다르다",
+        th: "ร้านค้าปลีกกำหนดอายุสินค้าคงเหลือ ณ วันรับของไว้ในสัญญา ไม่ใช่ข้อกฎหมายแต่เป็นเงื่อนไขการค้า จึงต่างกันไปตามช่องทาง",
+        en: "Retailers write a minimum remaining shelf life into the trade terms — a commercial condition, not a rule, so it differs by channel",
+      },
+      {
+        ko: "생산일이 이르면 도착 시점의 남은 기간이 줄어든다. 생산·선적 일정을 붙여서 잡는다",
+        th: "ยิ่งผลิตเร็ว อายุที่เหลือ ณ วันของถึงยิ่งสั้น จึงควรวางแผนวันผลิตกับวันส่งให้ชิดกัน",
+        en: "Producing early eats the shelf life left on arrival — keep the production and sailing dates close together",
+      },
+    ],
     lanes: {
       goods: { ko: "한국 공장에서 생산·포장", th: "ผลิตและบรรจุที่โรงงานในเกาหลี", en: "Produced and packed in Korea" },
       paper: { ko: "발주서 · 승인 라벨 도안", th: "ใบสั่งซื้อ · อาร์ตเวิร์กที่อนุมัติ", en: "PO, approved artwork" },
@@ -614,9 +697,25 @@ export const STAGES: Stage[] = [
       {
         actor: "kr",
         text: {
-          ko: "수출신고를 하고, 선적 완료 전에 원산지증명서(Form AK)를 신청한다",
-          th: "ยื่นใบขนสินค้าขาออก และขอหนังสือรับรองถิ่นกำเนิด (Form AK) ก่อนการส่งออกจะเสร็จสิ้น",
-          en: "File the export declaration and apply for the certificate of origin (Form AK) before shipment completes",
+          ko: "수출신고를 한다. 수출신고필증이 부가세 영세율 증빙이자 관세환급 신청의 근거다",
+          th: "ยื่นใบขนสินค้าขาออก ซึ่งใบขนนี้เป็นหลักฐานภาษีมูลค่าเพิ่มอัตราศูนย์ และเป็นฐานในการขอคืนอากร",
+          en: "File the export declaration — the certificate is both the zero-rated VAT evidence and the basis for a duty refund claim",
+        },
+      },
+      {
+        actor: "kr",
+        text: {
+          ko: "선적 완료 전에 Form AK를 신청한다. 놓쳤으면 선적일로부터 1년 안에 소급발급을 받는다",
+          th: "ขอ Form AK ก่อนการส่งออกเสร็จสิ้น หากพลาดให้ขอออกย้อนหลังภายใน 1 ปีนับจากวันส่งออก",
+          en: "Apply for Form AK before shipment completes; if that is missed, obtain a retroactive one within a year of the shipment date",
+        },
+      },
+      {
+        actor: "kr",
+        text: {
+          ko: "인코텀즈에 맞춰 적하보험을 들고, 목재 팔레트를 쓰면 열처리 마크를 확인한다",
+          th: "ทำประกันภัยสินค้าตามอินโคเทอมส์ และหากใช้พาเลทไม้ให้ตรวจเครื่องหมายอบความร้อน",
+          en: "Take out cargo insurance per the Incoterm, and if wooden pallets are used, check the heat-treatment mark",
         },
       },
       {
@@ -634,12 +733,13 @@ export const STAGES: Stage[] = [
       { ko: "수출신고필증", th: "ใบขนสินค้าขาออก", en: "Export declaration certificate" },
       { ko: "원산지증명서 (Form AK)", th: "หนังสือรับรองถิ่นกำเนิด (Form AK)", en: "Certificate of origin (Form AK)" },
       { ko: "선하증권 (B/L) 또는 항공운송장 (AWB)", th: "ใบตราส่ง (B/L) หรือ (AWB)", en: "Bill of lading (B/L) or air waybill (AWB)" },
+      { ko: "적하보험증권", th: "กรมธรรม์ประกันภัยสินค้า", en: "Cargo insurance policy" },
       { ko: "수입 사전신고 (LPI)", th: "แจ้งนำเข้ารายเที่ยว (LPI)", en: "Per-shipment notification (LPI)" },
     ],
     takes: {
-      ko: "해상 7~10일 · 항공 2~3일. LPI는 도착 2~3일 전까지 올리고 확인에 1~2일",
-      th: "ทางเรือ 7–10 วัน · ทางอากาศ 2–3 วัน ส่วน LPI ต้องยื่นก่อนของถึง 2–3 วัน และใช้เวลาตรวจ 1–2 วัน",
-      en: "7–10 days by sea, 2–3 by air. File the LPI 2–3 days before arrival; verification takes 1–2 days",
+      ko: "FCL 해상 7~10일 · 항공 2~3일. LCL은 혼재와 분류가 붙어 창고까지 2~3주. LPI는 도착 2~3일 전까지 올리고 확인에 1~2일",
+      th: "FCL ทางเรือ 7–10 วัน · ทางอากาศ 2–3 วัน ส่วน LCL ต้องรวมเวลารวมตู้และแยกตู้ รวมถึงคลังราว 2–3 สัปดาห์ และ LPI ยื่นก่อนของถึง 2–3 วัน ใช้เวลาตรวจ 1–2 วัน",
+      en: "FCL: 7–10 days by sea, 2–3 by air. LCL adds consolidation and deconsolidation — 2–3 weeks to the warehouse. File the LPI 2–3 days before arrival; verification takes 1–2 days",
     },
     gate: {
       ko: "B/L(또는 AWB)을 받았고, Form AK가 발급됐고, LPI가 접수됐다",
@@ -651,22 +751,44 @@ export const STAGES: Stage[] = [
       th: "สินค้าที่นำเข้าวัตถุดิบมาแล้วเพียงบรรจุในเกาหลี อาจไม่ถือว่ามีถิ่นกำเนิดเกาหลี ต้องตรวจเกณฑ์มูลค่าเพิ่ม 40% หรือการเปลี่ยนพิกัดก่อน ถ้าไม่มี Form AK จะเสียอัตราปกติแทนอัตรา FTA และถ้าจำนวนในอินวอยซ์ต่างจากของจริงแม้ชิ้นเดียว พิธีการจะหยุดทันที",
       en: "A product whose inputs are imported and merely packed in Korea may not count as Korean origin — check the 40% value-content or tariff-change rule first. No Form AK means the general duty rate instead of the FTA rate. If the invoice count differs from the goods by even one unit, clearance stops.",
     },
+    watch: [
+      {
+        ko: "원본 B/L을 우편으로 보내면 배보다 늦게 도착해 물건을 못 찾는다. 서렌더나 해상화물운송장을 쓴다",
+        th: "ถ้าส่ง B/L ต้นฉบับทางไปรษณีย์ อาจถึงช้ากว่าเรือจนรับของไม่ได้ ให้ใช้เซอร์เรนเดอร์หรือ Sea Waybill แทน",
+        en: "An original B/L couriered separately can arrive after the vessel and block release — use a telex release or a sea waybill",
+      },
+      {
+        ko: "싱가포르·포트클랑을 거치면 직접운송원칙을 입증해야 FTA 세율을 받는다. 환적 경로가 적힌 서류를 챙긴다",
+        th: "หากผ่านสิงคโปร์หรือปอร์ตกลัง ต้องพิสูจน์หลักการขนส่งโดยตรงจึงจะได้อัตรา FTA ให้เก็บเอกสารที่ระบุเส้นทางถ่ายลำไว้",
+        en: "Routing via Singapore or Port Klang means proving direct consignment to keep the FTA rate — keep documents showing the transhipment route",
+      },
+      {
+        ko: "부산에서 방콕까지는 열대 항로다. 컨테이너 안이 뜨거워지고 결로가 생기니 건조제와 라이닝을 넣는다",
+        th: "เส้นทางปูซาน–กรุงเทพฯ ผ่านเขตร้อน ภายในตู้จะร้อนและเกิดหยดน้ำ จึงควรใส่สารดูดความชื้นและวัสดุกันชื้น",
+        en: "Busan to Bangkok is a tropical run — the box gets hot and sweats, so add desiccant and lining",
+      },
+      {
+        ko: "소량이면 LCL이 된다. 운임은 싸지만 혼재 대기와 도착지 CFS 비용이 붙는다",
+        th: "ปริมาณน้อยจะเป็น LCL ค่าระวางถูกกว่าแต่ต้องรอรวมตู้ และมีค่า CFS ที่ปลายทาง",
+        en: "Small volumes ship LCL — cheaper freight, but you wait for consolidation and pay CFS charges at destination",
+      },
+    ],
     lanes: {
       goods: { ko: "배·비행기 위 — 아직 재고 아님", th: "อยู่บนเรือหรือเครื่องบิน ยังไม่ใช่สต็อก", en: "On the vessel — not stock yet" },
       paper: { ko: "인보이스 · PL · Form AK · B/L · LPI", th: "อินวอยซ์ · PL · Form AK · B/L · LPI", en: "Invoice, PL, Form AK, B/L, LPI" },
-      money: { ko: "운임·보험 지출", th: "จ่ายค่าระวางและประกัน", en: "Freight and insurance paid" },
+      money: { ko: "운임·보험 지출 · 브랜드는 환급 신청", th: "จ่ายค่าระวางและประกัน · แบรนด์ยื่นขอคืนภาษี", en: "Freight and insurance paid; the brand files for refunds" },
     },
     basis: {
-      ko: "한-아세안 FTA 원산지 규정 · 태국 FDA 수입 사전신고(LPI) 제도",
-      th: "กฎถิ่นกำเนิดภายใต้ FTA อาเซียน–เกาหลี · ระบบแจ้งนำเข้ารายเที่ยว (LPI) ของ อย.",
-      en: "ASEAN–Korea FTA rules of origin · the Thai FDA per-shipment notification (LPI) system",
+      ko: "한-아세안 FTA 원산지 규정과 소급발급·직접운송원칙 · 태국 FDA 수입 사전신고(LPI) 제도 · 수출 부가세 영세율과 관세환급",
+      th: "กฎถิ่นกำเนิด FTA อาเซียน–เกาหลี รวมถึงการออกย้อนหลังและหลักการขนส่งโดยตรง · ระบบ LPI ของ อย. · ภาษีมูลค่าเพิ่มอัตราศูนย์และการคืนอากรของเกาหลี",
+      en: "ASEAN–Korea FTA origin rules including retroactive issuance and direct consignment · the Thai FDA LPI system · Korean zero-rated export VAT and duty drawback",
     },
     record: {
       tab: "fin",
       what: {
-        ko: "물류비를 지출로 적는다. 재고는 창고에 들어온 날 잡는다",
-        th: "บันทึกค่าขนส่งเป็นรายจ่าย ส่วนสต็อกรับเข้าวันที่ของเข้าคลังจริง",
-        en: "Book freight as an expense; stock is received on the day it reaches the warehouse",
+        ko: "물류비와 보험료를 지출로 적는다. 재고는 창고에 들어온 날 잡는다",
+        th: "บันทึกค่าขนส่งและค่าประกันเป็นรายจ่าย ส่วนสต็อกรับเข้าวันที่ของเข้าคลังจริง",
+        en: "Book freight and insurance as expenses; stock is received on the day it reaches the warehouse",
       },
     },
     handoff: true,
@@ -735,6 +857,23 @@ export const STAGES: Stage[] = [
       th: "อัตรา VAT 7% เป็นอัตราลดชั่วคราวถึง 30 กันยายน 2569 อัตราปกติคือ 10% จึงควรสะท้อนไว้ในต้นทุนตั้งแต่ตอนนี้ และถ้าไม่บันทึกล็อตกับวันหมดอายุ อีกไม่กี่เดือนจะหาสินค้าใกล้หมดอายุไม่เจอ ซึ่งเป็นจุดที่เงินรั่วมากที่สุดของสินค้านำเข้า",
       en: "The 7% VAT is a temporary rate running to 30 September 2026; the standard rate is 10% — build that into the cost model now. Skip the lot and expiry and there is no way to find near-expiry stock months later, which is where imported food loses the most money.",
     },
+    watch: [
+      {
+        ko: "무료 기간이 지나면 체선료·지체료가 하루 단위로 붙는다. 서류 하나 때문에 며칠 서면 그게 곧 비용이다",
+        th: "เมื่อพ้นระยะปลอดค่าใช้จ่าย ค่าเดมเมอร์เรจและค่าดีเทนชันจะคิดเป็นรายวัน ติดเพราะเอกสารใบเดียวไม่กี่วันก็กลายเป็นต้นทุนทันที",
+        en: "Once free time runs out, demurrage and detention accrue daily — a few days stuck over one document is a direct cost",
+      },
+      {
+        ko: "빨간선으로 빠지면 검사비와 샘플 시험비가 따로 나온다. 원가에 없던 항목이다",
+        th: "หากถูกจัดเข้าช่องแดง จะมีค่าตรวจและค่าทดสอบตัวอย่างเพิ่มต่างหาก ซึ่งไม่ได้อยู่ในต้นทุนที่คำนวณไว้",
+        en: "A red-line routing adds inspection and sample-testing fees that were never in the cost sheet",
+      },
+      {
+        ko: "관세·부가세 말고도 터미널 비용, 통관수수료, 내륙운송이 붙는다. 아래 원가 표에 다 적어 뒀다",
+        th: "นอกจากอากรและ VAT ยังมีค่าท่าเรือ ค่าดำเนินพิธีการ และค่าขนส่งในประเทศ ดูรายการทั้งหมดในตารางต้นทุนด้านล่าง",
+        en: "Beyond duty and VAT come terminal charges, brokerage and inland haulage — all of them are in the cost table above",
+      },
+    ],
     lanes: {
       goods: { ko: "항구 → 창고. 여기서부터 재고", th: "จากท่าเรือเข้าคลัง เริ่มนับเป็นสต็อกตรงนี้", en: "Port to warehouse — stock starts here" },
       paper: { ko: "수입신고서 · อย. 번호 · Form AK", th: "ใบขนสินค้าขาเข้า · เลข อย. · Form AK", en: "Import declaration, อย. number, Form AK" },
@@ -910,6 +1049,154 @@ export const STAGES: Stage[] = [
   },
 ];
 
+/**
+ * 창고에 물건이 놓일 때까지 붙는 돈.
+ *
+ * 초보자가 원가를 틀리는 방식은 늘 같다 — 물건값과 관세만 세고 나머지를 빠뜨린다.
+ * 그래서 관세·부가세보다 터미널 비용과 지체료가 더 크게 물릴 때가 있다. 순서대로
+ * 쌓아 보여 주고, 세금이 어느 금액을 기준으로 계산되는지를 중간에 끊어 표시한다.
+ */
+export interface CostGroup {
+  key: string;
+  title: T;
+  /** 이 묶음이 끝나는 자리에서 무슨 금액이 만들어지는지. */
+  makes?: T;
+  items: { label: T; note: T }[];
+}
+
+export const COST_GROUPS: CostGroup[] = [
+  {
+    key: "cif",
+    title: { ko: "물건이 배에 실릴 때까지", th: "จนกว่าสินค้าจะขึ้นเรือ", en: "Until the goods are loaded" },
+    makes: {
+      ko: "여기까지의 합이 CIF — 태국 세금은 이 금액부터 계산합니다",
+      th: "ผลรวมถึงจุดนี้คือ CIF ภาษีของไทยคำนวณจากยอดนี้",
+      en: "The total so far is CIF — Thai tax is computed from this figure",
+    },
+    items: [
+      {
+        label: { ko: "물건값", th: "ค่าสินค้า", en: "Goods value" },
+        note: {
+          ko: "브랜드에 지급하는 매입가",
+          th: "ราคาซื้อที่จ่ายให้แบรนด์",
+          en: "The purchase price paid to the brand",
+        },
+      },
+      {
+        label: { ko: "국내 운송 · 수출 통관", th: "ขนส่งในประเทศ · พิธีการส่งออก", en: "Inland haulage and export clearance" },
+        note: {
+          ko: "인코텀즈에 따라 브랜드가 낼 수도, klink가 낼 수도 있다",
+          th: "ขึ้นกับอินโคเทอมส์ว่าแบรนด์หรือ klink เป็นผู้จ่าย",
+          en: "Falls on the brand or on klink depending on the Incoterm",
+        },
+      },
+      {
+        label: { ko: "국제 운임", th: "ค่าระวางระหว่างประเทศ", en: "International freight" },
+        note: {
+          ko: "FCL이냐 LCL이냐, 해상이냐 항공이냐로 크게 갈린다",
+          th: "ต่างกันมากตาม FCL หรือ LCL และทางเรือหรือทางอากาศ",
+          en: "Varies widely between FCL and LCL, sea and air",
+        },
+      },
+      {
+        label: { ko: "적하보험", th: "ประกันภัยสินค้า", en: "Cargo insurance" },
+        note: {
+          ko: "안 들면 운송 중 손상은 전액 손실이다",
+          th: "ถ้าไม่ทำ ความเสียหายระหว่างขนส่งจะสูญทั้งหมด",
+          en: "Without it, transit damage is a total loss",
+        },
+      },
+    ],
+  },
+  {
+    key: "tax",
+    title: { ko: "세금", th: "ภาษี", en: "Taxes" },
+    makes: {
+      ko: "부가세는 CIF에 관세를 더한 금액에 붙습니다 — 운임을 빼고 계산하면 모자랍니다",
+      th: "VAT คิดจาก CIF บวกอากร หากคำนวณโดยไม่รวมค่าระวางจะขาด",
+      en: "VAT applies to CIF plus duty — leave freight out and the figure comes up short",
+    },
+    items: [
+      {
+        label: { ko: "관세", th: "อากรขาเข้า", en: "Import duty" },
+        note: {
+          ko: "HS 코드와 Form AK 유무로 정해진다",
+          th: "กำหนดตามพิกัดศุลกากรและการมี Form AK หรือไม่",
+          en: "Set by the HS code and whether Form AK is present",
+        },
+      },
+      {
+        label: { ko: "소비세 (해당 시)", th: "ภาษีสรรพสามิต (ถ้าเข้าข่าย)", en: "Excise (where it applies)" },
+        note: {
+          ko: "당분 든 음료의 설탕세 등. 품목이 걸리면 원가가 눈에 띄게 오른다",
+          th: "เช่น ภาษีความหวานของเครื่องดื่ม หากสินค้าเข้าข่าย ต้นทุนจะสูงขึ้นชัดเจน",
+          en: "Such as the sugar tax on drinks — where it bites, the cost moves visibly",
+        },
+      },
+      {
+        label: { ko: "부가세", th: "ภาษีมูลค่าเพิ่ม", en: "VAT" },
+        note: {
+          ko: "지금은 7%지만 2026년 9월 30일까지의 한시 세율이다",
+          th: "ขณะนี้ 7% แต่เป็นอัตราลดชั่วคราวถึง 30 กันยายน 2569",
+          en: "7% today, but that is a reduced rate running only to 30 September 2026",
+        },
+      },
+    ],
+  },
+  {
+    key: "local",
+    title: { ko: "태국에서 창고까지", th: "จากท่าเรือถึงคลังในไทย", en: "From the port to the warehouse" },
+    items: [
+      {
+        label: { ko: "터미널 · 서류 비용", th: "ค่าท่าเรือ · ค่าเอกสาร", en: "Terminal and documentation charges" },
+        note: {
+          ko: "THC, D/O, LCL이면 CFS 비용까지. 견적에서 가장 자주 빠진다",
+          th: "THC, D/O และหากเป็น LCL ยังมีค่า CFS ด้วย เป็นรายการที่ตกหล่นจากใบเสนอราคาบ่อยที่สุด",
+          en: "THC, D/O, and CFS if LCL — the line most often missing from a quote",
+        },
+      },
+      {
+        label: { ko: "통관 수수료", th: "ค่าดำเนินพิธีการศุลกากร", en: "Customs brokerage" },
+        note: {
+          ko: "관세사·포워더에 지급",
+          th: "จ่ายให้ตัวแทนออกของหรือผู้รับจัดการขนส่ง",
+          en: "Paid to the broker or forwarder",
+        },
+      },
+      {
+        label: { ko: "내륙운송 · 창고 입고", th: "ขนส่งในประเทศ · รับเข้าคลัง", en: "Inland transport and receiving" },
+        note: {
+          ko: "여기까지 와야 재고로 잡는다",
+          th: "ต้องถึงจุดนี้จึงนับเป็นสต็อก",
+          en: "Only at this point does it become stock",
+        },
+      },
+    ],
+  },
+  {
+    key: "delay",
+    title: { ko: "늦어지면 붙는 것", th: "ค่าใช้จ่ายเมื่อล่าช้า", en: "What delay adds" },
+    items: [
+      {
+        label: { ko: "체선료 · 지체료", th: "ค่าเดมเมอร์เรจ · ค่าดีเทนชัน", en: "Demurrage and detention" },
+        note: {
+          ko: "무료 기간이 지나면 하루 단위로 쌓인다. 서류 하나 때문에 서는 날이 곧 돈이다",
+          th: "เมื่อพ้นระยะปลอดค่าใช้จ่ายจะคิดเป็นรายวัน วันที่ติดเพราะเอกสารใบเดียวคือเงินที่เสียไป",
+          en: "Accrues daily once free time ends — a day stuck over one document is money",
+        },
+      },
+      {
+        label: { ko: "검사 · 시험 비용", th: "ค่าตรวจ · ค่าทดสอบ", en: "Inspection and testing" },
+        note: {
+          ko: "빨간선으로 빠지거나 샘플 검사를 받으면 나온다",
+          th: "เกิดขึ้นเมื่อถูกจัดเข้าช่องแดงหรือถูกสุ่มตรวจตัวอย่าง",
+          en: "Charged when the shipment goes red line or samples are pulled",
+        },
+      },
+    ],
+  },
+];
+
 export interface Term {
   term: T;
   body: T;
@@ -990,9 +1277,57 @@ export const TERMS: Term[] = [
   {
     term: { ko: "Form AK", th: "Form AK", en: "Form AK" },
     body: {
-      ko: "한-아세안 FTA 원산지증명서. 세관이나 대한상공회의소가 발급하고, 선적이 끝나기 전에 신청해야 합니다. 부가가치 40% 또는 세번변경 같은 원산지 기준을 만족해야 하므로, 원료를 수입해 담기만 한 제품은 인정이 안 될 수 있습니다.",
-      th: "หนังสือรับรองถิ่นกำเนิดภายใต้ FTA อาเซียน–เกาหลี ออกโดยศุลกากรหรือหอการค้าเกาหลี และต้องยื่นก่อนการส่งออกเสร็จสิ้น ต้องผ่านเกณฑ์ถิ่นกำเนิด เช่น มูลค่าเพิ่ม 40% หรือการเปลี่ยนพิกัด สินค้าที่นำเข้าวัตถุดิบมาเพียงบรรจุจึงอาจไม่ผ่าน",
-      en: "The ASEAN–Korea FTA certificate of origin, issued by customs or the Korea Chamber of Commerce and applied for before shipment completes. It requires an origin rule such as 40% value content or a tariff change, so goods made from imported inputs and merely packed may not qualify.",
+      ko: "한-아세안 FTA 원산지증명서. 세관이나 대한상공회의소가 발급하고, 선적이 끝나기 전에 신청하는 것이 원칙입니다. 놓쳤으면 선적일로부터 1년 안에 “ISSUED RETROACTIVELY” 표시로 소급발급을 받을 수 있습니다. 부가가치 40% 또는 세번변경 같은 원산지 기준을 만족해야 하고, 제3국을 거치면 직접운송원칙을 입증해야 특혜세율이 유지됩니다.",
+      th: "หนังสือรับรองถิ่นกำเนิดภายใต้ FTA อาเซียน–เกาหลี ออกโดยศุลกากรหรือหอการค้าเกาหลี โดยหลักต้องยื่นก่อนการส่งออกเสร็จสิ้น หากพลาดสามารถขอออกย้อนหลังภายใน 1 ปีนับจากวันส่งออก โดยระบุ “ISSUED RETROACTIVELY” ต้องผ่านเกณฑ์ถิ่นกำเนิด เช่น มูลค่าเพิ่ม 40% หรือการเปลี่ยนพิกัด และหากผ่านประเทศที่สามต้องพิสูจน์หลักการขนส่งโดยตรงจึงจะคงสิทธิ์อัตราพิเศษไว้ได้",
+      en: "The ASEAN–Korea FTA certificate of origin, issued by customs or the Korea Chamber of Commerce, normally applied for before shipment completes. If that is missed it can be issued retroactively within a year of the shipment date, marked “ISSUED RETROACTIVELY”. It requires an origin rule such as 40% value content or a tariff change, and if the cargo passes through a third country, direct consignment has to be proven to keep the preferential rate.",
+    },
+  },
+  {
+    term: { ko: "인코텀즈 (Incoterms)", th: "อินโคเทอมส์ (Incoterms)", en: "Incoterms" },
+    body: {
+      ko: "운임과 보험을 누가 어디까지 내고, 물건이 망가졌을 때 그 위험이 어디서 넘어가는지를 정한 국제 약속. FOB 부산이면 배에 실릴 때까지가 브랜드, 그 뒤가 klink입니다. 이걸 안 정하면 사고가 났을 때 비로소 다투게 됩니다.",
+      th: "ข้อตกลงสากลที่กำหนดว่าใครจ่ายค่าระวางและประกันถึงจุดใด และความเสี่ยงในสินค้าโอนที่จุดไหน เช่น FOB ปูซาน หมายถึงแบรนด์รับผิดชอบจนสินค้าขึ้นเรือ หลังจากนั้นเป็นของ klink ถ้าไม่กำหนดไว้ จะมาเถียงกันตอนเกิดเหตุ",
+      en: "The international shorthand for who pays freight and insurance up to which point, and where risk in the goods passes. FOB Busan means the brand carries it until loading and klink after that. Leave it undefined and the argument starts only once something goes wrong.",
+    },
+  },
+  {
+    term: { ko: "적하보험", th: "ประกันภัยสินค้า", en: "Cargo insurance" },
+    body: {
+      ko: "운송 중 손상·분실을 보상하는 보험. 인코텀즈에 따라 브랜드가 들 수도, klink가 들 수도 있습니다. 아무도 안 들었는데 컨테이너가 물에 젖으면 그 물량은 전액 손실입니다.",
+      th: "ประกันที่ชดเชยความเสียหายหรือสูญหายระหว่างขนส่ง ผู้ทำประกันเป็นแบรนด์หรือ klink ขึ้นกับอินโคเทอมส์ หากไม่มีใครทำแล้วสินค้าในตู้เปียกน้ำ ล็อตนั้นสูญทั้งหมด",
+      en: "Cover for damage or loss in transit. Depending on the Incoterm it is taken out by the brand or by klink. If nobody took it out and the container gets wet, that shipment is a write-off.",
+    },
+  },
+  {
+    term: { ko: "체선료 · 지체료", th: "ค่าเดมเมอร์เรจ · ค่าดีเทนชัน", en: "Demurrage and detention" },
+    body: {
+      ko: "체선료는 컨테이너가 항구 안에 무료 기간을 넘겨 있을 때, 지체료는 항구 밖으로 가져간 컨테이너를 제때 반납하지 않을 때 붙습니다. 무료 기간은 며칠뿐이라, 통관이 서류 하나 때문에 며칠 밀리면 그 자체가 비용입니다.",
+      th: "ค่าเดมเมอร์เรจเกิดเมื่อตู้อยู่ในท่าเกินระยะปลอดค่าใช้จ่าย ส่วนค่าดีเทนชันเกิดเมื่อนำตู้ออกไปแล้วคืนไม่ทันกำหนด ระยะปลอดค่าใช้จ่ายมีเพียงไม่กี่วัน หากพิธีการล่าช้าเพราะเอกสารใบเดียว นั่นคือต้นทุนทันที",
+      en: "Demurrage runs when a container sits inside the port past its free time; detention runs when a container taken out is not returned on time. Free time is only a few days, so clearance stalled by one document is itself a cost.",
+    },
+  },
+  {
+    term: { ko: "FCL · LCL", th: "FCL · LCL", en: "FCL and LCL" },
+    body: {
+      ko: "컨테이너 한 대를 통째로 쓰면 FCL, 남의 화물과 나눠 쓰면 LCL입니다. 소량은 LCL이 싸지만 혼재를 기다리고 도착지에서 화물을 나누는 시간과 비용(CFS)이 붙어, 문 앞까지 걸리는 시간은 오히려 깁니다.",
+      th: "ใช้ตู้ทั้งตู้คือ FCL แบ่งกับสินค้าของผู้อื่นคือ LCL ปริมาณน้อยใช้ LCL ถูกกว่า แต่ต้องรอรวมตู้และมีเวลากับค่าใช้จ่ายในการแยกตู้ที่ปลายทาง (CFS) เวลาถึงหน้าประตูจึงนานกว่า",
+      en: "A whole container to yourself is FCL; sharing one is LCL. Small volumes are cheaper on LCL, but you wait for consolidation and pay to have the load broken out at destination (CFS), so door-to-door time is actually longer.",
+    },
+  },
+  {
+    term: { ko: "서렌더 B/L", th: "เซอร์เรนเดอร์ B/L", en: "Telex release" },
+    body: {
+      ko: "원본 선하증권을 우편으로 보내는 대신 선사가 도착지에 전산으로 인도를 지시하는 방식. 원본을 기다리다 배보다 늦게 도착하면 물건을 못 찾고 그동안 체선료가 쌓이므로, 서로 믿는 거래에서는 이 방식을 씁니다.",
+      th: "แทนที่จะส่ง B/L ต้นฉบับทางไปรษณีย์ สายเรือจะแจ้งปลายทางทางระบบให้ปล่อยสินค้า หากรอต้นฉบับแล้วมาถึงช้ากว่าเรือ จะรับของไม่ได้และเกิดค่าเดมเมอร์เรจสะสม คู่ค้าที่ไว้ใจกันจึงใช้วิธีนี้",
+      en: "Instead of couriering the original bill of lading, the carrier instructs release at destination electronically. Waiting on an original that arrives after the vessel means the goods sit and demurrage builds, so trusted trades use this.",
+    },
+  },
+  {
+    term: { ko: "관세환급 · 부가세 영세율", th: "การคืนอากร · VAT อัตราศูนย์", en: "Duty drawback and zero-rated VAT" },
+    body: {
+      ko: "한국에서 수출하면 부가세가 0%로 적용되고, 수입 원재료에 낸 관세는 돌려받을 수 있습니다. 둘 다 수출신고필증이 근거이고, 중소기업은 간이정액환급(FOB 금액 × 환급률)을 쓸 수 있습니다. 브랜드가 놓치기 쉬운 실제 현금입니다.",
+      th: "การส่งออกจากเกาหลีได้ VAT อัตราศูนย์ และอากรที่จ่ายไปกับวัตถุดิบนำเข้าขอคืนได้ ทั้งสองอย่างใช้ใบขนสินค้าขาออกเป็นหลักฐาน และ SME สามารถใช้วิธีคืนอากรแบบเหมาจ่าย (มูลค่า FOB × อัตราคืน) เป็นเงินสดจริงที่แบรนด์มักมองข้าม",
+      en: "Exporting from Korea is zero-rated for VAT, and duty paid on imported inputs can be reclaimed. Both rest on the export declaration certificate, and smaller firms can use the simplified fixed-rate drawback (FOB value × refund rate). Real cash that brands routinely leave on the table.",
     },
   },
   {
@@ -1153,6 +1488,46 @@ export const SOURCES: Source[] = [
   },
   {
     label: {
+      ko: "관세청 FTA 포털 — 원산지검증 개요와 증빙 보관 의무",
+      th: "ศุลกากรเกาหลี FTA Portal — การตรวจสอบถิ่นกำเนิดและหน้าที่เก็บหลักฐาน",
+      en: "Korea Customs FTA portal — origin verification and record-keeping",
+    },
+    url: "https://www.customs.go.kr/ftaportalkor/cm/cntnts/cntntsView.do?mi=3477&cntntsId=1121",
+  },
+  {
+    label: {
+      ko: "관세청 — 2025 FTA 빈번 민원 사례집 (소급발급 · 제3자 송장 · 직접운송)",
+      th: "ศุลกากรเกาหลี — รวมกรณีสอบถาม FTA 2025 (ออกย้อนหลัง · อินวอยซ์บุคคลที่สาม · ขนส่งโดยตรง)",
+      en: "Korea Customs — 2025 FTA frequent-enquiry casebook (retroactive C/O, third-party invoice, direct consignment)",
+    },
+    url: "https://www.customs.go.kr/upload/call/FTA.pdf",
+  },
+  {
+    label: {
+      ko: "관세청 유니패스 — 수출지원 관세환급 안내",
+      th: "ศุลกากรเกาหลี UNI-PASS — การคืนอากรเพื่อการส่งออก",
+      en: "Korea Customs UNI-PASS — export duty drawback",
+    },
+    url: "https://unipass.customs.go.kr/clip/ctensrch/openULS0401006Q.do",
+  },
+  {
+    label: {
+      ko: "ONE Thailand — 체선료·지체료 요율과 무료 기간",
+      th: "ONE Thailand — อัตราค่าเดมเมอร์เรจ ค่าดีเทนชัน และระยะปลอดค่าใช้จ่าย",
+      en: "ONE Thailand — detention and demurrage charges and free time",
+    },
+    url: "https://th.one-line.com/detention-and-demurrage-charges",
+  },
+  {
+    label: {
+      ko: "한국무역협회 — 수출입화물 목재포장재 검역 절차",
+      th: "สมาคมการค้าระหว่างประเทศเกาหลี — การกักกันวัสดุบรรจุภัณฑ์ไม้",
+      en: "KITA — quarantine procedure for wood packaging material",
+    },
+    url: "https://kita.net/mberJobSport/shippers/trnsBusiManual/transportMnl_1_4.do",
+  },
+  {
+    label: {
       ko: "USDA FAS — 태국 식품 수입 규정 연례 보고 (2025)",
       th: "USDA FAS — รายงานประจำปีกฎระเบียบนำเข้าอาหารของไทย (2025)",
       en: "USDA FAS — Thailand FAIRS annual report (2025)",
@@ -1217,6 +1592,17 @@ export const F = {
     en: "Ready for the next stage when",
   },
   lblRisk: { ko: "자주 막히는 곳", th: "จุดที่มักติด", en: "Where it usually gets stuck" },
+  lblWatch: { ko: "실무 점검", th: "รายการตรวจหน้างาน", en: "Practitioner's checks" },
+  costsTitle: {
+    ko: "창고에 놓일 때까지 붙는 돈",
+    th: "ต้นทุนทั้งหมดจนสินค้าเข้าคลัง",
+    en: "What it costs to get it onto the shelf in our warehouse",
+  },
+  costsLead: {
+    ko: "원가를 틀리는 방식은 늘 같습니다 — 물건값과 관세만 세고 나머지를 빠뜨립니다. 터미널 비용과 지체료가 관세보다 클 때도 있습니다.",
+    th: "การคำนวณต้นทุนผิดมักเป็นแบบเดียวกัน คือคิดแค่ค่าสินค้ากับอากรแล้วลืมที่เหลือ บางครั้งค่าท่าเรือและค่าล่าช้ายังมากกว่าอากรเสียอีก",
+    en: "Costing goes wrong the same way every time — count the goods and the duty, forget the rest. Terminal charges and delay fees can exceed the duty itself.",
+  },
   lblRecord: { ko: "어디에 기록하나", th: "บันทึกที่ไหน", en: "Where it gets recorded" },
   lblBasis: { ko: "근거", th: "อ้างอิงจาก", en: "Based on" },
   handoff: {

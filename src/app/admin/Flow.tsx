@@ -32,6 +32,7 @@ import {
   ExternalLink,
   FileText,
   Link as LinkIcon,
+  ListChecks,
   Package,
   ShieldCheck,
   Timer,
@@ -44,6 +45,7 @@ import { Card, Page, Pill } from "./ui";
 import type { Jump, Tab } from "./AdminApp";
 import {
   CHECKED_ON,
+  COST_GROUPS,
   F,
   PHASES,
   PREREQ,
@@ -172,6 +174,7 @@ export default function Flow({
 
         <Overview lang={lang} />
         <LaneTable lang={lang} />
+        <CostTable lang={lang} />
         <Status lang={lang} data={data} go={go} />
         <Prereq lang={lang} />
 
@@ -392,6 +395,52 @@ function LaneCell({
         {value ? t(value, lang) : "—"}
       </span>
     </span>
+  );
+}
+
+/**
+ * 창고에 물건이 놓일 때까지 붙는 돈을 순서대로 쌓아 보여 준다.
+ *
+ * 관세와 부가세만 세는 원가표가 실제로 틀리는 이유는 터미널 비용·통관 수수료·
+ * 지체료가 빠져 있어서다. 세금이 어느 금액을 기준으로 계산되는지도 중간에
+ * 끊어 적는다 — 운임을 빼고 부가세를 계산하면 매번 모자란다.
+ */
+function CostTable({ lang }: { lang: AdminLang }) {
+  return (
+    <section className="mb-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+      <div className="border-b border-neutral-100 px-5 py-3.5">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-neutral-800">
+          <Coins size={14} className="text-neutral-400" />
+          {t(F.costsTitle, lang)}
+        </h2>
+        <p className="mt-1 text-xs leading-relaxed text-neutral-500">{t(F.costsLead, lang)}</p>
+      </div>
+
+      {COST_GROUPS.map((g) => (
+        <div key={g.key} className="border-b border-neutral-100 last:border-b-0">
+          <p className="bg-neutral-50/70 px-5 py-1.5 text-[11px] font-bold text-neutral-500">
+            {t(g.title, lang)}
+          </p>
+          <ul className="divide-y divide-neutral-100">
+            {g.items.map((item, i) => (
+              <li
+                key={i}
+                className="grid gap-0.5 px-5 py-2.5 md:grid-cols-[13rem_1fr] md:items-baseline md:gap-3"
+              >
+                <span className="text-xs font-semibold text-neutral-800">{t(item.label, lang)}</span>
+                <span className="text-xs leading-relaxed text-neutral-500">{t(item.note, lang)}</span>
+              </li>
+            ))}
+          </ul>
+          {/* 이 묶음까지 더하면 무슨 금액이 되는지. 세금 계산의 기준선이라 눈에 띄게 둔다. */}
+          {g.makes && (
+            <p className="border-t border-dashed border-neutral-200 bg-blue-50/40 px-5 py-2 text-[11px] font-semibold text-[#0C3F80]">
+              {t(g.makes, lang)}
+            </p>
+          )}
+        </div>
+      ))}
+    </section>
   );
 }
 
@@ -634,6 +683,27 @@ function StageCard({
               body={t(stage.risk, lang)}
             />
           </div>
+
+          {/*
+            규정이 아니라 실무에서 돈과 시간이 새는 자리. 위의 경고와 색을 나눠
+            둔다 — 같은 노란 칸에 넣으면 제일 크게 터지는 것 하나가 목록에 묻힌다.
+          */}
+          {stage.watch && (
+            <div className="mt-3 rounded-xl border border-neutral-200 px-4 py-3">
+              <p className="mb-2 flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-neutral-400 uppercase">
+                <ListChecks size={13} />
+                {t(F.lblWatch, lang)}
+              </p>
+              <ul className="flex flex-col gap-1.5">
+                {stage.watch.map((w, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs leading-relaxed text-neutral-600">
+                    <span aria-hidden className="mt-1.5 size-1 shrink-0 rounded-full bg-neutral-300" />
+                    <span className="min-w-0 flex-1">{t(w, lang)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {stage.record && (
             <button
