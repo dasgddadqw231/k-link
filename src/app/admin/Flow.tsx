@@ -1,28 +1,39 @@
 /**
- * 프로세스 — 한국에서 만든 물건이 태국 매대에 오르기까지의 여덟 단계.
+ * 프로세스 — 한국에서 만든 물건이 태국 매대에 오르기까지의 아홉 단계.
  *
  * 이 화면만 다른 탭과 성격이 다르다. 나머지는 숫자를 넣고 고치는 도구인데,
- * 여기는 읽는 화면이다. 새로 들어온 사람이 "우리가 무슨 일을 하는 회사이고
- * 지금 어디쯤인가"를 아무에게도 묻지 않고 알 수 있어야 한다.
+ * 여기는 읽는 화면이다. 무역을 한 번도 안 해 본 사람이 혼자 읽고 "우리가 무슨
+ * 일을 하는 회사이고 지금 어디쯤인가"를 알 수 있어야 한다.
  *
- * 도식은 두 겹이다. 위의 개요는 여덟 단계를 네 묶음으로 접어 한 화면에 넣고,
- * 아래 본문은 단계마다 펼쳐 놓는다. 개요에서 단계를 누르면 그 자리로 내려간다 —
- * 목차 없는 긴 문서는 두 번째 볼 때부터 아무도 안 읽는다.
+ * 도식은 세 겹이다.
+ *  ① 개요 — 아홉 단계를 네 묶음으로 접어 한 화면에 넣는다.
+ *  ② 물건·서류·돈 표 — 무역이 어려운 진짜 이유는 이 셋이 같이 안 다니기
+ *     때문이다. 단계마다 셋이 각각 어디 있는지 한 줄씩 끊어 보여 준다.
+ *  ③ 단계 카드 — 실제로 일할 때 읽는 본문.
  *
- * 색은 뜻이 있을 때만 쓴다. 단계 묶음은 색으로 나누지 않고 자리와 번호로 나눈다.
- * 초록은 "넘어가도 좋다", 노랑은 "여기서 막힌다" 두 가지에만 남겨 둔다 — 묶음까지
- * 색을 먹으면 경고가 배경으로 가라앉는다.
+ * 긴 문서라 길을 잃는 게 가장 큰 불편이다. 그래서 단계 바로가기 줄을 위에
+ * 붙여 두고, 지금 보는 단계를 표시한다. PC는 화면 맨 위, 모바일은 상단바 바로
+ * 아래에 붙는다 — 두 곳 다 스크롤해도 늘 보이는 자리다.
+ *
+ * 색은 뜻이 있을 때만 쓴다. 단계 묶음은 색으로 나누지 않고 자리와 번호로
+ * 나눈다. 초록은 "넘어가도 좋다", 노랑은 "여기서 막힌다" 두 가지에만 남겨 둔다.
  *
  * 접히는 것은 용어 사전 하나뿐이다. 설명서에서 내용을 접어 두면 접힌 쪽은
  * 없는 것과 같다. 용어는 아는 사람에게는 필요 없으니 그것만 접는다.
  */
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowRight,
+  ArrowUp,
   BookOpen,
   CircleCheck,
+  Coins,
   ExternalLink,
   FileText,
+  Link as LinkIcon,
+  Package,
+  ShieldCheck,
   Timer,
   TriangleAlert,
 } from "lucide-react";
@@ -32,14 +43,19 @@ import type { AdminData } from "./data";
 import { Card, Page, Pill } from "./ui";
 import type { Jump, Tab } from "./AdminApp";
 import {
+  CHECKED_ON,
   F,
   PHASES,
+  PREREQ,
+  SOURCES,
   STAGES,
   TERMS,
   t,
   type Actor,
+  type Lanes,
   type Phase,
   type Stage,
+  type T,
 } from "./workflow";
 
 /** 기록할 곳을 가리킬 때 탭 이름은 이미 번역돼 있다. 두 번 적지 않는다. */
@@ -51,6 +67,12 @@ const TAB_LABEL: Record<Tab, keyof AdminDict> = {
   inf: "navInf",
   fin: "navFin",
 };
+
+/**
+ * 위에 붙어 있는 두 줄(모바일 상단바 + 단계 바로가기) 높이. 단계로 뛸 때 제목이
+ * 그 밑에 숨지 않도록 여유를 준다. PC는 상단바가 없어 한 줄만큼만 비운다.
+ */
+const SCROLL_MT = "scroll-mt-32 md:scroll-mt-20";
 
 function actorLabel(actor: Actor, lang: AdminLang): string {
   return t(actor === "brand" ? F.actorBrand : actor === "kr" ? F.actorKr : F.actorTh, lang);
@@ -76,7 +98,7 @@ function ActorTag({ actor, lang }: { actor: Actor; lang: AdminLang }) {
   );
 }
 
-/** 일이 어느 나라에서 벌어지는지. 개요에서 손이 넘어가는 지점을 눈으로 잡게 한다. */
+/** 일이 어느 나라에서 벌어지는지. 손이 넘어가는 지점을 눈으로 잡게 한다. */
 function WhereTag({ where, lang }: { where: Stage["where"]; lang: AdminLang }) {
   const th = where === "th";
   return (
@@ -94,6 +116,40 @@ function scrollToStage(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+/**
+ * 지금 화면에 걸린 단계. 스크롤할 때마다 아홉 개의 위치를 읽지만 프레임당 한
+ * 번으로 묶어 둬서 스크롤이 끊기지 않는다.
+ */
+function useActiveStage(): string {
+  const [active, setActive] = useState(STAGES[0].id);
+
+  useEffect(() => {
+    let queued = false;
+    function measure() {
+      queued = false;
+      // 붙어 있는 줄 바로 아래를 기준선으로 삼는다. 그 선을 지난 마지막 단계가
+      // 지금 읽고 있는 단계다.
+      const line = 150;
+      let cur = STAGES[0].id;
+      for (const s of STAGES) {
+        const el = document.getElementById(s.id);
+        if (el && el.getBoundingClientRect().top <= line) cur = s.id;
+      }
+      setActive(cur);
+    }
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(measure);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return active;
+}
+
 export default function Flow({
   lang,
   data,
@@ -103,28 +159,85 @@ export default function Flow({
   data: AdminData;
   go: (j: Tab | Jump) => void;
 }) {
+  const active = useActiveStage();
+
   return (
-    <Page title={t(F.pageTitle, lang)}>
-      <p className="mb-5 max-w-2xl text-sm leading-relaxed text-neutral-500">
-        {t(F.pageLead, lang)}
-      </p>
+    <>
+      <StageRail lang={lang} active={active} />
 
-      <Overview lang={lang} />
-      <Status lang={lang} data={data} go={go} />
+      <Page title={t(F.pageTitle, lang)}>
+        <p className="mb-5 max-w-2xl text-sm leading-relaxed text-neutral-500">
+          {t(F.pageLead, lang)}
+        </p>
 
-      {PHASES.map((phase) => (
-        <PhaseSection key={phase.key} phase={phase} lang={lang} go={go} />
-      ))}
+        <Overview lang={lang} />
+        <LaneTable lang={lang} />
+        <Status lang={lang} data={data} go={go} />
+        <Prereq lang={lang} />
 
-      <Glossary lang={lang} />
+        {PHASES.map((phase) => (
+          <PhaseSection key={phase.key} phase={phase} lang={lang} go={go} />
+        ))}
 
-      <p className="mt-6 text-[11px] leading-relaxed text-neutral-400">{t(F.foot, lang)}</p>
-    </Page>
+        <Glossary lang={lang} />
+        <Sources lang={lang} />
+
+        <p className="mt-6 text-[11px] leading-relaxed text-neutral-400">{t(F.foot, lang)}</p>
+      </Page>
+
+      <ToTop label={t(F.toTop, lang)} />
+    </>
   );
 }
 
 /**
- * 개요 — 여덟 단계를 네 묶음으로 접는다.
+ * 단계 바로가기. 아홉 장짜리 문서에서 길을 잃지 않게 하는 유일한 장치라
+ * 스크롤해도 늘 보이는 자리에 둔다. 모바일은 가로로 밀고, PC는 줄바꿈한다 —
+ * PC에서 가로 스크롤을 시키면 마우스로는 끝까지 못 가는 사람이 생긴다.
+ */
+function StageRail({ lang, active }: { lang: AdminLang; active: string }) {
+  const activeChip = useRef<HTMLButtonElement | null>(null);
+
+  /*
+    모바일에서는 줄이 가로로 밀린다. 아래로 읽어 내려가는 동안 지금 단계 칩이
+    화면 밖으로 나가 버리면 줄이 있으나 마나다. block: "nearest" 라서 세로
+    스크롤은 건드리지 않고, PC에서는 줄바꿈이라 넘칠 곳이 없어 아무 일도 없다.
+  */
+  useEffect(() => {
+    activeChip.current?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [active]);
+
+  return (
+    <div className="sticky top-[57px] z-10 border-b border-neutral-200 bg-white/95 backdrop-blur md:top-0">
+      <div className="mx-auto max-w-4xl px-5 py-2 md:px-8">
+        <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] md:flex-wrap md:overflow-visible">
+          {STAGES.map((s) => {
+            const on = s.id === active;
+            return (
+              <button
+                key={s.id}
+                ref={on ? activeChip : undefined}
+                onClick={() => scrollToStage(s.id)}
+                aria-current={on ? "true" : undefined}
+                className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-bold whitespace-nowrap transition-colors ${
+                  on
+                    ? "bg-[#0C3F80] text-white"
+                    : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200"
+                }`}
+              >
+                <span className={on ? "text-white/60" : "text-neutral-400"}>{s.no}</span>
+                {t(s.title, lang)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 개요 — 아홉 단계를 네 묶음으로 접는다.
  *
  * PC는 네 묶음이 가로로 서서 왼쪽에서 오른쪽으로 흐르고, 모바일은 세로로 쌓인다.
  * 가로 스크롤은 쓰지 않는다 — 좁은 화면에서 레인을 지키려다 한 묶음만 보이면
@@ -195,6 +308,120 @@ function Overview({ lang }: { lang: AdminLang }) {
         <span className="mr-1 inline-block size-1.5 rounded-full bg-[#0C3F80] align-middle" />
         {t(F.whereTh, lang)}
       </p>
+    </section>
+  );
+}
+
+const LANE_KEYS = ["goods", "paper", "money"] as const;
+const LANE_ICON = { goods: Package, paper: FileText, money: Coins };
+const LANE_LABEL = { goods: F.laneGoods, paper: F.lanePaper, money: F.laneMoney };
+
+/**
+ * 물건·서류·돈이 단계마다 각각 어디 있는지.
+ *
+ * 색으로 세 줄을 나누지 않는다 — 초록·노랑은 이 화면에서 이미 "가도 된다",
+ * "막힌다"는 뜻을 갖고 있어서 여기에 또 쓰면 경고가 배경으로 가라앉는다.
+ * 대신 아이콘으로 나눈다. PC는 한 줄에 세 칸, 모바일은 세 줄로 쌓인다.
+ */
+function LaneTable({ lang }: { lang: AdminLang }) {
+  return (
+    <section className="mb-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+      <div className="border-b border-neutral-100 px-5 py-3.5">
+        <h2 className="text-sm font-bold text-neutral-800">{t(F.lanesTitle, lang)}</h2>
+        <p className="mt-1 text-xs leading-relaxed text-neutral-500">{t(F.lanesLead, lang)}</p>
+      </div>
+
+      {/* PC 머리줄. 모바일은 칸마다 스스로 이름을 단다. */}
+      <div className="hidden gap-3 border-b border-neutral-100 px-5 py-2 md:grid md:grid-cols-[9rem_1fr_1fr_1fr]">
+        <span />
+        {LANE_KEYS.map((k) => {
+          const Icon = LANE_ICON[k];
+          return (
+            <span
+              key={k}
+              className="flex items-center gap-1.5 text-[11px] font-bold text-neutral-400"
+            >
+              <Icon size={12} />
+              {t(LANE_LABEL[k], lang)}
+            </span>
+          );
+        })}
+      </div>
+
+      <div className="divide-y divide-neutral-100">
+        {STAGES.map((s) => (
+          <div
+            key={s.id}
+            className="grid gap-1.5 px-5 py-3 md:grid-cols-[9rem_1fr_1fr_1fr] md:items-start md:gap-3"
+          >
+            <button
+              onClick={() => scrollToStage(s.id)}
+              className="flex items-center gap-1.5 text-left text-xs font-bold text-neutral-700 transition-colors hover:text-[#0C3F80]"
+            >
+              <span className="text-neutral-300 tabular-nums">{s.no}</span>
+              <span className="min-w-0 truncate">{t(s.title, lang)}</span>
+            </button>
+            {LANE_KEYS.map((k) => (
+              <LaneCell key={k} lane={k} value={s.lanes[k]} lang={lang} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LaneCell({
+  lane,
+  value,
+  lang,
+}: {
+  lane: keyof Lanes;
+  value: T | undefined;
+  lang: AdminLang;
+}) {
+  const Icon = LANE_ICON[lane];
+  return (
+    <span className="flex items-start gap-1.5 text-xs leading-relaxed">
+      {/* 모바일에서만 이름을 단다. PC는 머리줄이 이미 말해 준다. */}
+      <span className="flex shrink-0 items-center gap-1 text-neutral-400 md:hidden">
+        <Icon size={11} />
+        <span className="w-8 text-[11px] font-bold">{t(LANE_LABEL[lane], lang)}</span>
+      </span>
+      <span className={value ? "min-w-0 flex-1 text-neutral-700" : "text-neutral-300"}>
+        {value ? t(value, lang) : "—"}
+      </span>
+    </span>
+  );
+}
+
+/**
+ * 브랜드마다 반복하지 않는 일. 단계 안에 섞으면 브랜드가 자기도 해야 하는 줄
+ * 알고 겁을 먹어서 따로 뺐다.
+ */
+function Prereq({ lang }: { lang: AdminLang }) {
+  return (
+    <section className="mt-7 overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50/70">
+      <div className="border-b border-neutral-200/70 px-5 py-3.5">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-neutral-800">
+          <ShieldCheck size={15} className="text-neutral-400" />
+          {t(F.prereqTitle, lang)}
+        </h2>
+        <p className="mt-1 text-xs leading-relaxed text-neutral-500">{t(F.prereqLead, lang)}</p>
+      </div>
+      <ol className="divide-y divide-neutral-200/70">
+        {PREREQ.map((p, i) => (
+          <li key={i} className="flex items-start gap-3 px-5 py-3.5">
+            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border border-neutral-300 text-[10px] font-black text-neutral-400 tabular-nums">
+              {i + 1}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold text-neutral-800">{t(p.title, lang)}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-neutral-500">{t(p.body, lang)}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
@@ -323,8 +550,7 @@ function StageCard({
     <>
       <article
         id={stage.id}
-        /* 모바일 상단바가 제목을 덮지 않게 목적지에 여유를 둔다. */
-        className="scroll-mt-20 overflow-hidden rounded-2xl border border-neutral-200 bg-white md:scroll-mt-6"
+        className={`${SCROLL_MT} overflow-hidden rounded-2xl border border-neutral-200 bg-white`}
       >
         <header className="flex items-start gap-3 border-b border-neutral-100 px-5 py-4">
           <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-xl bg-[#0C3F80] text-xs font-black text-white tabular-nums">
@@ -428,6 +654,13 @@ function StageCard({
               </span>
             </button>
           )}
+
+          {/* 이 단계가 어디에 근거하는지. 규정이 바뀌면 여기부터 다시 본다. */}
+          <p className="mt-3 border-t border-neutral-100 pt-3 text-[11px] leading-relaxed text-neutral-400">
+            <span className="font-bold">{t(F.lblBasis, lang)}</span>
+            <span className="mx-1.5 text-neutral-300">·</span>
+            {t(stage.basis, lang)}
+          </p>
         </div>
       </article>
 
@@ -471,7 +704,7 @@ function Note({
 }
 
 /**
- * 용어는 접어 둔다. 한 번 익히면 다시 볼 일이 없는데 여덟 단계 뒤에 펼쳐 두면
+ * 용어는 접어 둔다. 한 번 익히면 다시 볼 일이 없는데 아홉 단계 뒤에 펼쳐 두면
  * 화면이 두 배가 되고, 정작 매번 읽어야 할 단계 설명이 멀어진다.
  */
 function Glossary({ lang }: { lang: AdminLang }) {
@@ -509,5 +742,77 @@ function Glossary({ lang }: { lang: AdminLang }) {
         ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * 근거 자료. 이 화면의 숫자가 틀렸을 때 어디를 보고 고쳐야 하는지가 화면 안에
+ * 있어야 한다 — 규정은 바뀌고, 바뀐 걸 아는 사람이 늘 곁에 있지는 않다.
+ */
+function Sources({ lang }: { lang: AdminLang }) {
+  return (
+    <section className="mt-8">
+      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-base font-black tracking-tight text-neutral-900">
+          <LinkIcon size={15} className="text-neutral-400" />
+          {t(F.sourcesTitle, lang)}
+        </h2>
+        <p className="text-[11px] font-semibold text-neutral-400 tabular-nums">
+          {t(F.checkedOn, lang)} {CHECKED_ON}
+        </p>
+      </div>
+      <p className="mb-3 text-xs leading-relaxed text-neutral-500">{t(F.sourcesLead, lang)}</p>
+
+      <ul className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+        {SOURCES.map((s) => (
+          <li key={s.url} className="border-b border-neutral-100 last:border-b-0">
+            <a
+              href={s.url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-start gap-2 px-5 py-3 transition-colors hover:bg-neutral-50"
+            >
+              <ExternalLink size={13} className="mt-0.5 shrink-0 text-neutral-400" />
+              <span className="min-w-0 flex-1 text-sm text-neutral-700">{t(s.label, lang)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/**
+ * 맨 위로. 아홉 장을 다 내려간 뒤 단계 바로가기 줄까지 돌아가려면 한참을 올려야
+ * 한다. 조금 내려가서는 안 보이게 둬서 평소에는 화면을 가리지 않는다.
+ *
+ * 본문이 아니라 <body> 밑에 그린다 — 탭이 바뀔 때 본문에 transform이 걸리고,
+ * transform이 걸린 조상이 있으면 position: fixed가 화면이 아니라 그 조상을
+ * 기준으로 잡혀 버튼이 엉뚱한 자리에 뜬다.
+ */
+function ToTop({ label }: { label: string }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setShow(window.scrollY > 800);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!show || typeof document === "undefined") return null;
+
+  return createPortal(
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      title={label}
+      aria-label={label}
+      className="fixed right-5 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 grid size-11 place-items-center rounded-full border border-neutral-200 bg-white/95 text-neutral-500 shadow-lg backdrop-blur transition-colors hover:text-[#0C3F80] md:right-6 md:bottom-6"
+    >
+      <ArrowUp size={18} />
+    </button>,
+    document.body,
   );
 }

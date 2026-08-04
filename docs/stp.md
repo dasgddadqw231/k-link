@@ -12,12 +12,16 @@
 
 ### 규제 — 이게 사업의 전부다
 
-- **Sor Bor 3**(판매 목적 식품 수입 허가)는 Food Act §15에 따라 발급되며 **유효기간 3년**이다.
-- 이 허가는 **태국 내 물리적 주소(창고·공장)에 귀속**되고, 승인 전 **FDA 현장 실사**를 거친다. 서류가 완비되면 처리에 약 5영업일.
-- 허가는 취급 품목 리스트에 묶인다. 품목이 늘면 갱신해야 한다.
-- 통제 대상 식품은 **Sor Bor 3/1** 양식으로 라벨 사전승인을 받고, 승인 시 소비자가 패키지에서 보는 **อย.(Or.Yor.) 식품 등록번호**가 부여된다.
-- 수입 식품은 **통관 전에 태국어 라벨을 부착**해야 한다.
-- 광고 허가(**Sor Bor 4**) 취득 전에는 건강 효능을 광고할 수 없다.
+> **2026-08-04 수정.** 이 절의 서식 이름 두 개가 틀렸었다. 태국 FDA 영문 안내를 다시 확인해 고쳤고, 자세한 절차는 `/admin` 프로세스 탭(`src/app/admin/workflow.ts`)에 출처와 함께 정리해 뒀다. 아래는 그 요약이다.
+
+- **판매 목적 식품 수입 허가**는 **อ.7**(Or.7, "License for Importation or Ordering of Food into the Kingdom")이며 **유효기간 3년**이다. 이전 판에서 이 허가를 "Sor Bor 3"라고 적었는데, 태국 FDA 안내상 **สบ.3/1은 라벨 승인 서식이지 수입 허가가 아니다.**
+- 이 허가는 **태국 내 물리적 주소(창고)에 귀속**되고, 승인 전 **FDA 현장 실사**를 거친다. 서류가 완비되면 처리에 약 5~7영업일.
+- 허가는 취급 품목 리스트에 묶인다. 품목이 늘면 변경 신청을 해야 한다.
+- 통제 대상 식품은 **สบ.3/1**(Sor Bor 3/1) 양식으로 라벨 사전승인을 받고, 승인 시 소비자가 패키지에서 보는 **อย.(Or.Yor.) 식품일련번호**가 부여된다. 라벨 승인에는 약 60일이 걸린다.
+- 제품 등록 경로는 식품 4분류로 갈린다 — 일반식품(등록 불필요), 라벨부착식품·표준식품(약 2영업일), 구체적 통제식품(35~90영업일).
+- 수입 식품은 **통관 전에 태국어 라벨을 부착**해야 한다. 라벨 고시 **제450호**(2024 시행)의 경과 기간이 **2026년 7월**에 끝나 지금은 구 라벨로 판매할 수 없다.
+- 선적 건마다 **수입 사전신고(LPI)**를 국가단일창구에 올려야 한다. 이게 없으면 물건이 도착해도 통관이 시작되지 않는다.
+- **건강 효능 광고는 사전 심의 대상**이다(식품법 제40·41조). 이전 판에서 이 심의를 "Sor Bor 4"라고 적었으나 그 서식 번호는 확인되지 않았다 — 근거는 서식이 아니라 조문이다.
 
 > **결론:** 한국 법인은 태국 내 주소도, 현장 실사를 받을 창고도 없다. 즉 **한국 브랜드가 단독으로 태국에 식품을 팔 방법은 구조적으로 존재하지 않는다.** 반드시 태국 법인을 수입자로 세워야 한다. klink의 유일하면서 충분한 존재 이유가 여기다.
 
@@ -26,7 +30,7 @@
 - **Affordable Premium** — 가계부채 상승으로 파인다이닝·고가 소비는 줄고, "작지만 특별한" 소비로 이동. 7-Eleven이 유명 셰프와 협업해 **69~89바트(약 2.2~2.9달러)** 완제품을 판다.
 - **1인 가구 증가** → "Solo Set", 1회분 프리미엄 포맷 수요.
 - **편의성 + 프리미엄화** — Gen Z·밀레니얼 중심. 클린라벨, 보존료 최소화 선호.
-- **홀리스틱 웰니스·장 건강** — 발효식품·기능성 수요 강함. (단 우리는 Sor Bor 4 전이라 이 언어를 쓸 수 없다.)
+- **홀리스틱 웰니스·장 건강** — 발효식품·기능성 수요 강함. (단 우리는 광고 사전 심의 전이라 이 언어를 쓸 수 없다.)
 - **초고령사회 진입** — 60세 이상 20% 초과. 시니어 대상 식품 시장 성장.
 - **한국 브랜드 x 태국 아이콘 협업이 실제로 일어남** — 농심 신라면 x Jay Fai(미슐랭 노점).
 - **다이닝-리테일 통합과 마스코트 문법** — Bar B Q Plaza가 'Barbergon' 마스코트로 굿즈·의류까지 확장. 태국 시장은 캐릭터로 브랜드를 세우는 문법이 이미 성숙해 있다.
@@ -75,7 +79,7 @@
 | KOTRA·무역관 | 시장 정보, 바이어 매칭, 상담회 | 수입자가 되어주지 않음. 인허가 주체 아님 |
 | 수출 대행사 | 바이어 발굴, 수수료 기반 중개 | 인허가·재고 리스크는 브랜드가 짐 |
 | 대형 유통(실리콘투 등) | 대규모 유통망 | 이미 검증된 브랜드만 받음 |
-| **klink** | **태국 법인이 Sor Bor 3 보유 → 자사 명의로 수입, อย. 등록, 태국어 라벨, 통관, 유통 입점** | 한국 내 제조·품질은 브랜드 몫 |
+| **klink** | **태국 법인이 수입 허가(อ.7) 보유 → 자사 명의로 수입, อย. 등록, 태국어 라벨, 통관, 유통 입점** | 한국 내 제조·품질은 브랜드 몫 |
 
 핵심 문장: **"허가는 주소에 붙습니다. 서울 주소로는 못 받습니다."**
 
@@ -130,7 +134,7 @@
 
 > **"한국에서 실제로 먹는 것을, 한 포씩."**
 
-- 효능은 말할 수 없다(Sor Bor 4 전). 팔 수 있는 것은 **정품성 · 1회분 포맷**뿐이다.
+- 효능은 말할 수 없다(광고 사전 심의 전). 팔 수 있는 것은 **정품성 · 1회분 포맷**뿐이다.
 - 아직 판매도 못 한다. 그래서 소비자에게 **지금 당장 줄 수 있는 것**이 있어야 한다.
 
 **페르소나 B1 — Ploy (พลอย)**
@@ -188,22 +192,29 @@
 
 페이지에 쓰지 않았거나 조건부로만 쓴 항목. 사실이 확정되면 카피를 강화할 수 있다.
 
-- klink가 **현재 Sor Bor 3를 이미 보유**한 상태인지, 취득 진행 중인지 → 현재 페이지는 "직접 신고한다"로만 쓰고 보유 여부는 주장하지 않았다.
+- klink가 **현재 수입 허가(อ.7)를 이미 보유**한 상태인지, 취득 진행 중인지 → 현재 페이지는 "직접 신고한다"로만 쓰고 보유 여부는 주장하지 않았다.
 - 창고·물류 파트너 확보 여부 (현장 실사는 주소 기준)
 - 확보된 태국 리테일 바이어 연락처 수
 - 태국 인플루언서 네트워크 실체
 - 브랜드에 청구하는 실제 비용 구조 (등록비, 마진, 최소 물량)
 - 시식 행사 개최 계획의 실행 가능 여부
-- FDA 등록 전 소량 물량 반입의 법적 경로(견본품 통관 등)와 허용 수량
+- FDA 등록 전 소량 물량 반입의 법적 경로(견본품 통관 등)와 허용 수량 → **2026년 1월 1일부터 1바트 이상 모든 수입품에 관세·부가세가 붙어, "견본품이라 세금이 없다"는 전제는 이제 성립하지 않는다.** 경로 자체가 열려 있는지는 여전히 건별 확인 사항이다.
+- 광고 사전 심의의 정확한 신청 서식 번호 → 근거 조문(식품법 제40·41조)과 승인 유효기간(최대 5년)은 확인했으나 서식 번호는 확인하지 못했다.
+- 우리 취급 품목의 **HS 코드와 실제 관세율**, 그리고 음료의 **설탕세 구간** → 원가 계산의 전제인데 아직 품목별로 확정하지 않았다.
 
 ---
 
 ## 출처
 
 - [USDA FAS Bangkok, *Food and Beverage Trends to Watch for 2026* (TH2025-0047)](https://apps.fas.usda.gov/newgainapi/api/Report/DownloadReportByFileName?fileName=Food+and+Beverage+Trends+to+Watch+for+2026_Bangkok_Thailand_TH2025-0047.pdf)
-- [Thai FDA Compliance Guide for Importers and Manufacturers — Juslaws](https://www.juslaws.com/articles/thai-fda-compliance-guide-importers-manufacturers)
+- [Thai FDA Compliance Guide for Importers and Manufacturers — Juslaws](https://www.juslaws.com/articles/thai-fda-compliance-guide-importers-manufacturers) — 수입 허가를 "Sor Bor 3"로 적은 곳. 태국 FDA 안내와 어긋나므로 서식 이름은 아래 공식 출처를 따른다.
 - [How to Register Food Products in Thailand — Emerhub](https://emerhub.com/thailand/how-to-register-food-products-in-thailand/)
 - [Thai FDA — Food Importation](https://en.fda.moph.go.th/our-services-new/food-importation/)
+- [Thai FDA — 식품 허가 신청 종류와 서식 (อ.7 · สบ.3/1 · สบ.5/1 · อ.18)](https://en.fda.moph.go.th/entrepreneurs-food/category/how-to-apply-for-permission-on-food/)
+- [Thai FDA — 수입 절차와 LPI 등록](https://en.fda.moph.go.th/entrepreneurs-food/food-importation-01)
+- [한국식품산업협회 — 태국 수출절차 및 수출정보](https://www.kfia.or.kr/kfia/sub.php?menukey=1474)
+- [Tilleke & Gibbins — 라벨 고시 제450호 개정](https://www.tilleke.com/insights/thailand-updates-food-labeling-requirements/)
+- [The Nation — 2026년 1월 1일부터 소액 수입품에도 관세·부가세](https://www.nationthailand.com/business/economy/40059880)
 - [KOTRA 2023년 태국 유통산업 정보](https://dream.kotra.or.kr/kotranews/cms/news/actionKotraBoardDetail.do?SITE_NO=3&MENU_ID=200&CONTENTS_NO=1&bbsSn=403&pNttSn=200377)
 - [TikTok Shop Thailand 2025 revenue — Tuke Marketing](https://www.tktk.com/en/jiqiao/3834.html)
 - [Thai shoppers flock online — The Nation Thailand](https://www.nationthailand.com/news/general/40057033)
