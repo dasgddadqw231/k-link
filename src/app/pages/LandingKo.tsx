@@ -2,6 +2,13 @@ import { Fragment } from "react";
 import { motion } from "motion/react";
 import { Mail, Phone, ArrowRight, MapPin, Tag, BadgeCheck } from "lucide-react";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
+/**
+ * 이 페이지의 독자는 한국 브랜드 담당자다(docs/stp.md 페르소나 A). 연락 수단도
+ * 그 사람 것으로 둔다 — 이메일과 전화. LINE은 두지 않는다. 태국 소비자의
+ * 메신저라 여기서는 "설치부터 하라"는 요구가 되고, stp.md도 한국어 페이지에서
+ * LINE 유도를 금지한다.
+ */
+import { CONTACT_EMAIL, CONTACT_PHONE, TEL_HREF, mailto } from "../contact";
 import {
   AddressFigure,
   CoverageDots,
@@ -13,20 +20,6 @@ import {
   RangeBand,
   ShareMeter,
 } from "./ko-figures";
-
-/**
- * 이 페이지의 독자는 한국 브랜드 담당자다(docs/stp.md 페르소나 A). 연락 수단도
- * 그 사람 것으로 둔다 — 이메일과 전화. LINE은 두지 않는다. 태국 소비자의
- * 메신저라 여기서는 "설치부터 하라"는 요구가 되고, stp.md도 한국어 페이지에서
- * LINE 유도를 금지한다.
- */
-const CONTACT_EMAIL =
-  (import.meta.env.VITE_CONTACT_EMAIL as string) || "info@b-y-klink.com";
-const CONTACT_PHONE =
-  (import.meta.env.VITE_CONTACT_PHONE as string) || "010-7376-7012";
-
-/** tel: 링크는 하이픈을 못 읽는 다이얼러가 있어 숫자만 남긴다. */
-const TEL_HREF = `tel:${CONTACT_PHONE.replace(/[^0-9+]/g, "")}`;
 
 /**
  * 상담 메일에 미리 채워 두는 항목.
@@ -154,7 +147,7 @@ const marketFacts = [
   },
   {
     value: "69~89바트",
-    label: "'작은 프리미엄' 가격대",
+    label: "‘작은 프리미엄’ 가격대",
     body: "가계부채로 큰 지출은 줄고, 1회분 소포장으로 소비가 이동하고 있습니다.",
     source: "USDA FAS 방콕, 2025.12",
     Fig: () => (
@@ -520,11 +513,7 @@ export default function LandingKo() {
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Btn
-                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                  "태국 진출 상담 요청",
-                )}&body=${encodeURIComponent(MAIL_BODY)}`}
-              >
+              <Btn href={mailto("태국 진출 상담 요청", MAIL_BODY)}>
                 <Mail size={17} />
                 이메일로 문의
               </Btn>
@@ -543,7 +532,13 @@ export default function LandingKo() {
         </Container>
       </Section>
 
-      <Footer note="현재 첫 제품군의 태국 FDA 등록을 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정.">
+      <Footer
+        links={[
+          [CONTACT_EMAIL, `mailto:${CONTACT_EMAIL}`],
+          [CONTACT_PHONE, TEL_HREF],
+        ]}
+        note="현재 첫 제품군의 태국 FDA 등록을 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정."
+      >
         B&amp;Y k-link co., ltd. — 태국 방콕
       </Footer>
     </div>

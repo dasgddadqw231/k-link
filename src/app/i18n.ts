@@ -14,12 +14,16 @@ export type ThLang = "th" | "en";
 
 /**
  * 랜딩 카피 원칙 — 반드시 유지할 것.
- * 1. 태국 FDA 광고 허가(Sor Bor 4) 취득 전까지 식품의 건강 효능을 주장할 수 없다.
- *    부종 완화, 다이어트, 면역, 피부 개선 등 어떤 기능성 표현도 넣지 말 것.
+ * 1. 건강 효능 광고는 사전 심의 대상이다(태국 식품법 제40·41조). 심의를 받기
+ *    전까지 부종 완화, 다이어트, 면역, 피부 개선 등 어떤 기능성 표현도 넣지 말 것.
  *    제품 설명은 원재료, 형태, 용도 같은 사실 기술로만 작성한다.
+ *    (예전에 이 심의를 "Sor Bor 4"라고 적었으나 그 서식 번호는 확인되지 않았다.
+ *     근거는 서식이 아니라 조문이다 — docs/stp.md 규제 절 참고.)
  * 2. 이 페이지의 독자는 두 부류다. QR로 들어온 태국 소비자, 그리고 태국 유통·리테일.
  *    양쪽 모두에게 "지금 얻을 수 있는 것"을 제시한다. 회사 소개는 훅이 아니다.
  * 3. 아직 못 한 일(인허가 진행 중, 미출시)은 지우지 않되 헤드라인에 두지 않는다.
+ * 4. 우리 설정 상태를 손님에게 보여주지 않는다. LINE 계정이 아직 없으면 "링크가
+ *    설정되지 않았습니다"가 아니라 지금 되는 연락 수단을 내민다.
  */
 export const t = {
   th: {
@@ -53,7 +57,10 @@ export const t = {
     linePerk1: "รู้วันวางจำหน่ายและจุดจำหน่ายก่อนใคร",
     linePerk2: "ได้รับเชิญร่วมงานชิมสินค้า",
     lineCta: "เพิ่มเพื่อนใน LINE",
-    lineMissing: "ยังไม่ได้ตั้งค่าลิงก์ LINE",
+    /* LINE 계정이 준비되기 전까지 소비자에게 내미는 길. 받는 것은 위 두 가지 그대로다. */
+    lineBodyAlt: "ส่งอีเมลมาหาเรา แล้วรับสองอย่างนี้",
+    consumerMailSubject: "ขอรับข่าววันวางจำหน่าย",
+    partnerMailSubject: "สอบถามเรื่องการจัดจำหน่าย",
 
     bizLabel: "สำหรับผู้จัดจำหน่ายและร้านค้า",
     bizTitle: "ความเสี่ยงเรื่องนำเข้า\nเรารับไว้เอง",
@@ -95,7 +102,7 @@ export const t = {
 
   en: {
     eyebrow: "KOREA × THAILAND",
-    heroTitle: "Korea's best,\non its way to Thailand",
+    heroTitle: "Korea’s best,\non its way to Thailand",
     heroSub:
       "A Thai-registered company importing and distributing selected Korean goods, run by a local team in Bangkok.",
     heroCtaConsumer: "Get launch news",
@@ -124,7 +131,9 @@ export const t = {
     linePerk1: "Launch date and stockists, before anyone else",
     linePerk2: "Invitations to tasting events",
     lineCta: "Add us on LINE",
-    lineMissing: "LINE link is not configured yet",
+    lineBodyAlt: "Email us and get two things",
+    consumerMailSubject: "Launch news request",
+    partnerMailSubject: "Distribution enquiry",
 
     bizLabel: "For distributors and retailers",
     bizTitle: "We carry\nthe import risk",
@@ -132,7 +141,7 @@ export const t = {
       "No import paperwork, no registration burden on your side. You sell; we handle the rest.",
     biz1Title: "Thai-registered entity",
     biz1Body:
-      "We are the Importer of Record ourselves — not a broker borrowing someone else's licence.",
+      "We are the Importer of Record ourselves — not a broker borrowing someone else’s licence.",
     biz2Title: "Thai FDA filing in-house",
     biz2Body: "Registered under our own company name, without an agency in between.",
     biz3Title: "We run influencer seeding",

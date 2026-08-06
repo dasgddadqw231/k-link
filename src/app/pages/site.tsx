@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 /**
  * 랜딩 두 장(LandingKo · LandingTh)이 공유하는 단 하나의 디자인 시스템.
@@ -194,12 +194,20 @@ export function Figure({
   );
 }
 
+/**
+ * 푸터에 연락처가 없으면 회사가 실재하는지 확인할 방법이 없다. 상대를 처음 보는
+ * 사람이 진위를 확인하러 내려오는 자리가 여기다 — 상호만 적어 두면 그 확인이
+ * 실패하고, 그 실패는 곧 "아직 회사 같지 않다"로 읽힌다.
+ */
 export function Footer({
   children,
   note,
+  links,
 }: {
   children: ReactNode;
   note?: ReactNode;
+  /** [보이는 글자, href] 쌍. 없는 연락처를 지어내지 않도록 페이지가 넘긴 것만 건다. */
+  links?: [string, string][];
 }) {
   return (
     <footer className="border-t border-[#E3E7ED] bg-[#FCFCFD] py-14">
@@ -210,8 +218,29 @@ export function Footer({
           className="mx-auto mb-4 h-7 w-auto opacity-35"
         />
         <p className="text-[13px] text-[#5A6373]">{children}</p>
+
+        {links && links.length > 0 && (
+          <p className="mt-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[13px]">
+            {links.map(([label, href], i) => (
+              <Fragment key={href}>
+                {i > 0 && (
+                  <span aria-hidden className="text-[#C4CBD5]">
+                    ·
+                  </span>
+                )}
+                <a
+                  href={href}
+                  className="text-[#5A6373] underline decoration-[#D7DCE4] underline-offset-4 transition-colors hover:text-[#0C3F80] hover:decoration-[#0C3F80]"
+                >
+                  {label}
+                </a>
+              </Fragment>
+            ))}
+          </p>
+        )}
+
         {note && (
-          <p className={`mx-auto mt-4 max-w-[52ch] ${T.small}`}>{note}</p>
+          <p className={`mx-auto mt-5 max-w-[52ch] ${T.small}`}>{note}</p>
         )}
       </Container>
     </footer>

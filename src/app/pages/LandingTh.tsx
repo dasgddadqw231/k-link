@@ -14,10 +14,7 @@ import {
 } from "lucide-react";
 import { t, type ThLang } from "../i18n";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
-
-/** 값이 없으면 해당 버튼을 렌더링하지 않는다. 없는 연락처를 지어내지 않기 위함. */
-const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
-const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string) || "";
+import { CONTACT_EMAIL, LINE_URL, mailto } from "../contact";
 
 const fadeUp = {
   initial: { opacity: 0, y: 14 },
@@ -121,10 +118,20 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
               </h1>
               <p className={`mt-7 max-w-[46ch] ${T.lead}`}>{c.heroSub}</p>
 
+              {/*
+                소비자용 버튼이 먼저다. QR로 들어오는 사람 대부분이 소비자다.
+                LINE이 아직 없으면 버튼을 지우는 게 아니라 이메일로 길을 바꾼다 —
+                버튼이 사라지면 이 히어로에는 소비자가 누를 것이 하나도 없다.
+              */}
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                {LINE_URL && (
+                {LINE_URL ? (
                   <Btn href={LINE_URL} variant="line" external>
                     <MessageCircle size={17} />
+                    {c.heroCtaConsumer}
+                  </Btn>
+                ) : (
+                  <Btn href={mailto(c.consumerMailSubject)}>
+                    <Mail size={17} />
                     {c.heroCtaConsumer}
                   </Btn>
                 )}
@@ -201,7 +208,12 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
         <Container>
           <div className="grid gap-12 md:grid-cols-12 md:gap-16">
             <motion.div {...fadeUp} className="md:col-span-6">
-              <SectionHead label={c.lineLabel} title={c.lineTitle} lead={c.lineBody} />
+              {/* 받는 것 두 가지는 그대로다. 달라지는 건 연락 수단뿐이라 리드만 갈아 끼운다. */}
+              <SectionHead
+                label={c.lineLabel}
+                title={c.lineTitle}
+                lead={LINE_URL ? c.lineBody : c.lineBodyAlt}
+              />
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ delay: 0.08 }} className="md:col-span-6">
@@ -222,9 +234,13 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   {c.lineCta}
                 </Btn>
               ) : (
-                <p className="mt-8 rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-center text-[13px] text-[#8B94A3]">
-                  {c.lineMissing}
-                </p>
+                <Btn
+                  href={mailto(c.consumerMailSubject)}
+                  className="mt-8 w-full sm:w-auto"
+                >
+                  <Mail size={18} />
+                  {c.emailCta}
+                </Btn>
               )}
             </motion.div>
           </div>
@@ -291,8 +307,12 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 왼쪽 열 높이를 따라 늘리지 않는다. 다섯 장 옆에서 한 장이 억지로
                 늘어나면 빈 공간만 생기고, 높이 차이를 그대로 두는 편이 "우리가 더
                 많이 진다"는 말을 대신한다.
+
+                다만 카드가 다섯 장이 되면서 아래로 700px 가까운 빈자리가 남았다.
+                채우는 대신 붙여 둔다 — 다섯 장을 훑어 내리는 내내 "당신이 할 일"
+                한 칸이 옆에 그대로 서 있는 것이 이 섹션의 논지다.
               */}
-              <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-[#E3E7ED] bg-white px-7 py-14 text-center">
+              <div className="mt-8 flex flex-col items-center justify-center rounded-2xl border border-[#E3E7ED] bg-white px-7 py-14 text-center md:sticky md:top-24">
                 <span className="text-[#0C3F80]">
                   <Store size={22} strokeWidth={1.75} />
                 </span>
@@ -306,20 +326,28 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             </motion.div>
           </div>
 
+          {/*
+            이 섹션은 다섯 장을 읽히고 끝난다. 마지막에 누를 것이 없으면 앞의
+            다섯 장이 통째로 버려진다 — 예전에는 두 버튼이 모두 환경변수에 걸려
+            있어서 실제로 그런 화면이 나갔다. 메일 버튼은 항상 선다.
+          */}
           <motion.div {...fadeUp} className="mt-14 flex flex-col gap-3 sm:flex-row">
+            <Btn href={mailto(c.partnerMailSubject)}>
+              <Mail size={17} />
+              {c.bizCta}
+              <ArrowRight size={17} />
+            </Btn>
             {LINE_URL && (
-              <Btn href={LINE_URL} external>
-                {c.bizCta}
-                <ArrowRight size={17} />
-              </Btn>
-            )}
-            {CONTACT_EMAIL && (
-              <Btn href={`mailto:${CONTACT_EMAIL}`} variant="secondary">
-                <Mail size={17} />
-                {c.emailCta}
+              <Btn href={LINE_URL} variant="line" external>
+                <MessageCircle size={17} />
+                {c.lineCta}
               </Btn>
             )}
           </motion.div>
+
+          <motion.p {...fadeUp} className={`mt-5 ${T.small}`}>
+            {CONTACT_EMAIL}
+          </motion.p>
         </Container>
       </Section>
 
@@ -330,21 +358,36 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             <SectionHead title={c.flowLabel} />
           </motion.div>
 
-          <div className="mt-12 border-t border-[#E3E7ED]">
+          {/*
+            예전에는 한 줄에 아이콘·제목·도시를 놓고 도시를 오른쪽 끝에 붙였다.
+            1280px에서는 제목과 도시 사이가 1,500px 가까이 벌어져서, 세 줄짜리
+            표가 아니라 덜 채운 표로 읽혔다.
+
+            세 칸으로 세우면 폭이 내용으로 차고, 한국어 페이지의 단계 도식과 같은
+            문법(윗괘선 + 번호 + 제목)이 된다. 언어가 달라도 같은 회사로 보인다.
+          */}
+          <div className="mt-12 grid gap-y-8 md:grid-cols-3 md:gap-x-9 md:gap-y-0">
             {flow.map((s, i) => (
               <motion.div
                 key={s.title}
                 {...fadeUp}
-                transition={{ delay: i * 0.05 }}
-                className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-4 border-b border-[#E3E7ED] py-6"
+                transition={{ delay: i * 0.06 }}
+                className="border-t-2 border-[#0C3F80] pt-5"
               >
-                <span className="grid h-10 w-10 place-items-center rounded-full border border-[#E3E7ED] bg-white text-[#0C3F80]">
-                  <s.Icon size={17} strokeWidth={1.75} />
+                <span className="text-[12px] font-semibold tabular-nums text-[#0C3F80]">
+                  {`0${i + 1}`}
                 </span>
-                <h3 className="text-[15.5px] font-semibold tracking-[-0.01em]">
-                  {s.title}
-                </h3>
-                <span className={T.small}>{s.sub}</span>
+                <div className="mt-4 flex items-center gap-3.5">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-full border border-[#E3E7ED] bg-white text-[#0C3F80]">
+                    <s.Icon size={17} strokeWidth={1.75} />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-[15.5px] font-semibold tracking-[-0.01em]">
+                      {s.title}
+                    </h3>
+                    <p className={`mt-0.5 ${T.small}`}>{s.sub}</p>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -354,20 +397,31 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
         </Container>
       </Section>
 
-      <Footer>{c.footerNote}</Footer>
+      {/* 전화번호는 한국 번호라 여기서는 걸지 않는다. 태국 독자에게는 길이 아니다. */}
+      <Footer links={[[CONTACT_EMAIL, `mailto:${CONTACT_EMAIL}`]]}>
+        {c.footerNote}
+      </Footer>
 
       {/* 고정 CTA가 푸터 마지막 줄을 덮지 않도록 모바일에서만 자리를 비운다 */}
-      {LINE_URL && <div aria-hidden className="h-20 sm:hidden" />}
+      <div aria-hidden className="h-20 sm:hidden" />
 
-      {/* 모바일 하단 고정 CTA — QR 유입의 이탈 지점을 막는다 */}
-      {LINE_URL && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E3E7ED] bg-white/92 px-4 py-3 backdrop-blur-md sm:hidden">
+      {/*
+        모바일 하단 고정 CTA — QR 유입의 이탈 지점을 막는다. QR로 들어온 사람은
+        페이지 어디에 있든 여기서 나가므로, LINE이 없다고 이 자리를 비우지 않는다.
+      */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E3E7ED] bg-white/92 px-4 py-3 backdrop-blur-md sm:hidden">
+        {LINE_URL ? (
           <Btn href={LINE_URL} variant="line" external className="w-full">
             <MessageCircle size={18} />
             {c.lineCta}
           </Btn>
-        </div>
-      )}
+        ) : (
+          <Btn href={mailto(c.consumerMailSubject)} className="w-full">
+            <Mail size={18} />
+            {c.emailCta}
+          </Btn>
+        )}
+      </div>
     </div>
   );
 }
