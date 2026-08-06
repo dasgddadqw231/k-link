@@ -1,15 +1,18 @@
 import { Fragment } from "react";
 import { motion } from "motion/react";
-import {
-  Mail,
-  Phone,
-  ArrowRight,
-  ArrowDown,
-  MapPin,
-  Tag,
-  BadgeCheck,
-} from "lucide-react";
+import { Mail, Phone, ArrowRight, MapPin, Tag, BadgeCheck } from "lucide-react";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
+import {
+  AddressFigure,
+  CoverageDots,
+  CoverageLegend,
+  Dumbbell,
+  LabelFigure,
+  OyFigure,
+  ProcessDiagram,
+  RangeBand,
+  ShareMeter,
+} from "./ko-figures";
 
 /**
  * 이 페이지의 독자는 한국 브랜드 담당자다(docs/stp.md 페르소나 A). 연락 수단도
@@ -53,121 +56,110 @@ const fadeUp = {
  * 근거는 docs/stp.md 트랙 A. 캐릭터를 전면에 세우지 않고, 규제 사실로 설득한다.
  */
 
-/** 태국 법인이 아니면 애초에 성립하지 않는 요건들. 이 페이지의 유일한 논거다. */
+/**
+ * 태국 법인이 아니면 애초에 성립하지 않는 요건들. 이 페이지의 유일한 논거다.
+ *
+ * 세 줄 다 문단으로 읽으면 한 번씩 더 생각해야 해서, 각 항목에 도해를 붙였다
+ * (ko-figures.tsx). 도해에는 문단에 없는 사실을 넣지 않는다.
+ *
+ * 허가 서식 이름은 อ.7이다. 예전에 여기를 "Sor Bor 3"로 적었는데 그건 라벨
+ * 승인 서식(สบ.3/1)이지 수입 허가가 아니다 — docs/stp.md 규제 절의 2026-08-04
+ * 수정을 참고한다.
+ */
 const barriers = [
   {
     Icon: MapPin,
     title: "허가는 회사가 아니라 주소에 붙습니다",
-    body: "판매 목적의 식품 수입 허가(Sor Bor 3)는 태국 내 창고·시설 주소로 발급되고, 승인 전에 태국 FDA의 현장 실사를 거칩니다. 유효기간은 3년입니다. 서울 주소로는 신청 자체가 성립하지 않습니다.",
+    body: "판매 목적의 식품 수입 허가(อ.7)는 태국 내 창고·시설 주소로 발급되고, 승인 전에 태국 FDA의 현장 실사를 거칩니다. 유효기간은 3년입니다. 서울 주소로는 신청 자체가 성립하지 않습니다.",
+    Fig: AddressFigure,
   },
   {
     Icon: Tag,
     title: "태국어 라벨은 통관 전에 붙어 있어야 합니다",
     body: "수입 식품은 태국에 들어오기 전 태국어 라벨이 부착된 상태여야 합니다. 번역의 문제가 아니라 표시 항목과 형식이 규정돼 있습니다.",
+    Fig: LabelFigure,
   },
   {
     Icon: BadgeCheck,
     title: "อย. 번호 없이는 매대에 오르지 못합니다",
     body: "통제 대상 식품은 라벨 사전승인을 받아야 하고, 승인되면 소비자가 패키지에서 확인하는 식품 등록번호가 부여됩니다. 이 번호는 수입자 명의로 나옵니다.",
+    Fig: OyFigure,
   },
 ];
 
 /**
- * 각 단계에서 누가 무엇을 하는지. 브랜드의 가장 큰 불안은 "그래서 내가 뭘 해야 하나"다.
+ * 규제 도해가 격자에서 앉을 열. 문자열을 조립하면 Tailwind가 훑을 때 못 찾으니
+ * 완성된 클래스명으로 적어 둔다(진행 방식 도식의 STEP_COL과 같은 이유).
+ */
+const BARRIER_COL = ["md:col-start-1", "md:col-start-2", "md:col-start-3"];
+
+/**
+ * has는 [시장 정보, 인허가 주체, 수입자, 유통 입점] 순서다(ko-figures의
+ * CAPABILITIES와 같은 순서). 값은 옆 칸의 문장에서 그대로 읽어 온 것이지
+ * 새로운 판단이 아니다 — 점이 문장보다 강하게 읽히므로 여기서 한 칸이라도
+ * 앞서 나가면 그게 곧 과장이 된다.
  *
- * brand가 null인 단계는 브랜드가 손댈 일이 없다는 뜻이고, handoff는 일이 넘어오는
- * 지점이다. 둘 다 이 표의 결론이라 데이터에 적어 둔다 — 화면에서 문자열을 보고
- * 짐작하지 않는다.
+ * 대형 유통사의 '유통 입점'은 검증된 브랜드에 한해서다. 그 조건이 lacks에
+ * 적혀 있으므로 점은 채우고 조건은 문장에 맡긴다.
  */
-const steps: {
-  no: string;
-  title: string;
-  brand: string | null;
-  klink: string;
-  handoff?: boolean;
-}[] = [
-  {
-    no: "01",
-    title: "제품 검토",
-    brand: "샘플, 성분표, 제조공정서",
-    klink: "태국 시장 적합성과 등록 가능 여부 확인",
-  },
-  {
-    no: "02",
-    title: "시장 검증",
-    brand: "소량 물량",
-    klink: "FDA 등록 전 소량으로 현지 반응 확인, 인플루언서 시딩",
-  },
-  {
-    no: "03",
-    title: "태국 FDA 등록",
-    brand: "제조사 발급 서류 협조",
-    klink: "저희 법인 명의로 신고, 라벨 사전승인",
-  },
-  {
-    no: "04",
-    title: "수입 · 통관",
-    brand: "한국에서 출고",
-    klink: "수입자로서 통관, 태국어 라벨 부착",
-    handoff: true,
-  },
-  {
-    no: "05",
-    title: "유통 · 판매",
-    brand: null,
-    klink: "도매·리테일 입점, 인플루언서 시딩",
-  },
-];
-
-/**
- * 단계마다 격자에서 앉을 열. 문자열을 조립하면 Tailwind가 훑을 때 못 찾으니
- * 완성된 클래스명으로 적어 둔다.
- */
-const STEP_COL = [
-  "md:col-start-2",
-  "md:col-start-3",
-  "md:col-start-4",
-  "md:col-start-5",
-  "md:col-start-6",
-];
-
 const alternatives = [
   {
     name: "KOTRA · 무역관",
     gives: "시장 정보, 바이어 매칭",
     lacks: "수입자가 되어주지 않습니다",
+    has: [true, false, false, false],
   },
   {
     name: "수출 대행사",
     gives: "바이어 발굴, 중개",
     lacks: "인허가 주체도 재고 리스크도 브랜드가 집니다",
+    has: [true, false, false, false],
   },
   {
     name: "대형 유통사",
     gives: "넓은 유통망",
     lacks: "이미 검증된 브랜드만 받습니다",
+    has: [false, false, false, true],
   },
 ];
 
-/** 숫자는 전부 출처를 붙인다. 근거 없는 숫자는 브랜드 담당자가 가장 먼저 의심한다. */
+/**
+ * 숫자는 전부 출처를 붙인다. 근거 없는 숫자는 브랜드 담당자가 가장 먼저 의심한다.
+ *
+ * Fig는 큰 숫자 아래에 붙는 작은 그림이다. 셋 다 문장에 이미 있는 값만 그리고,
+ * 축의 최대값을 지어내야 하는 그림은 그리지 않는다 — 없는 눈금이 곧 없는 근거다.
+ */
 const marketFacts = [
   {
     value: "13,660개",
     label: "태국 7-Eleven 점포 수",
     body: "편의점 시장의 약 72%를 한 체인이 쥐고 있습니다.",
     source: "CP All, 2022년 말 기준",
+    Fig: () => <ShareMeter pct={72} fill="7-Eleven" rest="나머지 편의점" />,
   },
   {
     value: "4배",
     label: "TikTok Shop 태국 매출 증가",
     body: "연매출이 121억에서 544억 바트로 늘며 Lazada를 제쳤습니다. 라이브커머스가 실질 채널입니다.",
     source: "2025년",
+    Fig: () => (
+      <Dumbbell
+        from={121}
+        to={544}
+        fromLabel="전년"
+        toLabel="2025"
+        unit="억 바트"
+      />
+    ),
   },
   {
     value: "69~89바트",
     label: "'작은 프리미엄' 가격대",
     body: "가계부채로 큰 지출은 줄고, 1회분 소포장으로 소비가 이동하고 있습니다.",
     source: "USDA FAS 방콕, 2025.12",
+    Fig: () => (
+      <RangeBand from={69} to={89} unit="바트" note="약 2.2~2.9달러 · 1회분 완제품" />
+    ),
   },
 ];
 
@@ -295,18 +287,38 @@ export default function LandingKo() {
             />
           </motion.div>
 
-          {/* 카드 상자 대신 위쪽 괘선으로만 나눈다 — 같은 카드 스택의 반복을 끊는다 */}
-          <div className="mt-14 grid gap-x-10 gap-y-12 md:grid-cols-3">
+          {/*
+            카드 상자 대신 위쪽 괘선으로만 나눈다 — 같은 카드 스택의 반복을 끊는다.
+
+            글과 도해를 격자의 다른 행에 앉힌다. 한 칸에 같이 넣으면 본문 길이가
+            칸마다 달라서 도해 세 개가 제각각 다른 높이에서 시작한다. 행을 나누면
+            글의 길이와 무관하게 도해 줄이 한 줄로 맞는다.
+          */}
+          <div className="mt-14 grid gap-x-10 gap-y-6 md:grid-cols-3 md:grid-rows-[auto_auto]">
             {barriers.map((b, i) => (
-              <motion.div key={b.title} {...fadeUp} transition={{ delay: i * 0.06 }}>
-                <div className="border-t border-[#0C3F80] pt-6">
+              <Fragment key={b.title}>
+                <motion.div
+                  {...fadeUp}
+                  transition={{ delay: i * 0.06 }}
+                  className={`${BARRIER_COL[i]} border-t border-[#0C3F80] pt-6 md:row-start-1 ${
+                    i === 0 ? "" : "mt-6 md:mt-0"
+                  }`}
+                >
                   <span className="text-[#0C3F80]">
                     <b.Icon size={20} strokeWidth={1.75} />
                   </span>
                   <h3 className={`mt-5 ${T.h3}`}>{b.title}</h3>
                   <p className={`mt-3 ${T.body}`}>{b.body}</p>
-                </div>
-              </motion.div>
+                </motion.div>
+
+                <motion.div
+                  {...fadeUp}
+                  transition={{ delay: i * 0.06 }}
+                  className={`${BARRIER_COL[i]} md:row-start-2`}
+                >
+                  <b.Fig />
+                </motion.div>
+              </Fragment>
             ))}
           </div>
 
@@ -333,99 +345,13 @@ export default function LandingKo() {
           </motion.div>
 
           {/*
-            표가 아니라 도식으로 읽힌다.
-
-            데스크톱은 두 레인(대한민국·태국)이 네 단계를 가로지른다. 격자가 행
-            높이를 맞춰 주니 칸마다 그은 윗괘선이 한 줄로 이어지고, 그래서 "이 줄은
-            브랜드 것, 저 줄은 우리 것"이 글을 읽기 전에 잡힌다.
-
-            모바일은 단계별로 쌓는다. 좁은 화면에서 레인을 지키려면 가로 스크롤이
-            되고, 그러면 네 단계 중 하나만 보인다.
-
-            글은 DOM에 한 번만 넣고 데스크톱에서는 격자 좌표로 자리를 잡는다. 두
-            레이아웃을 각각 쓰면 크롤러와 스크린리더가 같은 문장을 두 번 읽는다.
-
-            색면은 쓰지 않는다(site.tsx의 원칙). 레인은 괘선 색과 라벨로만 나눈다.
+            개요는 그대로 두고, 단계별 기간·주의사항은 눌렀을 때만 펼친다.
+            도식과 상세는 ko-figures.tsx의 ProcessDiagram 하나에 들어 있다.
           */}
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-[5.5rem_repeat(5,minmax(0,1fr))] md:gap-x-4 md:gap-y-7">
-            {steps.map((s, i) => (
-              <Fragment key={s.no}>
-                <motion.div
-                  {...fadeUp}
-                  transition={{ delay: i * 0.05 }}
-                  className={`${STEP_COL[i]} border-t-2 border-[#0C3F80] pt-4 md:row-start-1 ${
-                    i === 0 ? "" : "mt-12 md:mt-0"
-                  }`}
-                >
-                  <span className="text-[12px] font-semibold tabular-nums text-[#0C3F80]">
-                    {s.no}
-                  </span>
-                  <h3 className={`mt-1.5 ${T.h3}`}>{s.title}</h3>
-                </motion.div>
-
-                {/*
-                  한 단계의 세 조각은 같은 지연으로 함께 들어온다. 제목만 움직이게
-                  두면 스크롤 중에 본문이 먼저 서 있고 제목이 뒤늦게 나타난다.
-                */}
-                <motion.div
-                  {...fadeUp}
-                  transition={{ delay: i * 0.05 }}
-                  className={`${STEP_COL[i]} mt-5 border-t border-[#D7DCE4] pt-4 md:row-start-2 md:mt-0`}
-                >
-                  <span className="mb-1.5 block text-[12px] font-semibold text-[#8B94A3] md:hidden">
-                    브랜드
-                  </span>
-                  {s.brand ? (
-                    <p className="text-[14.5px] leading-relaxed text-[#5A6373]">
-                      {s.brand}
-                    </p>
-                  ) : (
-                    <p className="text-[13.5px] leading-relaxed text-[#8B94A3]">
-                      브랜드가 할 일 없음
-                    </p>
-                  )}
-                  {/* 일이 넘어오는 지점. 이 페이지에서 브랜드가 가장 알고 싶은 한 줄이다. */}
-                  {s.handoff && (
-                    <p className="mt-3 flex items-start gap-1.5 text-[12.5px] font-semibold text-[#0C3F80]">
-                      <ArrowDown size={14} strokeWidth={2.5} className="mt-px shrink-0" />
-                      브랜드의 일은 여기서 끝납니다
-                    </p>
-                  )}
-                </motion.div>
-
-                <motion.div
-                  {...fadeUp}
-                  transition={{ delay: i * 0.05 }}
-                  className={`${STEP_COL[i]} mt-4 border-t border-[#0C3F80] pt-4 md:row-start-3 md:mt-0`}
-                >
-                  <span className="mb-1.5 block text-[12px] font-semibold text-[#0C3F80] md:hidden">
-                    klink
-                  </span>
-                  <p className="text-[14.5px] leading-relaxed text-[#12161F]">
-                    {s.klink}
-                  </p>
-                </motion.div>
-              </Fragment>
-            ))}
-
-            {/* 레인 축 — 데스크톱에서만. 모바일에서는 각 칸이 스스로 라벨을 단다. */}
-            <div className="hidden md:col-start-1 md:row-start-2 md:block md:border-t md:border-[#D7DCE4] md:pt-4">
-              <span className="block text-[11.5px] font-semibold text-[#8B94A3]">
-                대한민국
-              </span>
-              <span className="mt-0.5 block text-[13.5px] font-semibold text-[#5A6373]">
-                브랜드
-              </span>
-            </div>
-            <div className="hidden md:col-start-1 md:row-start-3 md:block md:border-t md:border-[#0C3F80] md:pt-4">
-              <span className="block text-[11.5px] font-semibold text-[#8B94A3]">
-                태국
-              </span>
-              <span className="mt-0.5 block text-[13.5px] font-semibold text-[#0C3F80]">
-                klink
-              </span>
-            </div>
-          </div>
+          <p className="mt-6 text-[13px] text-[#8B94A3]">
+            단계를 누르면 걸리는 기간과 자주 막히는 지점이 열립니다.
+          </p>
+          <ProcessDiagram />
         </Container>
       </Section>
 
@@ -436,7 +362,16 @@ export default function LandingKo() {
             <SectionHead label="다른 선택지와 비교" title="어디까지 해주는가" />
           </motion.div>
 
-          <div className="mt-14 border-t border-[#E3E7ED]">
+          {/*
+            네 칸짜리 점줄을 이름 아래에 붙인다. 두 문단을 대조해 읽지 않아도
+            어느 줄이 어디까지 가는지가 먼저 보인다. 점의 뜻은 표 위에서 한 번만
+            말한다 — 행마다 반복하면 표가 라벨로 뒤덮인다.
+          */}
+          <motion.div {...fadeUp} className="mt-12">
+            <CoverageLegend />
+          </motion.div>
+
+          <div className="mt-6 border-t border-[#E3E7ED]">
             <div className="hidden grid-cols-12 gap-6 border-b border-[#E3E7ED] py-3 md:grid">
               <span className="col-span-3 text-[12px] font-semibold text-[#8B94A3]" />
               <span className="col-span-4 text-[12px] font-semibold text-[#8B94A3]">
@@ -454,9 +389,12 @@ export default function LandingKo() {
                 transition={{ delay: i * 0.05 }}
                 className="grid gap-2 border-b border-[#E3E7ED] py-6 md:grid-cols-12 md:gap-6"
               >
-                <h3 className="text-[15px] font-semibold text-[#12161F] md:col-span-3">
-                  {a.name}
-                </h3>
+                <div className="md:col-span-3">
+                  <h3 className="text-[15px] font-semibold text-[#12161F]">{a.name}</h3>
+                  <div className="mt-2.5">
+                    <CoverageDots has={a.has} name={a.name} />
+                  </div>
+                </div>
                 <p className="text-[14.5px] leading-relaxed text-[#5A6373] md:col-span-4">
                   {a.gives}
                 </p>
@@ -472,9 +410,15 @@ export default function LandingKo() {
               transition={{ delay: 0.15 }}
               className="grid gap-2 rounded-b-2xl bg-[#0C3F80]/[0.045] px-5 py-7 md:grid-cols-12 md:gap-6 md:px-6"
             >
-              <h3 className="text-[15px] font-bold text-[#0C3F80] md:col-span-3">
-                B&amp;Y k-link
-              </h3>
+              <div className="md:col-span-3">
+                <h3 className="text-[15px] font-bold text-[#0C3F80]">B&amp;Y k-link</h3>
+                <div className="mt-2.5">
+                  <CoverageDots
+                    has={[true, true, true, true]}
+                    name="B&Y k-link"
+                  />
+                </div>
+              </div>
               <p className="text-[14.5px] font-medium leading-relaxed text-[#12161F] md:col-span-4">
                 시장 검증, 태국 FDA 등록, 통관, 유통 입점까지
               </p>
@@ -554,7 +498,8 @@ export default function LandingKo() {
                   <p className="mt-4 text-[14px] font-semibold text-[#12161F]">
                     {f.label}
                   </p>
-                  <p className={`mt-2.5 ${T.body}`}>{f.body}</p>
+                  <f.Fig />
+                  <p className={`mt-4 ${T.body}`}>{f.body}</p>
                   <p className={`mt-4 ${T.small}`}>{f.source}</p>
                 </div>
               </motion.div>
@@ -567,7 +512,7 @@ export default function LandingKo() {
       <Section id="contact" tone="alt">
         <Container>
           <motion.div {...fadeUp} className="max-w-[52ch]">
-            <h2 className={T.h2}>태국, 한번 보시겠습니까</h2>
+            <h2 className={T.h2}>태국 진출, 검토부터 시작하세요</h2>
             <p className={`mt-5 ${T.lead}`}>
               제품 카테고리와 현재 국내 유통 상황만 알려주시면, 태국에서 등록이
               가능한 품목인지부터 확인해 드립니다. 검토 단계에서는 비용이 들지
