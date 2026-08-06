@@ -30,7 +30,7 @@ export const t = {
     eyebrow: "เกาหลี × ไทย",
     heroTitle: "ของดีจากเกาหลี\nกำลังจะมาถึงไทย",
     heroSub:
-      "บริษัทจดทะเบียนในไทย นำเข้าและดูแลสินค้าเกาหลีคัดสรร ด้วยทีมงานในกรุงเทพฯ",
+      "บริษัทจดทะเบียนในไทย นำเข้าและดูแลสินค้าเกาหลีคัดสรร ด้วยทีมงานในสมุทรสาคร",
     heroCtaConsumer: "รับข่าวก่อนใคร",
     heroCtaPartner: "สนใจจัดจำหน่าย",
 
@@ -108,7 +108,7 @@ export const t = {
     eyebrow: "KOREA × THAILAND",
     heroTitle: "Korea’s best,\non its way to Thailand",
     heroSub:
-      "A Thai-registered company importing and distributing selected Korean goods, run by a local team in Bangkok.",
+      "A Thai-registered company importing and distributing selected Korean goods, run by a local team in Samut Sakhon.",
     heroCtaConsumer: "Get launch news",
     heroCtaPartner: "Distribute with us",
 

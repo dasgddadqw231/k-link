@@ -39,7 +39,7 @@ export interface PageMeta {
  */
 export const META: Record<Lang, PageMeta> = {
   th: {
-    title: "B&Y k-link — นำเข้าสินค้าเกาหลีคัดสรร โดยบริษัทไทยในกรุงเทพฯ",
+    title: "B&Y k-link — นำเข้าสินค้าเกาหลีคัดสรร โดยบริษัทจดทะเบียนในไทย",
     description:
       "น้ำมันมะกอกแบบซองสติ๊ก Positiva และน้ำฟักทองเกาหลี Eunhwi Flow กำลังจะมาถึงไทย เราเป็นผู้นำเข้าเอง ดูแลการขึ้นทะเบียน อย. และจัดส่งถึงหน้าร้าน",
     ogLocale: "th_TH",
@@ -58,19 +58,29 @@ export const META: Record<Lang, PageMeta> = {
   },
 };
 
-/** 검색결과에 회사 정보로 뜨게 하는 최소 구조화 데이터. 없는 사실은 넣지 않는다. */
+/**
+ * 검색결과에 회사 정보로 뜨게 하는 최소 구조화 데이터. 없는 사실은 넣지 않는다.
+ *
+ * 주소와 등록번호는 태국 상무부 사업개발국(DBD) 등기부 그대로다. 여기는 사람이
+ * 읽는 자리가 아니라 기계가 대조하는 자리라, 푸터에 적은 것과 한 글자도 달라선
+ * 안 된다. 예전에는 여기에 Bangkok이 들어 있었는데 등기상 본점은 사뭇사콘이다.
+ */
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "B&Y k-link co., ltd.",
+    name: "B&Y k-link Co., Ltd.",
     url: SITE_URL,
     logo: `${SITE_URL}/favicon.png`,
     description:
       "A Thai-registered company importing and distributing selected Korean food brands.",
+    taxID: "0745569003634",
+    email: "info@b-y-klink.com",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Bangkok",
+      streetAddress: "52/6 Moo 5, Bang Nam Chuet",
+      addressLocality: "Mueang Samut Sakhon",
+      addressRegion: "Samut Sakhon",
       addressCountry: "TH",
     },
   };
