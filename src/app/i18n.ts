@@ -97,7 +97,11 @@ export const t = {
 
     statusNote:
       "ขณะนี้อยู่ระหว่างขึ้นทะเบียนกับ อย. ไทย ยังไม่เปิดจำหน่าย กำหนดวางจำหน่ายปี 2026",
-    footerNote: "B&Y k-link co., ltd. — กรุงเทพมหานคร ประเทศไทย",
+    footerNote: "บริษัท บีแอนด์วาย เค-ลิ้ง จำกัด (B&Y k-link Co., Ltd.)",
+    /* 등기부(DBD)의 표기를 그대로 옮긴다. 상대가 대조할 수 있어야 뜻이 있다. */
+    footerLegalLabel: "ทะเบียนนิติบุคคลเลขที่",
+    footerOfficeLabel: "สำนักงานแห่งใหญ่",
+    footerAddress: "52/6 หมู่ที่ 5 ต.บางน้ำจืด อ.เมืองสมุทรสาคร จ.สมุทรสาคร",
   },
 
   en: {
@@ -169,7 +173,11 @@ export const t = {
 
     statusNote:
       "Thai FDA registration is in progress and we have not started selling. Launch planned for 2026.",
-    footerNote: "B&Y k-link co., ltd. — Bangkok, Thailand",
+    footerNote: "B&Y k-link Co., Ltd.",
+    footerLegalLabel: "Thai company registration no.",
+    footerOfficeLabel: "Registered office",
+    footerAddress:
+      "52/6 Moo 5, Bang Nam Chuet, Mueang Samut Sakhon, Samut Sakhon, Thailand",
   },
 } as const;
 

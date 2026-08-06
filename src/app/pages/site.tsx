@@ -203,11 +203,14 @@ export function Footer({
   children,
   note,
   links,
+  legal,
 }: {
   children: ReactNode;
   note?: ReactNode;
   /** [보이는 글자, href] 쌍. 없는 연락처를 지어내지 않도록 페이지가 넘긴 것만 건다. */
   links?: [string, string][];
+  /** 법인등록번호와 등기상 본점. 상대가 등기부와 대조할 수 있어야 의미가 있다. */
+  legal?: ReactNode;
 }) {
   return (
     <footer className="border-t border-[#E3E7ED] bg-[#FCFCFD] py-14">
@@ -218,6 +221,12 @@ export function Footer({
           className="mx-auto mb-4 h-7 w-auto opacity-35"
         />
         <p className="text-[13px] text-[#5A6373]">{children}</p>
+
+        {legal && (
+          <p className="mx-auto mt-2 max-w-[60ch] text-[12px] leading-relaxed text-[#8B94A3]">
+            {legal}
+          </p>
+        )}
 
         {links && links.length > 0 && (
           <p className="mt-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[13px]">

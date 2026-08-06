@@ -3,6 +3,14 @@ dist
 .env
 .env.*
 .vercel
+.DS_Store
 
 # 작업용으로 받은 원본 이미지 (LINE QR 등)
 KakaoTalk_Photo_*.png
+klink line.png
+
+# 등기부·사업자등록증 원본. 이 저장소는 공개돼 있고 등기부에는 대표자 개인
+# 이름이 적혀 있다. 사이트에 싣는 것은 법인등록번호와 등기상 본점뿐이며
+# 그 값은 src/app/contact.ts에 있다.
+*사업자 등록증*.pdf
+*등기*.pdf

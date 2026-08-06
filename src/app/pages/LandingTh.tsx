@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { t, type ThLang } from "../i18n";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
-import { CONTACT_EMAIL, LINE_URL, mailto } from "../contact";
+import { COMPANY_REG_NO, CONTACT_EMAIL, LINE_URL, mailto } from "../contact";
 
 const fadeUp = {
   initial: { opacity: 0, y: 14 },
@@ -398,7 +398,10 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       </Section>
 
       {/* 전화번호는 한국 번호라 여기서는 걸지 않는다. 태국 독자에게는 길이 아니다. */}
-      <Footer links={[[CONTACT_EMAIL, `mailto:${CONTACT_EMAIL}`]]}>
+      <Footer
+        legal={`${c.footerLegalLabel} ${COMPANY_REG_NO} · ${c.footerOfficeLabel} ${c.footerAddress}`}
+        links={[[CONTACT_EMAIL, `mailto:${CONTACT_EMAIL}`]]}
+      >
         {c.footerNote}
       </Footer>
 

@@ -18,11 +18,22 @@ export const CONTACT_PHONE =
 export const TEL_HREF = `tel:${CONTACT_PHONE.replace(/[^0-9+]/g, "")}`;
 
 /**
- * LINE은 아직 계정이 없으면 빈 값이다. 이 값이 비었을 때 "링크가 설정되지
- * 않았습니다"를 손님에게 보여주지 않는다 — 그건 우리 설정 상태이지 손님이 알
- * 일이 아니다. 대신 이메일로 길을 낸다.
+ * LINE 공식계정. QR(klink line.png)에 들어 있는 주소와 같은 것이다.
+ *
+ * 값이 비는 경우에도 "링크가 설정되지 않았습니다"를 손님에게 보여주지 않는다 —
+ * 그건 우리 설정 상태이지 손님이 알 일이 아니다. 대신 이메일로 길을 낸다.
  */
-export const LINE_URL = (import.meta.env.VITE_LINE_URL as string) || "";
+export const LINE_URL =
+  (import.meta.env.VITE_LINE_URL as string) || "https://lin.ee/QdYmhDx";
+
+/**
+ * 등기 사항. 태국 상무부 사업개발국(DBD) 법인등기부(2569-06-16 발급) 기준이다.
+ *
+ * 등기상 본점은 사뭇사콘이고 방콕이 아니다. 푸터에 "방콕"만 적어 두면 등기부를
+ * 떼 본 상대에게는 그 줄이 첫 번째 의심거리가 된다. 그래서 팀이 있는 곳(본문
+ * 카피)과 등기상 본점(여기)을 각각 제 이름으로 적는다.
+ */
+export const COMPANY_REG_NO = "0745569003634";
 
 /** 메일 제목을 미리 채워 두면 어느 페이지에서 온 문의인지 받는 쪽에서 갈린다. */
 export function mailto(subject: string, body?: string) {

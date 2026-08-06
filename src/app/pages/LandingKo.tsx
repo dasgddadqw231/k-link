@@ -8,7 +8,13 @@ import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T 
  * 메신저라 여기서는 "설치부터 하라"는 요구가 되고, stp.md도 한국어 페이지에서
  * LINE 유도를 금지한다.
  */
-import { CONTACT_EMAIL, CONTACT_PHONE, TEL_HREF, mailto } from "../contact";
+import {
+  COMPANY_REG_NO,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  TEL_HREF,
+  mailto,
+} from "../contact";
 import {
   AddressFigure,
   CoverageDots,
@@ -532,14 +538,21 @@ export default function LandingKo() {
         </Container>
       </Section>
 
+      {/*
+        등기 사항을 적는 이유는 장식이 아니다. 이 페이지는 처음 보는 상대에게
+        "저희 법인 명의로 수입합니다"라고 말하는데, 그 법인이 실재하는지 확인할
+        방법이 없으면 그 문장이 가장 먼저 의심받는다. 번호와 주소를 적어 두면
+        DBD 등기부에서 바로 대조된다.
+      */}
       <Footer
+        legal={`태국 법인등록번호 ${COMPANY_REG_NO} · 등기상 본점 52/6 Moo 5, Bang Nam Chuet, Mueang Samut Sakhon, Samut Sakhon, Thailand`}
         links={[
           [CONTACT_EMAIL, `mailto:${CONTACT_EMAIL}`],
           [CONTACT_PHONE, TEL_HREF],
         ]}
         note="현재 첫 제품군의 태국 FDA 등록을 진행 중이며 아직 판매를 시작하지 않았습니다. 2026년 출시 예정."
       >
-        B&amp;Y k-link co., ltd. — 태국 방콕
+        B&amp;Y k-link co., ltd. — 태국 사뭇사콘
       </Footer>
     </div>
   );
