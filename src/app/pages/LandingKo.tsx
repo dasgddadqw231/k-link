@@ -1,8 +1,8 @@
 import { Fragment } from "react";
 import { motion } from "motion/react";
 import {
-  MessageCircle,
   Mail,
+  Phone,
   ArrowRight,
   ArrowDown,
   MapPin,
@@ -13,12 +13,17 @@ import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T 
 
 /**
  * 이 페이지의 독자는 한국 브랜드 담당자다(docs/stp.md 페르소나 A). 연락 수단도
- * 그 사람 것으로 둔다 — 이메일과 카카오톡. LINE은 두지 않는다. 태국 소비자의
+ * 그 사람 것으로 둔다 — 이메일과 전화. LINE은 두지 않는다. 태국 소비자의
  * 메신저라 여기서는 "설치부터 하라"는 요구가 되고, stp.md도 한국어 페이지에서
  * LINE 유도를 금지한다.
  */
-const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string) || "";
-const KAKAO_URL = (import.meta.env.VITE_KAKAO_URL as string) || "";
+const CONTACT_EMAIL =
+  (import.meta.env.VITE_CONTACT_EMAIL as string) || "info@b-y-klink.com";
+const CONTACT_PHONE =
+  (import.meta.env.VITE_CONTACT_PHONE as string) || "010-7376-7012";
+
+/** tel: 링크는 하이픈을 못 읽는 다이얼러가 있어 숫자만 남긴다. */
+const TEL_HREF = `tel:${CONTACT_PHONE.replace(/[^0-9+]/g, "")}`;
 
 /**
  * 상담 메일에 미리 채워 두는 항목.
@@ -569,33 +574,26 @@ export default function LandingKo() {
               않습니다.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              {CONTACT_EMAIL && (
-                <Btn
-                  href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-                    "태국 진출 상담 요청",
-                  )}&body=${encodeURIComponent(MAIL_BODY)}`}
-                >
-                  <Mail size={17} />
-                  이메일로 문의
-                </Btn>
-              )}
-              {KAKAO_URL && (
-                <Btn href={KAKAO_URL} variant="secondary" external>
-                  <MessageCircle size={17} />
-                  카카오톡으로 문의
-                </Btn>
-              )}
-              {!CONTACT_EMAIL && !KAKAO_URL && (
-                <p className="rounded-xl border border-dashed border-[#D7DCE4] px-5 py-4 text-[13px] leading-relaxed text-[#8B94A3]">
-                  연락처가 아직 설정되지 않았습니다.
-                  <br />
-                  <code className="text-[#5A6373]">VITE_CONTACT_EMAIL</code> 또는{" "}
-                  <code className="text-[#5A6373]">VITE_KAKAO_URL</code>을 설정하면
-                  버튼이 나옵니다.
-                </p>
-              )}
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Btn
+                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+                  "태국 진출 상담 요청",
+                )}&body=${encodeURIComponent(MAIL_BODY)}`}
+              >
+                <Mail size={17} />
+                이메일로 문의
+              </Btn>
+              <Btn href={TEL_HREF} variant="secondary">
+                <Phone size={17} />
+                전화로 문의
+              </Btn>
             </div>
+
+            {/* 데스크톱에서는 mailto·tel이 열리지 않는 환경이 있다. 눈으로 읽고
+                옮겨 적을 수 있게 주소와 번호를 그대로 둔다. */}
+            <p className={`mt-6 ${T.small}`}>
+              {CONTACT_EMAIL} · {CONTACT_PHONE}
+            </p>
           </motion.div>
         </Container>
       </Section>
