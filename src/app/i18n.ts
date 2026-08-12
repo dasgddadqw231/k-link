@@ -72,15 +72,29 @@ export const t = {
     serveTitle: "ไม่ต้องตวง\nฉีกซองเดียวจบ",
     serveLead: "หนึ่งซองคือหนึ่งครั้ง ดื่มตรง ๆ ก็ได้ ใส่ในอาหารก็ได้",
     serveNote: "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ",
+    /*
+     * 두 스틱의 두 번째·세 번째 줄이 다른 이유는 배합이 다르기 때문이다.
+     *
+     * 올레샷은 기름 65% + 레몬즙 35%라 그 자체로 비네그레트다(고전 비율이 3:1~2:1).
+     * 그래서 샐러드에 더 넣을 것이 없다는 말을 할 수 있다. 레몬은 생선·해산물과
+     * 붙는 짝이기도 하다.
+     *
+     * 올토샷은 기름 + 토마토 착즙이라 산이 약해서 드레싱으로 완성돼 있지 않다.
+     * 대신 토마토와 올리브유는 스페인이 빵에 올려 먹는 조합이고(이 제품의 올리브도
+     * 스페인산이다), 파스타 소스의 출발점이다.
+     *
+     * "불 끄고 마지막에"는 취향이 아니라 물성이다 — 엑스트라버진은 마무리용
+     * 기름이라 가열하면 향이 날아간다. 효능이 아니라 풍미로만 말한다.
+     */
     serveOlleWays: [
       "เขย่าแล้วฉีกดื่มได้เลย",
       "ราดสลัด 1 ซองต่อ 1 จาน น้ำมันมะกอกกับเลมอนผสมมาแล้ว",
-      "ราดพาสต้าซีฟู้ดตอนใกล้เสิร์ฟ",
+      "ราดปลาหรืออาหารทะเลย่าง",
     ],
     serveOltoWays: [
       "เขย่าแล้วฉีกดื่มได้เลย",
-      "ราดข้าวผัดหรือพาสต้าตอนใกล้เสิร์ฟ",
-      "จิ้มขนมปัง",
+      "ราดขนมปัง แบบที่สเปนกินมะเขือเทศกับน้ำมันมะกอก",
+      "ใส่พาสต้าตอนปิดไฟแล้ว ความร้อนทำให้กลิ่นหาย",
     ],
     /*
      * 얼려서 셔벗처럼 먹는 줄이 여기 있었는데 내렸다 — 제조사가 이 파우치는
@@ -178,15 +192,16 @@ export const t = {
     serveLead:
       "One sachet is one serving — drink it straight, or use it in food.",
     serveNote: "Every one of these is how people in Korea actually have them.",
+    /* 태국어 쪽 주석 참고 — 두 스틱의 줄이 갈리는 근거가 거기 있다. */
     serveOlleWays: [
       "Shake, tear, drink",
       "One sachet dresses one plate — the oil and lemon are already mixed",
-      "Over seafood pasta, right at the end",
+      "Over grilled fish or seafood",
     ],
     serveOltoWays: [
       "Shake, tear, drink",
-      "Over fried rice or pasta, at the end",
-      "With bread",
+      "Onto bread, the way Spain eats tomato and olive oil",
+      "Into pasta once the heat is off — heat takes the aroma with it",
     ],
     /* 태국어 쪽 주석 참고 — 냉동은 제조사 확인으로 내렸다. */
     serveHobakWays: [
