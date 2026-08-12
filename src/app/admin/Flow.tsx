@@ -71,7 +71,7 @@ import {
   type BrandProgress,
   type StageState,
 } from "./progress";
-import { Card, Page, Pill } from "./ui";
+import { Card, Page, Pill, useToast } from "./ui";
 import type { Jump, Tab } from "./AdminApp";
 import {
   CHECKED_ON,
@@ -951,12 +951,24 @@ function ProductRows({
   data: AdminData;
 }) {
   const c = a[lang];
+  const toast = useToast();
   const [busy, setBusy] = useState(false);
 
+  /*
+    실패를 삼키지 않는다.
+
+    칩을 누르면 화면이 먼저 바뀌는데, 저장이 실패해도 아무 말이 없으면 사람은
+    적힌 줄 알고 넘어간다. 다음에 다시 읽을 때 옛 값으로 돌아와 있고, 그때는
+    누가 되돌렸는지 아무도 모른다.
+  */
   async function patch(id: string, values: Record<string, unknown>) {
     if (busy) return;
     setBusy(true);
-    await supabase.from("products").update(values).eq("id", id);
+    const { error } = await supabase.from("products").update(values).eq("id", id);
+    if (error) {
+      setBusy(false);
+      return toast(c.saveFailed, "bad");
+    }
     await data.reload();
     setBusy(false);
   }
@@ -1035,16 +1047,22 @@ function ValidateRow({
   lang: AdminLang;
   data: AdminData;
 }) {
+  const c = a[lang];
+  const toast = useToast();
   const [busy, setBusy] = useState(false);
   const on = brand.brand.validated_on;
 
   async function save(value: string | null) {
     if (busy) return;
     setBusy(true);
-    await supabase
+    const { error } = await supabase
       .from("brands")
       .update({ validated_on: value, updated_at: new Date().toISOString() })
       .eq("id", brand.brand.id);
+    if (error) {
+      setBusy(false);
+      return toast(c.saveFailed, "bad");
+    }
     await data.reload();
     setBusy(false);
   }
@@ -1099,6 +1117,8 @@ function LicenceList({
   data: AdminData;
   today: Date;
 }) {
+  const c = a[lang];
+  const toast = useToast();
   const [name, setName] = useState("");
   const [kind, setKind] = useState<LicenceKind>("or7");
   const [expires, setExpires] = useState("");
@@ -1107,13 +1127,18 @@ function LicenceList({
   async function add() {
     if (busy || (!name.trim() && !expires)) return;
     setBusy(true);
-    await supabase.from("licences").insert({
+    const { error } = await supabase.from("licences").insert({
       kind,
       name: name.trim(),
       expires_on: expires || null,
       // อ.7·부가세는 회사 전체에 걸린다. 브랜드에 묶으면 다른 브랜드에서 안 보인다.
       brand_id: kind === "or7" || kind === "vat" ? null : brand.brand.id,
     });
+    if (error) {
+      setBusy(false);
+      // 적어 둔 것을 지우지 않는다 — 실패한 마당에 입력까지 날아가면 두 번 일한다.
+      return toast(c.saveFailed, "bad");
+    }
     setName("");
     setExpires("");
     await data.reload();
@@ -1123,7 +1148,11 @@ function LicenceList({
   async function remove(id: string) {
     if (busy) return;
     setBusy(true);
-    await supabase.from("licences").delete().eq("id", id);
+    const { error } = await supabase.from("licences").delete().eq("id", id);
+    if (error) {
+      setBusy(false);
+      return toast(c.saveFailed, "bad");
+    }
     await data.reload();
     setBusy(false);
   }
@@ -1223,6 +1252,8 @@ function ShipmentList({
   lang: AdminLang;
   data: AdminData;
 }) {
+  const c = a[lang];
+  const toast = useToast();
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -1230,7 +1261,14 @@ function ShipmentList({
     const name = code.trim();
     if (!name || busy) return;
     setBusy(true);
-    await supabase.from("shipments").insert({ brand_id: brand.brand.id, code: name });
+    const { error } = await supabase
+      .from("shipments")
+      .insert({ brand_id: brand.brand.id, code: name });
+    if (error) {
+      setBusy(false);
+      // 적어 둔 이름은 남겨 둔다. 다시 누르기만 하면 되게.
+      return toast(c.saveFailed, "bad");
+    }
     setCode("");
     await data.reload();
     setBusy(false);
@@ -1240,10 +1278,14 @@ function ShipmentList({
     const next = SHIP_FLOW[Math.min(SHIP_FLOW.indexOf(stage) + 1, SHIP_FLOW.length - 1)];
     if (next === stage || busy) return;
     setBusy(true);
-    await supabase
+    const { error } = await supabase
       .from("shipments")
       .update({ stage: next, updated_at: new Date().toISOString() })
       .eq("id", id);
+    if (error) {
+      setBusy(false);
+      return toast(c.saveFailed, "bad");
+    }
     await data.reload();
     setBusy(false);
   }
@@ -1251,7 +1293,11 @@ function ShipmentList({
   async function remove(id: string) {
     if (busy) return;
     setBusy(true);
-    await supabase.from("shipments").delete().eq("id", id);
+    const { error } = await supabase.from("shipments").delete().eq("id", id);
+    if (error) {
+      setBusy(false);
+      return toast(c.saveFailed, "bad");
+    }
     await data.reload();
     setBusy(false);
   }

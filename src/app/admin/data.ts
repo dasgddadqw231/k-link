@@ -247,12 +247,15 @@ function useScopedMoves(
   const [rows, setRows] = useState<StockMove[] | null>(null);
 
   const reload = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("stock_moves")
       .select("*")
       .eq(column, id)
       .order("moved_on", { ascending: false })
       .order("created_at", { ascending: false });
+    // 못 읽었으면 넘겨받은 목록을 계속 쓴다. 빈 배열로 두면 "내역이 없습니다"가
+    // 뜨는데, 기록이 있는데 못 읽은 것과 구분이 안 된다.
+    if (error) return;
     setRows((data as StockMove[]) ?? []);
   }, [column, id]);
 

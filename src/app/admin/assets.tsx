@@ -151,7 +151,13 @@ export function AssetArchive({
               onOpen={() => setViewing(asset.path)}
               onRemove={() => void remove(asset)}
               onRename={async (title) => {
-                await supabase.from("brand_assets").update({ title }).eq("id", asset.id);
+                const { error } = await supabase
+                  .from("brand_assets")
+                  .update({ title })
+                  .eq("id", asset.id);
+                // 조용히 실패하면 고친 제목이 화면에만 남는다. 다음에 열면 옛 제목이다.
+                if (error) return setErr(c.saveFailed);
+                setErr("");
                 await data.reload();
               }}
             />
