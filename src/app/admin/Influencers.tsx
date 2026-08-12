@@ -22,7 +22,7 @@ import {
   type Platform,
 } from "../../lib/admin";
 import { a, platformLabel, productName, statusLabel, type AdminLang } from "./i18n";
-import type { AdminData } from "./data";
+import { categoryTotal, useInfluencerMoves, type AdminData } from "./data";
 import type { Jump, Tab } from "./AdminApp";
 import {
   Btn,
@@ -91,10 +91,11 @@ export default function Influencers({
    * 약정한 비용 옆에 재무에 실제로 잡힌 인플루언서 지출을 같이 보여 준다.
    * 두 숫자가 벌어져 있으면 아직 안 낸 돈이 있다는 뜻이고, 그게 이 화면에서
    * 가장 알고 싶은 것이다.
+   *
+   * 전 기간 누계라 거래 목록(최근 2000건)이 아니라 뷰에서 받는다 — 옛 지출이
+   * 잘려 나가면 "덜 냈다"는 잘못된 결론이 나온다.
    */
-  const paidFee = data.finance
-    .filter((e) => e.direction === "out" && e.category === "influencer")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
+  const paidFee = categoryTotal(data.financeTotals, "out", "influencer");
 
   const countOf = (s: InfStatus) => data.influencers.filter((i) => i.status === s).length;
   const searchable = data.influencers.length > 8;
@@ -233,7 +234,12 @@ function SentProducts({
   data: AdminData;
 }) {
   const c = a[lang];
-  const sent = data.moves.filter((m) => m.influencer_id === inf.id);
+  // 이 사람 것만 따로 읽는다. 목록에 쓰는 moves는 전부를 통틀어 최근 500건이라
+  // 판매가 쌓이면 몇 달 전 시딩이 그 밖으로 밀려난다.
+  const { moves: sent } = useInfluencerMoves(
+    inf.id,
+    data.moves.filter((m) => m.influencer_id === inf.id),
+  );
 
   return (
     <div>

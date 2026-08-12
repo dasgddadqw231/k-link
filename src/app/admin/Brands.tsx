@@ -32,7 +32,7 @@ import {
   productName,
   type AdminLang,
 } from "./i18n";
-import { onHand, type AdminData } from "./data";
+import { onHand, totalOf, type AdminData } from "./data";
 import { AssetArchive } from "./assets";
 import { removeFiles } from "./storage";
 import {
@@ -637,26 +637,43 @@ function Money({
   data: AdminData;
 }) {
   const c = a[lang];
-  const mine = data.finance.filter((e) => e.brand_id === brand.id);
+  /*
+    누계는 거래 목록이 아니라 finance_totals 뷰에서 받는다.
 
-  if (mine.length === 0) {
+    목록은 최근 2000건이라 계약 초기의 정산이 잘려 나가면 이 화면의 숫자가
+    소리 없이 작아진다 — 브랜드에 보내는 정산서의 근거로 쓰는 숫자다.
+  */
+  const rows = [
+    {
+      label: c.brandRevenue,
+      value: totalOf(data.financeTotals, brand.id, "in", "sales"),
+      tone: "text-emerald-600",
+    },
+    // 환불을 빼놓으면 이 브랜드 매출이 실제보다 커 보인다.
+    {
+      label: c.brandRefund,
+      value: totalOf(data.financeTotals, brand.id, "out", "refund"),
+      tone: "text-rose-600",
+    },
+    {
+      label: c.brandCommissionIn,
+      value: totalOf(data.financeTotals, brand.id, "in", "commission"),
+      tone: "text-emerald-600",
+    },
+    {
+      label: c.brandPaidOut,
+      value: totalOf(data.financeTotals, brand.id, "out", "settlement"),
+      tone: "text-rose-600",
+    },
+  ].filter((r) => r.value !== 0);
+
+  if (rows.length === 0) {
     return (
       <p className="rounded-xl bg-neutral-50 px-4 py-3 text-sm text-neutral-400">
         {c.brandSettlementNone}
       </p>
     );
   }
-
-  const sum = (dir: "in" | "out", cat?: string) =>
-    mine
-      .filter((e) => e.direction === dir && (!cat || e.category === cat))
-      .reduce((s, e) => s + Number(e.amount_thb), 0);
-
-  const rows = [
-    { label: c.brandRevenue, value: sum("in", "sales"), tone: "text-emerald-600" },
-    { label: c.brandCommissionIn, value: sum("in", "commission"), tone: "text-emerald-600" },
-    { label: c.brandPaidOut, value: sum("out", "settlement"), tone: "text-rose-600" },
-  ].filter((r) => r.value !== 0);
 
   return (
     <ul className="divide-y divide-neutral-100 rounded-xl bg-neutral-50 px-4">

@@ -54,13 +54,14 @@ export default function Dashboard({
   const monthEntries = data.finance.filter((e) => monthOf(e.entry_on) === thisMonth);
   const inSum = monthEntries
     .filter((e) => e.direction === "in")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
+    .reduce((s, e) => s + Number(e.amount), 0);
   const outSum = monthEntries
     .filter((e) => e.direction === "out")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
+    .reduce((s, e) => s + Number(e.amount), 0);
+  // 방향까지 본다. 매출은 들어온 돈이고, 같은 이름의 나간 돈이 생기면 합계가 뒤집힌다.
   const sales = monthEntries
-    .filter((e) => e.category === "sales")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
+    .filter((e) => e.direction === "in" && e.category === "sales")
+    .reduce((s, e) => s + Number(e.amount), 0);
   const net = inSum - outSum;
 
   /** 이미 다 판 로트의 유통기한은 세지 않는다. 남은 게 없으면 잃을 것도 없다. */

@@ -352,6 +352,31 @@ function Shell({
         </header>
 
         <main className="md:ml-56">
+          {/*
+            못 읽어 온 목록이 있으면 화면 맨 위에서 말한다.
+
+            조용히 빈 목록으로 두면 "제품이 없습니다"가 뜨는데, 그걸 본 사람은
+            데이터가 날아간 줄 알고 다시 입력한다. 어느 목록이 묵었는지 이름을
+            대고, 다시 읽는 버튼을 바로 옆에 둔다.
+          */}
+          {data.loadFailed.length > 0 && (
+            <div className="mx-auto max-w-3xl px-4 pt-4 md:px-8">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3">
+                <p className="min-w-0 flex-1 text-sm font-semibold text-amber-900">
+                  {c.loadFailed}
+                  <span className="ml-1.5 font-bold">{data.loadFailed.join(" · ")}</span>
+                </p>
+                <button
+                  onClick={() => void data.reload()}
+                  disabled={data.refreshing}
+                  className="shrink-0 rounded-lg bg-amber-900 px-3 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-80 disabled:opacity-50"
+                >
+                  {c.refresh}
+                </button>
+              </div>
+            </div>
+          )}
+
           {data.loading ? (
             <p className="py-24 text-center text-sm text-neutral-400">{c.loading}...</p>
           ) : (

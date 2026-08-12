@@ -4,8 +4,8 @@
  * 손익계산서를 만들지 않는다. 지금 필요한 건 감가상각이 아니라 "이번 달에 돈이
  * 얼마 들어오고 나갔나"다. 회계는 태국 회계사가 별도로 맡는다.
  *
- * KRW로 쓴 돈은 그날의 환율을 함께 적어 THB 환산액을 고정한다. 나중에 환율이
- * 움직여도 지난달 장부가 흔들리지 않는다.
+ * 금액은 전부 THB다. 원화로 청구받은 건도 실제로 결제한 바트를 적는다 — 환율을
+ * 붙들고 있으면 한 거래에 숫자가 둘이 되고, 지난달 합계가 오늘 환율에 흔들린다.
  */
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
@@ -15,17 +15,15 @@ import {
   IN_CATEGORIES,
   OUT_CATEGORIES,
   RECEIPT_BUCKET,
-  krw,
   monthOf,
   thb,
   todayBkk,
   type Brand,
-  type Currency,
   type Direction,
   type FinanceEntry,
 } from "../../lib/admin";
 import { a, brandName, categoryLabel, type AdminLang } from "./i18n";
-import { lastKrwRate, type AdminData } from "./data";
+import { type AdminData } from "./data";
 import { ReceiptBadge, ReceiptField } from "./receipts";
 import {
   Btn,
@@ -48,12 +46,6 @@ function shiftMonth(month: string, by: number): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
-/** 원화로 적은 돈은 원금액도 보여 준다 — 나중에 그 건을 찾을 때 기억하는 숫자다. */
-function original(e: FinanceEntry): string | null {
-  if (e.currency === "THB") return null;
-  return krw(Number(e.amount));
-}
-
 export default function Finance({ lang, data }: { lang: AdminLang; data: AdminData }) {
   const c = a[lang];
   const thisMonth = monthOf(todayBkk());
@@ -67,18 +59,16 @@ export default function Finance({ lang, data }: { lang: AdminLang; data: AdminDa
 
   const inSum = entries
     .filter((e) => e.direction === "in")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
+    .reduce((s, e) => s + Number(e.amount), 0);
   const outSum = entries
     .filter((e) => e.direction === "out")
-    .reduce((s, e) => s + Number(e.amount_thb), 0);
-
-  const recentRate = useMemo(() => lastKrwRate(data.finance), [data.finance]);
+    .reduce((s, e) => s + Number(e.amount), 0);
 
   const byCategory = useMemo(() => {
     const map = new Map<string, number>();
     for (const e of entries) {
       if (e.direction !== "out") continue;
-      map.set(e.category, (map.get(e.category) ?? 0) + Number(e.amount_thb));
+      map.set(e.category, (map.get(e.category) ?? 0) + Number(e.amount));
     }
     return [...map.entries()].sort((x, y) => y[1] - x[1]);
   }, [entries]);
@@ -200,7 +190,6 @@ export default function Finance({ lang, data }: { lang: AdminLang; data: AdminDa
           entry={editing === "new" ? null : editing}
           lang={lang}
           defaultDate={month === thisMonth ? todayBkk() : `${month}-01`}
-          lastRate={recentRate}
           brands={data.brands}
           onDone={async () => {
             setEditing(null);
@@ -224,7 +213,6 @@ function Row({
 }) {
   const c = a[lang];
   const isIn = entry.direction === "in";
-  const src = original(entry);
   return (
     <li>
       <button
@@ -232,11 +220,12 @@ function Row({
         className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-neutral-50"
       >
         <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-1.5">
+          <span className="flex items-center gap-1.5">
             <span className="truncate text-sm font-semibold text-neutral-800">
               {categoryLabel(entry.category, c)}
             </span>
-            {entry.currency !== "THB" && <Pill>{entry.currency}</Pill>}
+            {/* 재고에서 자동으로 적힌 줄. 금액을 고칠 때 재고 쪽도 봐야 한다는 신호다. */}
+            {entry.stock_move_id && <Pill>{c.finFromStock}</Pill>}
           </span>
           <span className="mt-0.5 flex items-center gap-1.5 text-xs text-neutral-400">
             <span className="truncate">
@@ -246,16 +235,13 @@ function Row({
             <ReceiptBadge count={entry.receipts?.length ?? 0} />
           </span>
         </span>
-        <span className="shrink-0 text-right">
-          <span
-            className={`block text-sm font-bold tabular-nums ${
-              isIn ? "text-emerald-600" : "text-rose-600"
-            }`}
-          >
-            {isIn ? "+" : "−"}
-            {thb(Number(entry.amount_thb))}
-          </span>
-          {src && <span className="text-[11px] text-neutral-400 tabular-nums">{src}</span>}
+        <span
+          className={`shrink-0 text-sm font-bold tabular-nums ${
+            isIn ? "text-emerald-600" : "text-rose-600"
+          }`}
+        >
+          {isIn ? "+" : "−"}
+          {thb(Number(entry.amount))}
         </span>
       </button>
     </li>
@@ -266,7 +252,6 @@ function Form({
   entry,
   lang,
   defaultDate,
-  lastRate,
   brands,
   onDone,
   onClose,
@@ -274,8 +259,6 @@ function Form({
   entry: FinanceEntry | null;
   lang: AdminLang;
   defaultDate: string;
-  /** 최근에 쓴 원화 환율. 없으면 대략의 기준값으로 시작한다. */
-  lastRate: number | null;
   brands: Brand[];
   onDone: () => void;
   onClose: () => void;
@@ -289,14 +272,11 @@ function Form({
   );
   const [entryOn, setEntryOn] = useState(entry?.entry_on ?? defaultDate);
   const [amount, setAmount] = useState(entry ? String(entry.amount) : "");
-  const [currency, setCurrency] = useState<Currency>(entry?.currency ?? "THB");
-  const [rate, setRate] = useState(String(entry?.rate_to_thb ?? lastRate ?? 0.026));
   const [memo, setMemo] = useState(entry?.memo ?? "");
   const [receipts, setReceipts] = useState<string[]>(entry?.receipts ?? []);
   const [brandId, setBrandId] = useState(entry?.brand_id ?? "");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const rateIsInherited = !entry && lastRate !== null;
 
   const categories = direction === "in" ? IN_CATEGORIES : OUT_CATEGORIES;
 
@@ -308,9 +288,7 @@ function Form({
   /** 정산·수수료·매출은 언제나 상대가 있다. 나머지 분류에는 브랜드사 칸을 내지 않는다. */
   const wantsBrand = (BRAND_CATEGORIES as readonly string[]).includes(category);
 
-  const effectiveRate = currency === "THB" ? 1 : Number(rate);
-  const preview = (Number(amount) || 0) * (Number.isFinite(effectiveRate) ? effectiveRate : 0);
-  const canSave = Number(amount) > 0 && effectiveRate > 0;
+  const canSave = Number(amount) > 0;
 
   async function save() {
     setBusy(true);
@@ -320,8 +298,6 @@ function Form({
       direction,
       category,
       amount: Number(amount),
-      currency,
-      rate_to_thb: effectiveRate,
       memo: memo.trim(),
       receipts,
       // 브랜드사를 달아 둘 분류가 아니면 비운다 — 분류를 바꿨는데 옛 상대가 남으면 안 된다.
@@ -440,37 +416,6 @@ function Form({
           </Field>
         </div>
 
-        <div>
-          <p className="mb-1.5 text-xs font-semibold text-neutral-500">{c.finCurrency}</p>
-          <Chips
-            options={["THB", "KRW"] as const}
-            value={currency}
-            onChange={setCurrency}
-            labelOf={(v) => v}
-          />
-        </div>
-
-        {currency === "KRW" && (
-          <>
-            <Field
-              label={c.finRate}
-              hint={rateIsInherited ? c.finRateRecent : c.finRateHint}
-            >
-              <input
-                type="number"
-                inputMode="decimal"
-                step="0.000001"
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-                className={inputCls}
-              />
-            </Field>
-            <p className="-mt-1 text-sm font-semibold text-neutral-500 tabular-nums">
-              {krw(Number(amount) || 0)} = {thb(preview)}
-            </p>
-          </>
-        )}
-
         <Field label={c.note}>
           <input value={memo} onChange={(e) => setMemo(e.target.value)} className={inputCls} />
         </Field>
@@ -480,12 +425,14 @@ function Form({
 
       {err && <p className="mt-4 text-sm text-rose-600">{err}</p>}
 
+      {/* 재고에서 온 줄을 지워도 재고는 그대로다. 반쪽만 사라지는 걸 미리 알린다. */}
       <Confirm
         open={confirming}
         title={c.confirmRemove}
+        body={entry?.stock_move_id ? c.finRemoveFromStock : undefined}
         detail={
           <p className="rounded-xl bg-neutral-50 px-4 py-3 text-sm font-bold text-neutral-700 tabular-nums">
-            {categoryLabel(category, c)} · {thb(preview)}
+            {categoryLabel(category, c)} · {thb(Number(amount) || 0)}
           </p>
         }
         confirmLabel={c.remove}

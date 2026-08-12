@@ -15,10 +15,11 @@
  * 근거를 달고 아래 SOURCES에 원문을 건다. 확인 못 한 것은 "건별로 확인"이라고
  * 쓰지, 그럴듯한 숫자로 메우지 않는다 — 이 화면을 보고 실제로 서류를 넣는다.
  *
- * 마지막 확인 2026-08-04.
+ * 마지막 확인 2026-08-08.
  */
 import type { Tab } from "./AdminApp";
 import type { AdminLang } from "./i18n";
+import type { ExtraPermit, FoodGroup, LicenceKind, ShipStage } from "../../lib/admin";
 
 /** 세 언어를 한자리에 묶은 문장. */
 export interface T {
@@ -32,7 +33,7 @@ export function t(x: T, lang: AdminLang): string {
 }
 
 /** 내용을 마지막으로 규정과 맞춰 본 날. 화면 아래에 그대로 보여 준다. */
-export const CHECKED_ON = "2026-08-04";
+export const CHECKED_ON = "2026-08-08";
 
 /** 일을 하는 쪽. 브랜드가 손을 떼는 지점을 눈으로 보이게 하려고 나눈다. */
 export type Actor = "brand" | "kr" | "th";
@@ -90,6 +91,44 @@ export interface Step {
 }
 
 /**
+ * 선적이 서 있는 자리의 이름. 값 자체는 단계 id와 같으므로 여기서는 사람이 읽는
+ * 말만 준다 — 05~07 카드의 제목을 그대로 쓰면 "생산 · 태국어 라벨"처럼 길어서
+ * 목록 안에서는 읽히지 않는다.
+ */
+export const SHIP_STAGE_LABEL: Record<ShipStage, T> = {
+  produce: { ko: "05 생산 중", th: "05 กำลังผลิต", en: "05 In production" },
+  export: { ko: "06 선적 · 서류", th: "06 ส่งออก · เอกสาร", en: "06 Shipping and papers" },
+  import: { ko: "07 통관 중", th: "07 กำลังผ่านพิธีการ", en: "07 In clearance" },
+  done: { ko: "입고 완료", th: "รับเข้าคลังแล้ว", en: "Received" },
+};
+
+/** 01단계에서 정하는 식품 갈래. 걸리는 기간을 이름에 같이 적어 둔다 — 그게 이 판정의 뜻이다. */
+export const FOOD_GROUP_LABEL: Record<FoodGroup, T> = {
+  unknown: { ko: "갈래 미정", th: "ยังไม่ระบุกลุ่ม", en: "Group not set" },
+  general: { ko: "일반식품 (등록 불필요)", th: "อาหารทั่วไป (ไม่ต้องขึ้นทะเบียน)", en: "General (no registration)" },
+  labelled: { ko: "라벨부착식품 (약 2영업일)", th: "อาหารที่ต้องมีฉลาก (ราว 2 วันทำการ)", en: "Labelled (about 2 working days)" },
+  standardised: { ko: "표준식품 (약 2영업일)", th: "อาหารกำหนดคุณภาพ (ราว 2 วันทำการ)", en: "Standardised (about 2 working days)" },
+  controlled: { ko: "구체적 통제식품 (35~90영업일)", th: "อาหารควบคุมเฉพาะ (35–90 วันทำการ)", en: "Specifically controlled (35–90 working days)" },
+};
+
+/** FDA 말고 더 붙는 부처. 미확인과 없음이 다른 말이라는 것이 이 목록의 요점이다. */
+export const EXTRA_PERMIT_LABEL: Record<ExtraPermit, T> = {
+  unknown: { ko: "부처 미확인", th: "ยังไม่ตรวจหน่วยงาน", en: "Agencies not checked" },
+  none: { ko: "추가 부처 없음", th: "ไม่มีหน่วยงานเพิ่ม", en: "No extra agency" },
+  dld: { ko: "축산국 (DLD) 필요", th: "ต้องขอกรมปศุสัตว์ (DLD)", en: "Livestock (DLD) required" },
+  doa: { ko: "농업국 (DOA) 필요", th: "ต้องขอกรมวิชาการเกษตร (DOA)", en: "Agriculture (DOA) required" },
+  other: { ko: "기타 부처 필요", th: "ต้องขอหน่วยงานอื่น", en: "Another agency required" },
+};
+
+export const LICENCE_KIND_LABEL: Record<LicenceKind, T> = {
+  or7: { ko: "อ.7 수입 허가 (3년)", th: "ใบอนุญาต อ.7 (3 ปี)", en: "Or.7 import licence (3 yrs)" },
+  ad: { ko: "광고 심의 (최대 5년)", th: "อนุมัติโฆษณา (ไม่เกิน 5 ปี)", en: "Advertising approval (up to 5 yrs)" },
+  vat: { ko: "부가세 등록", th: "จดทะเบียน VAT", en: "VAT registration" },
+  trademark: { ko: "상표", th: "เครื่องหมายการค้า", en: "Trademark" },
+  other: { ko: "기타", th: "อื่น ๆ", en: "Other" },
+};
+
+/**
  * 무역은 세 가지가 따로 움직인다 — 물건, 서류, 돈. 초보자가 가장 많이 헷갈리는
  * 것이 "물건은 배에 있는데 서류는 어디 있고 돈은 언제 나가나"라서, 단계마다
  * 세 줄로 끊어 적는다. 비어 있으면 그 단계에서는 그게 안 움직인다는 뜻이다.
@@ -114,6 +153,12 @@ export interface Stage {
   does: Step[];
   docs: T[];
   takes: T;
+  /**
+   * 앞 단계가 끝나야 시작하는 게 아니라 옆 단계와 같이 도는 자리. 번호가 붙어
+   * 있으면 사람은 그것을 순서로 읽는데, 여기를 순서대로 하면 일정이 통째로
+   * 두세 달 길어진다. 그래서 카드에 못을 박아 둔다.
+   */
+  alongside?: T;
   gate: T;
   risk: T;
   /**
@@ -189,6 +234,18 @@ export const PREREQ: PrereqItem[] = [
       en: "Filing the per-shipment import notification (LPI) requires being a registered user on the customs National Single Window. Only possible after the three items above.",
     },
   },
+  {
+    title: {
+      ko: "부가세 사업자 등록 (Por.Por.01)",
+      th: "จดทะเบียนภาษีมูลค่าเพิ่ม (ภ.พ.01)",
+      en: "VAT registration (Por.Por.01)",
+    },
+    body: {
+      ko: "수입할 때 낸 부가세를 매입세액으로 돌려받는 주체는 수입자입니다. 등록이 없으면 그 7%가 전부 원가로 남아 판매가가 달라집니다. 연매출 180만 바트를 넘으면 의무이고, 등록 뒤에는 매달 15일(전자신고는 23일)까지 PP.30을 냅니다.",
+      th: "ผู้ที่ขอเครดิตภาษีซื้อจาก VAT ที่จ่ายตอนนำเข้าคือผู้นำเข้า หากไม่ได้จดทะเบียน VAT 7% นั้นจะกลายเป็นต้นทุนทั้งก้อนและกระทบราคาขาย เมื่อรายได้เกิน 1.8 ล้านบาทต่อปีถือเป็นหน้าที่ และหลังจดทะเบียนต้องยื่น ภ.พ.30 ทุกเดือนภายในวันที่ 15 (ยื่นออนไลน์ถึงวันที่ 23)",
+      en: "The party that reclaims import VAT as input tax is the importer. Without registration that 7% stays in the cost and changes the selling price. It is mandatory above THB 1.8m of annual turnover, and once registered a PP.30 return is filed monthly by the 15th (the 23rd when filed online).",
+    },
+  },
 ];
 
 export const STAGES: Stage[] = [
@@ -204,9 +261,9 @@ export const STAGES: Stage[] = [
       en: "Decide whether it can enter, and by which registration route",
     },
     plain: {
-      ko: "태국은 식품을 네 갈래로 나눕니다. 일반식품은 등록이 아예 필요 없고, 라벨부착식품·표준식품은 이틀이면 되지만, 구체적 통제식품은 서너 달이 걸립니다. 어디에 속하느냐로 일정과 비용이 몇 배 달라지므로, 맨 처음 하는 일이 성분표를 보고 갈래를 정하는 것입니다.",
-      th: "ไทยแบ่งอาหารเป็นสี่กลุ่ม อาหารทั่วไปไม่ต้องขึ้นทะเบียนเลย อาหารที่ต้องมีฉลากและอาหารกำหนดคุณภาพใช้เวลาราวสองวันทำการ แต่อาหารควบคุมเฉพาะใช้เวลาสามถึงสี่เดือน กลุ่มที่สินค้าตกอยู่จึงทำให้ระยะเวลาและค่าใช้จ่ายต่างกันหลายเท่า งานแรกสุดคือดูสูตรส่วนผสมแล้วชี้ว่าอยู่กลุ่มไหน",
-      en: "Thailand sorts food into four groups. General food needs no registration at all; labelled and standardised food takes about two working days; specifically controlled food takes three to four months. Which group a product falls into changes the timeline and cost several times over, so the first job is to read the formula and place it.",
+      ko: "태국은 식품을 네 갈래로 나눕니다. 일반식품은 등록이 아예 필요 없고, 라벨부착식품·표준식품은 이틀이면 되지만, 구체적 통제식품은 서너 달이 걸립니다. 어디에 속하느냐로 일정과 비용이 몇 배 달라지므로, 맨 처음 하는 일이 성분표를 보고 갈래를 정하는 것입니다. 그리고 갈래는 FDA 안에서만 갈리는 게 아닙니다 — 육류나 유제품이 조금이라도 들어가면 축산국 허가가 하나 더 붙습니다.",
+      th: "ไทยแบ่งอาหารเป็นสี่กลุ่ม อาหารทั่วไปไม่ต้องขึ้นทะเบียนเลย อาหารที่ต้องมีฉลากและอาหารกำหนดคุณภาพใช้เวลาราวสองวันทำการ แต่อาหารควบคุมเฉพาะใช้เวลาสามถึงสี่เดือน กลุ่มที่สินค้าตกอยู่จึงทำให้ระยะเวลาและค่าใช้จ่ายต่างกันหลายเท่า งานแรกสุดคือดูสูตรส่วนผสมแล้วชี้ว่าอยู่กลุ่มไหน และการแบ่งกลุ่มไม่ได้จบอยู่ที่ อย. เท่านั้น หากมีเนื้อสัตว์หรือนมแม้เพียงเล็กน้อย ก็มีใบอนุญาตจากกรมปศุสัตว์เพิ่มมาอีกหนึ่งใบ",
+      en: "Thailand sorts food into four groups. General food needs no registration at all; labelled and standardised food takes about two working days; specifically controlled food takes three to four months. Which group a product falls into changes the timeline and cost several times over, so the first job is to read the formula and place it. And the sorting does not end at the FDA — any trace of meat or dairy adds a livestock permit on top.",
     },
     does: [
       {
@@ -234,11 +291,19 @@ export const STAGES: Stage[] = [
         },
       },
       {
-        actor: "kr",
+        actor: "th",
         text: {
-          ko: "분류가 애매하면 세관에 품목분류 사전심사를 넣어 번호를 확정한다",
-          th: "หากจัดประเภทไม่ชัดเจน ให้ยื่นขอคำวินิจฉัยพิกัดล่วงหน้ากับศุลกากรเพื่อยืนยันรหัส",
-          en: "If the classification is ambiguous, file for an advance tariff ruling with customs to lock the code",
+          ko: "성분에 육류·계란·꿀·유제품이나 식물성 원료가 있으면 FDA 말고 어느 부처가 더 붙는지 가른다",
+          th: "หากมีส่วนผสมจากเนื้อสัตว์ ไข่ น้ำผึ้ง นม หรือวัตถุดิบจากพืช ให้ชี้ว่าต้องขอจากหน่วยงานใดเพิ่มนอกจาก อย.",
+          en: "If the formula contains meat, egg, honey, dairy or plant material, work out which agency applies on top of the FDA",
+        },
+      },
+      {
+        actor: "th",
+        text: {
+          ko: "분류가 애매하면 태국 세관에 품목분류 사전심사를 넣어 번호를 확정한다",
+          th: "หากจัดประเภทไม่ชัดเจน ให้ยื่นขอคำวินิจฉัยพิกัดล่วงหน้ากับกรมศุลกากรไทยเพื่อยืนยันรหัส",
+          en: "If the classification is ambiguous, file for an advance tariff ruling with Thai customs to lock the code",
         },
       },
     ],
@@ -266,6 +331,16 @@ export const STAGES: Stage[] = [
     },
     watch: [
       {
+        ko: "육류·계란·꿀이 든 가공식품은 축산국(DLD) 수입허가가 FDA와 별개로 필요하다. 라면 스프의 육류 추출물, 만두, 육포가 여기 걸린다",
+        th: "อาหารแปรรูปที่มีเนื้อสัตว์ ไข่ หรือน้ำผึ้ง ต้องขอใบอนุญาตนำเข้าจากกรมปศุสัตว์ (DLD) แยกจาก อย. เช่น ซุปบะหมี่ที่มีสารสกัดจากเนื้อสัตว์ เกี๊ยว และเนื้อแห้ง",
+        en: "Processed food containing meat, egg or honey needs a Department of Livestock Development import permit separately from the FDA — ramen soup base with meat extract, dumplings and jerky all fall here",
+      },
+      {
+        ko: "건조 농산물·곡물·견과 같은 식물성 원료는 식물검역증(Phytosanitary)이 붙을 수 있다. 주류는 국세청 면허라 이 흐름으로는 못 간다",
+        th: "วัตถุดิบจากพืช เช่น ผลผลิตอบแห้ง ธัญพืช ถั่ว อาจต้องมีใบรับรองสุขอนามัยพืช ส่วนเครื่องดื่มแอลกอฮอล์ต้องขอใบอนุญาตจากกรมสรรพสามิต จึงใช้ขั้นตอนนี้ไม่ได้",
+        en: "Plant material such as dried produce, grain or nuts may need a phytosanitary certificate. Alcohol runs on an excise licence and cannot use this flow at all",
+      },
+      {
         ko: "HS 코드는 나중에 바꾸면 지난 신고까지 다시 봐야 한다. 애매하면 사전심사로 확정",
         th: "การแก้พิกัดภายหลังทำให้ต้องย้อนดูใบขนเดิมทั้งหมด ถ้าไม่ชัดเจนให้ยืนยันด้วยคำวินิจฉัยล่วงหน้า",
         en: "Changing the HS code later drags every past declaration back into review — lock it with an advance ruling if unsure",
@@ -282,9 +357,9 @@ export const STAGES: Stage[] = [
       money: { ko: "검토는 비용 없음", th: "ขั้นตรวจสอบไม่มีค่าใช้จ่าย", en: "Screening is free" },
     },
     basis: {
-      ko: "태국 식품법상 식품 4분류 · 태국 FDA 허가 신청 안내",
-      th: "การแบ่งอาหารสี่กลุ่มตามกฎหมายอาหารไทย · แนวทางการขออนุญาตของ อย.",
-      en: "The four food groups under Thai food law · Thai FDA application guidance",
+      ko: "태국 식품법상 식품 4분류 · 태국 FDA 허가 신청 안내 · 동물성 가공식품 축산국(DLD) 수입허가",
+      th: "การแบ่งอาหารสี่กลุ่มตามกฎหมายอาหารไทย · แนวทางการขออนุญาตของ อย. · ใบอนุญาตนำเข้าอาหารแปรรูปจากสัตว์ของกรมปศุสัตว์",
+      en: "The four food groups under Thai food law · Thai FDA application guidance · DLD import permit for processed animal products",
     },
     record: {
       tab: "brand",
@@ -339,6 +414,14 @@ export const STAGES: Stage[] = [
       {
         actor: "th",
         text: {
+          ko: "태국 상표가 이미 남의 이름으로 등록돼 있지 않은지 확인하고, 누구 명의로 출원할지 정한다",
+          th: "ตรวจว่าเครื่องหมายการค้าในไทยถูกจดในชื่อผู้อื่นไปแล้วหรือยัง และตกลงว่าจะยื่นจดในนามใคร",
+          en: "Check the Thai trademark is not already registered to someone else, and agree whose name it gets filed in",
+        },
+      },
+      {
+        actor: "kr",
+        text: {
           ko: "등록 명의와 계약 종료 시 등록번호 처리, 원산지 사후검증 책임 분담을 조항으로 넣는다",
           th: "ใส่ข้อสัญญาเรื่องชื่อผู้ถือทะเบียน การจัดการเลขทะเบียนเมื่อสัญญาสิ้นสุด และการแบ่งความรับผิดกรณีถูกตรวจสอบถิ่นกำเนิดย้อนหลัง",
           en: "Add clauses on who holds the registration, what happens to it at termination, and who carries an origin-verification claw-back",
@@ -377,6 +460,11 @@ export const STAGES: Stage[] = [
         ko: "FTA 특혜세율은 수입자가 신청한다. 사후검증에서 원산지가 부인되면 태국 세관은 klink에 추징하는데, 증빙은 브랜드가 갖고 있다",
         th: "อัตรา FTA ผู้นำเข้าเป็นผู้ขอใช้ หากถูกตรวจสอบย้อนหลังแล้วถิ่นกำเนิดไม่ผ่าน ศุลกากรไทยจะเรียกเก็บจาก klink ทั้งที่หลักฐานอยู่กับแบรนด์",
         en: "The FTA rate is claimed by the importer, so if origin fails a later verification Thai customs bills klink — while the evidence sits with the brand",
+      },
+      {
+        ko: "태국 상표를 남이 먼저 잡아 두면 세관 지식재산 신고로 우리 물건이 통관에서 막힌다. 계약 때 확인하고 바로 출원한다",
+        th: "หากมีผู้อื่นจดเครื่องหมายการค้าในไทยไว้ก่อน สินค้าของเราอาจถูกกักที่ศุลกากรผ่านระบบแจ้งสิทธิ์ทรัพย์สินทางปัญญา ควรตรวจตอนทำสัญญาแล้วยื่นจดทันที",
+        en: "If someone else registered the mark in Thailand first, a customs IP recordation can hold our own goods. Check it at contract time and file straight away",
       },
       {
         ko: "원산지 증빙은 수입자·수출자·생산자 모두 5년 보관 의무가 있다",
@@ -450,6 +538,11 @@ export const STAGES: Stage[] = [
       { ko: "수입 사전신고 (LPI)", th: "แจ้งนำเข้ารายเที่ยว (LPI)", en: "Per-shipment notification (LPI)" },
     ],
     takes: { ko: "4~6주", th: "4–6 สัปดาห์", en: "4–6 weeks" },
+    alongside: {
+      ko: "04 태국 FDA 등록과 같이 돕니다. 이 단계가 끝나기를 기다렸다가 등록을 시작하면 전체 일정이 그만큼 늦어집니다 — 등록을 먼저 걸어 두고, 그 대기 시간 안에서 시장을 봅니다.",
+      th: "ทำคู่ขนานไปกับขั้นที่ 04 การขึ้นทะเบียนกับ อย. หากรอให้ขั้นนี้จบก่อนแล้วค่อยเริ่มขึ้นทะเบียน ตารางงานทั้งหมดจะยืดออกไปเท่านั้น ให้ยื่นขึ้นทะเบียนไว้ก่อน แล้วทดสอบตลาดในช่วงที่รออนุมัติ",
+      en: "Runs alongside stage 04, the FDA registration. Waiting for this stage to finish before filing pushes the whole schedule back by exactly that much — file the registration first and test the market inside the waiting time.",
+    },
     gate: {
       ko: "시딩 결과를 보고 본물량과 판매가를 정했다",
       th: "ดูผลจากการซีดดิ้งแล้ว และกำหนดปริมาณล็อตจริงกับราคาขายได้",
@@ -537,6 +630,11 @@ export const STAGES: Stage[] = [
       th: "การขึ้นทะเบียนสินค้าใช้ 2–90 วันทำการตามกลุ่ม ส่วนการอนุมัติฉลากแยกต่างหาก ราว 60 วัน",
       en: "Product registration: 2 to 90 working days depending on the group. Label pre-approval is separate, around 60 days",
     },
+    alongside: {
+      ko: "전체에서 가장 긴 단계입니다. 03 시장 검증을 이 대기 시간 안에서 같이 돌리세요. 02 계약이 끝나는 즉시 여기부터 겁니다.",
+      th: "เป็นขั้นที่ใช้เวลานานที่สุด ให้เดินขั้นที่ 03 ทดสอบตลาดไปพร้อมกันในช่วงที่รอ และเริ่มขั้นนี้ทันทีที่ขั้นที่ 02 ทำสัญญาเสร็จ",
+      en: "The longest stage of all. Run stage 03, the market test, inside this waiting time, and start this one the moment the contract at stage 02 is signed.",
+    },
     gate: {
       ko: "อย. 번호가 나왔고 라벨 도안이 승인됐다",
       th: "ได้เลขสารบบอาหาร และฉลากผ่านการอนุมัติแล้ว",
@@ -547,6 +645,23 @@ export const STAGES: Stage[] = [
       th: "ใบรับรองมาตรฐานการผลิตต้องออกไม่เกิน 1 ปี และต้องออกโดยหน่วยงานรัฐของประเทศผู้ผลิตหรือหน่วยงานที่รัฐรับรอง ใบรับรองที่ตรวจสอบออนไลน์ได้ไม่ต้องรับรองสำเนา แต่ถ้าตรวจสอบไม่ได้ต้องแนบคำแปลภาษาไทยหรืออังกฤษพร้อมรับรอง การถูกตีกลับส่วนใหญ่เกิดจากเอกสารนี้",
       en: "The production standard certificate must be less than a year old and issued by the producing country's government or a body it recognises. Certificates verifiable online need no notarisation; those that are not need a Thai or English translation, notarised. Most rejections come from this document.",
     },
+    watch: [
+      {
+        ko: "자유판매증명서(CFS)는 식약처 발급에 수출 실적 증빙을 요구할 수 있다. 그런데 수출신고는 06단계다 — 03단계 소량 선적 때 나온 필증을 쓸 수 있는지 브랜드가 식약처에 먼저 확인한다",
+        th: "หนังสือรับรองการจำหน่ายเสรี (CFS) ที่ออกโดย MFDS อาจต้องใช้หลักฐานการส่งออก แต่การยื่นใบขนสินค้าขาออกอยู่ในขั้นที่ 06 ให้แบรนด์สอบถาม MFDS ก่อนว่าใช้ใบขนจากการส่งตัวอย่างในขั้นที่ 03 ได้หรือไม่",
+        en: "The certificate of free sale can require proof of an actual export, yet the export declaration only happens at stage 06 — the brand should ask the MFDS first whether the declaration from the small stage 03 shipment will do",
+      },
+      {
+        ko: "제품 등록과 라벨 승인은 같이 넣는다. 등록이 이틀에 끝나도 라벨이 60일이면 출발선은 60일이다",
+        th: "ยื่นขึ้นทะเบียนสินค้าและขออนุมัติฉลากไปพร้อมกัน แม้การขึ้นทะเบียนจะเสร็จในสองวัน แต่ถ้าฉลากใช้ 60 วัน จุดเริ่มจริงก็คือ 60 วัน",
+        en: "File the product registration and the label approval together — registration finishing in two days means nothing if the label takes sixty",
+      },
+      {
+        ko: "축산국 허가가 걸리는 품목이면 그 신청도 여기서 같이 넣는다. FDA가 끝난 뒤에 시작하면 두 번 기다린다",
+        th: "หากสินค้าต้องขอใบอนุญาตจากกรมปศุสัตว์ ให้ยื่นพร้อมกันในขั้นนี้ หากรอให้ อย. เสร็จก่อนจะกลายเป็นรอสองรอบ",
+        en: "If the item needs a livestock permit, file that here too — starting it after the FDA is done means waiting twice",
+      },
+    ],
     lanes: {
       goods: { ko: "움직이지 않음", th: "ไม่มีการเคลื่อนย้าย", en: "Nothing moves" },
       paper: { ko: "CFS · 품질증명 · 라벨 도안", th: "CFS · ใบรับรองมาตรฐาน · อาร์ตเวิร์กฉลาก", en: "CFS, standard certificate, label artwork" },
@@ -965,9 +1080,9 @@ export const STAGES: Stage[] = [
     record: {
       tab: "stock",
       what: {
-        ko: "판매 출고는 재고 탭, 시딩은 인플루언서 탭, 매출은 재무 탭에 적는다",
-        th: "การเบิกขายบันทึกในแท็บสต็อก ซีดดิ้งในแท็บอินฟลูเอนเซอร์ และรายได้ในแท็บการเงิน",
-        en: "Sales stock-outs under Stock, seeding under Influencers, revenue under Finance",
+        ko: "재고 탭에 판매 출고를 적으면 매출도 재무에 함께 올라간다. 시딩은 인플루언서 탭에 적는다",
+        th: "บันทึกการเบิกขายในแท็บสต็อก แล้วยอดขายจะขึ้นในแท็บการเงินให้ด้วย ส่วนซีดดิ้งบันทึกในแท็บอินฟลูเอนเซอร์",
+        en: "Record a sale under Stock and the revenue lands in Finance with it; seeding goes under Influencers",
       },
     },
   },
@@ -983,9 +1098,9 @@ export const STAGES: Stage[] = [
       en: "Work out what sold and pay the brand",
     },
     plain: {
-      ko: "매출에서 수수료와 비용을 빼고 브랜드 몫을 송금합니다. 통화가 두 개라 그날의 환율을 함께 적습니다 — 나중에 환율이 바뀌어도 그때 장부를 그대로 재현할 수 있어야 합니다.",
-      th: "หักค่าคอมมิชชั่นและค่าใช้จ่ายจากยอดขาย แล้วโอนส่วนของแบรนด์ เนื่องจากมีสองสกุลเงิน ต้องบันทึกอัตราแลกเปลี่ยนของวันนั้นไว้ด้วย เพื่อให้ย้อนดูบัญชีวันนั้นได้แม้อัตราจะเปลี่ยนไปแล้ว",
-      en: "Deduct commission and costs from revenue and remit the brand's share. Two currencies are involved, so the rate used that day is recorded with it — the books for that day must still reproduce later.",
+      ko: "매출에서 수수료와 비용을 빼고 브랜드 몫을 송금합니다. 장부는 바트 하나로 적으므로, 원화로 보냈어도 그날 실제로 빠져나간 바트를 적습니다 — 은행 명세와 맞아야 합니다.",
+      th: "หักค่าคอมมิชชั่นและค่าใช้จ่ายจากยอดขาย แล้วโอนส่วนของแบรนด์ บัญชีบันทึกเป็นบาทสกุลเดียว แม้จะโอนเป็นวอน ก็ให้ลงยอดบาทที่ตัดออกจริงในวันนั้น เพื่อให้ตรงกับใบแจ้งยอดธนาคาร",
+      en: "Deduct commission and costs from revenue and remit the brand's share. The books are in baht alone, so even a won transfer is logged as the baht that actually left that day — it has to match the bank statement.",
     },
     does: [
       {
@@ -1007,9 +1122,9 @@ export const STAGES: Stage[] = [
       {
         actor: "th",
         text: {
-          ko: "송금하고 환율과 영수증을 함께 남긴다",
-          th: "โอนเงิน พร้อมเก็บอัตราแลกเปลี่ยนและหลักฐานไว้",
-          en: "Remit, keeping the exchange rate and the receipt on file",
+          ko: "송금하고 빠져나간 바트 금액과 영수증을 남긴다",
+          th: "โอนเงิน พร้อมบันทึกยอดบาทที่ตัดออกและเก็บหลักฐานไว้",
+          en: "Remit, recording the baht that left and keeping the receipt on file",
         },
       },
     ],
@@ -1025,25 +1140,137 @@ export const STAGES: Stage[] = [
       en: "The brand has confirmed the amount and the transfer is done",
     },
     risk: {
-      ko: "환율을 안 적어 두면 나중에 장부를 다시 못 맞춥니다. 정산·수수료 항목에는 반드시 브랜드사를 달아 두세요 — 상대가 없는 정산 기록은 몇 달 뒤 누구 것인지 알 수 없습니다.",
-      th: "ถ้าไม่บันทึกอัตราแลกเปลี่ยน ภายหลังจะกระทบยอดบัญชีไม่ได้ และรายการเคลียร์ยอดกับค่าคอมมิชชั่นต้องผูกแบรนด์ไว้เสมอ เพราะรายการที่ไม่มีคู่สัญญา อีกไม่กี่เดือนจะไม่รู้ว่าเป็นของใคร",
-      en: "Without the recorded rate the books cannot be reconciled later. Always attach the brand to settlement and commission entries — an entry with no counterparty is unidentifiable a few months on.",
+      ko: "정산·수수료 항목에는 반드시 브랜드사를 달아 두세요 — 상대가 없는 정산 기록은 몇 달 뒤 누구 것인지 알 수 없습니다. 원화로 청구받았더라도 장부에는 실제로 송금한 바트 금액을 적습니다.",
+      th: "รายการเคลียร์ยอดกับค่าคอมมิชชั่นต้องผูกแบรนด์ไว้เสมอ เพราะรายการที่ไม่มีคู่สัญญา อีกไม่กี่เดือนจะไม่รู้ว่าเป็นของใคร และแม้จะถูกเรียกเก็บเป็นเงินวอน ให้บันทึกยอดบาทที่โอนจริง",
+      en: "Always attach the brand to settlement and commission entries — an entry with no counterparty is unidentifiable a few months on. Even when billed in won, record the baht you actually transferred.",
     },
     lanes: {
       paper: { ko: "정산서 · 송금 증빙", th: "ใบสรุปยอด · หลักฐานการโอน", en: "Statement, remittance proof" },
       money: { ko: "매출 − 수수료 − 비용 → 브랜드", th: "รายได้ − คอมมิชชั่น − ค่าใช้จ่าย → แบรนด์", en: "Revenue − commission − costs → brand" },
     },
     basis: {
-      ko: "규정이 아니라 계약 조건 — 통화가 둘이라 환율 기록이 장부의 근거가 된다",
-      th: "ไม่ใช่ข้อกฎหมาย แต่เป็นเงื่อนไขตามสัญญา เนื่องจากมีสองสกุลเงิน การบันทึกอัตราแลกเปลี่ยนจึงเป็นหลักฐานของบัญชี",
-      en: "Not a regulation but a contract term — with two currencies, the recorded rate is what the books rest on",
+      ko: "규정이 아니라 계약 조건 — 장부는 바트 하나로 적으므로 송금한 바트 금액이 근거가 된다",
+      th: "ไม่ใช่ข้อกฎหมาย แต่เป็นเงื่อนไขตามสัญญา บัญชีบันทึกเป็นบาทสกุลเดียว ยอดบาทที่โอนจึงเป็นหลักฐาน",
+      en: "Not a regulation but a contract term — the books are kept in baht alone, so the baht transferred is what they rest on",
     },
     record: {
       tab: "fin",
       what: {
-        ko: "정산·수수료 분류로 적고 브랜드사를 달아 둔다. 원화 거래는 그날 환율을 함께 적는다",
-        th: "บันทึกในหมวดเคลียร์ยอด/คอมมิชชั่น พร้อมผูกแบรนด์ และหากเป็นสกุลวอนให้ใส่อัตราแลกเปลี่ยนของวันนั้น",
-        en: "Log under settlement or commission with the brand attached; for KRW entries record that day's rate",
+        ko: "정산·수수료 분류로 적고 브랜드사를 달아 둔다. 금액은 실제 송금한 바트로 적는다",
+        th: "บันทึกในหมวดเคลียร์ยอด/คอมมิชชั่น พร้อมผูกแบรนด์ และกรอกยอดเป็นบาทที่โอนจริง",
+        en: "Log under settlement or commission with the brand attached, in the baht actually transferred",
+      },
+    },
+  },
+  {
+    id: "keep",
+    no: "10",
+    phase: "sell",
+    where: "th",
+    title: { ko: "사후관리 · 갱신", th: "ดูแลหลังขาย · ต่ออายุ", en: "Aftercare and renewals" },
+    lead: {
+      ko: "허가는 만료되고, 물건은 가끔 회수해야 한다",
+      th: "ใบอนุญาตมีวันหมดอายุ และบางครั้งต้องเรียกสินค้าคืน",
+      en: "Licences expire, and sometimes goods have to come back",
+    },
+    plain: {
+      ko: "앞의 아홉 단계는 한 번 팔릴 때까지의 길입니다. 이 단계는 끝나지 않고 계속 도는 일입니다 — 허가를 만료 전에 갱신하고, 문제가 생긴 로트를 회수하고, 세금을 매달 신고합니다. 로트와 유통기한을 07단계에서 적어 두는 이유가 여기에 있습니다. 회수는 로트 단위로 하는데, 어느 로트가 어디로 갔는지 모르면 매대에 있는 것을 전부 빼야 합니다.",
+      th: "เก้าขั้นก่อนหน้าคือเส้นทางจนขายได้ครั้งแรก ส่วนขั้นนี้ไม่มีวันจบและต้องทำต่อเนื่อง คือต่ออายุใบอนุญาตก่อนหมดอายุ เรียกคืนล็อตที่มีปัญหา และยื่นภาษีทุกเดือน เหตุผลที่ต้องบันทึกล็อตและวันหมดอายุตั้งแต่ขั้นที่ 07 อยู่ตรงนี้ เพราะการเรียกคืนทำเป็นล็อต หากไม่รู้ว่าล็อตไหนไปที่ใด ก็ต้องเก็บของออกจากชั้นวางทั้งหมด",
+      en: "The nine stages before this are the road to a first sale. This one never finishes: licences get renewed before they lapse, bad lots get pulled, taxes get filed every month. This is why lot and expiry are recorded back at stage 07 — a recall runs by lot, and not knowing where a lot went means clearing every shelf instead of one.",
+    },
+    does: [
+      {
+        actor: "th",
+        text: {
+          ko: "อ.7은 3년, 광고 심의는 5년 만기다. 만료 두 달 전에 갱신을 건다",
+          th: "อ.7 มีอายุ 3 ปี และการอนุมัติโฆษณา 5 ปี ให้เริ่มต่ออายุก่อนหมดสองเดือน",
+          en: "The Or.7 runs three years and an advertising approval five — start the renewal two months before either lapses",
+        },
+      },
+      {
+        actor: "th",
+        text: {
+          ko: "라벨·성분·제조사가 바뀌면 팔기 전에 변경 신고를 넣는다. 승인된 도안과 다른 라벨은 승인받지 않은 라벨이다",
+          th: "หากฉลาก ส่วนผสม หรือผู้ผลิตเปลี่ยน ต้องยื่นแก้ไขก่อนวางขาย ฉลากที่ต่างจากอาร์ตเวิร์กที่อนุมัติถือว่าไม่ได้รับอนุมัติ",
+          en: "When the label, formula or manufacturer changes, file the amendment before selling — a label that differs from the approved artwork is an unapproved label",
+        },
+      },
+      {
+        actor: "th",
+        text: {
+          ko: "회수가 필요하면 로트로 범위를 잡고 FDA에 알린 뒤 거래처에서 거둬들인다",
+          th: "หากต้องเรียกคืน ให้กำหนดขอบเขตเป็นล็อต แจ้ง อย. แล้วเก็บสินค้าคืนจากคู่ค้า",
+          en: "If a recall is needed, scope it by lot, notify the FDA, and collect it back from the trade",
+        },
+      },
+      {
+        actor: "th",
+        text: {
+          ko: "부가세는 매달 PP.30으로 신고한다. 수입할 때 낸 부가세는 여기서 매입세액으로 돌려받는다",
+          th: "ยื่น ภ.พ.30 ทุกเดือน ภาษีซื้อจาก VAT ที่จ่ายตอนนำเข้าจะถูกเครดิตคืนตรงนี้",
+          en: "File PP.30 monthly — the VAT paid at import is reclaimed here as input tax",
+        },
+      },
+      {
+        actor: "brand",
+        text: {
+          ko: "원산지 사후검증 요청이 오면 생산 기록과 원가 자료를 낸다. 증빙은 5년 보관이다",
+          th: "หากมีคำขอตรวจสอบถิ่นกำเนิดย้อนหลัง ให้ส่งบันทึกการผลิตและข้อมูลต้นทุน หลักฐานต้องเก็บ 5 ปี",
+          en: "If an origin verification lands, supply the production records and cost data — the evidence is kept for five years",
+        },
+      },
+    ],
+    docs: [
+      { ko: "갱신 신청서", th: "คำขอต่ออายุ", en: "Renewal application" },
+      { ko: "변경 신고서", th: "คำขอแก้ไขรายการ", en: "Amendment filing" },
+      { ko: "회수 기록 (로트별)", th: "บันทึกการเรียกคืน (รายล็อต)", en: "Recall record (by lot)" },
+      { ko: "부가세 신고서 (PP.30)", th: "แบบแสดงรายการ ภ.พ.30", en: "VAT return (PP.30)" },
+      { ko: "원산지 증빙 보관본", th: "หลักฐานถิ่นกำเนิดที่เก็บไว้", en: "Retained origin evidence" },
+    ],
+    takes: { ko: "상시 — 세금은 매달, 갱신은 3년·5년 주기", th: "ต่อเนื่อง — ภาษีทุกเดือน ต่ออายุทุก 3 ปีและ 5 ปี", en: "Ongoing — tax monthly, renewals on a three- and five-year cycle" },
+    gate: {
+      ko: "끝나는 단계가 아닙니다. 만료일이 달력에 들어가 있고 로트가 추적되면 됩니다",
+      th: "ไม่ใช่ขั้นที่จบลง ขอเพียงวันหมดอายุอยู่ในปฏิทินและตามล็อตได้",
+      en: "This stage does not end. It is in order when the expiry dates are on a calendar and lots can be traced",
+    },
+    risk: {
+      ko: "อ.7이 만료되면 그날부터 수입이 멈춥니다. 갱신은 심사가 붙는 절차라 만료 당일에 넣으면 늦습니다. 그리고 회수를 로트로 못 좁히면 그 브랜드 물건 전량을 빼야 하므로, 07단계에서 로트를 안 적은 대가가 여기서 한 번에 나옵니다.",
+      th: "หาก อ.7 หมดอายุ การนำเข้าจะหยุดตั้งแต่วันนั้นทันที การต่ออายุมีขั้นตอนพิจารณา หากยื่นในวันที่หมดอายุถือว่าช้าไปแล้ว และหากจำกัดขอบเขตการเรียกคืนเป็นล็อตไม่ได้ ก็ต้องถอนสินค้าของแบรนด์นั้นออกทั้งหมด ราคาของการไม่บันทึกล็อตในขั้นที่ 07 จะมาเรียกเก็บที่นี่ทีเดียว",
+      en: "The day the Or.7 lapses, importing stops. Renewal goes through review, so filing on the expiry date is already late. And a recall that cannot be narrowed to a lot means pulling every unit of that brand — the price of skipping lot numbers at stage 07 arrives here, all at once.",
+    },
+    watch: [
+      {
+        ko: "창고 주소를 옮기면 허가를 다시 봐야 한다. อ.7은 회사가 아니라 주소에 붙어 있다",
+        th: "หากย้ายที่อยู่คลังสินค้า ต้องดำเนินการกับใบอนุญาตใหม่ เพราะ อ.7 ผูกกับที่อยู่ ไม่ใช่ตัวบริษัท",
+        en: "Moving the warehouse means revisiting the licence — the Or.7 attaches to the address, not the company",
+      },
+      {
+        ko: "취급 품목이 늘면 อ.7 변경 신청을 먼저 넣는다. 리스트에 없는 품목은 그 허가로 못 들여온다",
+        th: "หากเพิ่มรายการสินค้า ต้องยื่นแก้ไข อ.7 ก่อน สินค้าที่ไม่อยู่ในรายการนำเข้าด้วยใบอนุญาตนั้นไม่ได้",
+        en: "Adding items means amending the Or.7 first — anything not on the list cannot come in under it",
+      },
+      {
+        ko: "유통기한 임박 재고는 폐기해도 장부에서 사라지지 않는다. 폐기 기록을 남겨야 비용으로 인정된다",
+        th: "สินค้าใกล้หมดอายุแม้จะทำลายทิ้ง ก็ไม่หายไปจากบัญชีเอง ต้องมีบันทึกการทำลายจึงจะถือเป็นค่าใช้จ่ายได้",
+        en: "Near-expiry stock does not leave the books just because it was thrown away — the disposal has to be recorded to count as a cost",
+      },
+    ],
+    lanes: {
+      goods: { ko: "회수 시 매대 → 창고", th: "เมื่อเรียกคืน จากชั้นวางกลับเข้าคลัง", en: "Shelf back to warehouse on a recall" },
+      paper: { ko: "갱신 · 변경 · 회수 기록", th: "การต่ออายุ · การแก้ไข · บันทึกเรียกคืน", en: "Renewals, amendments, recall records" },
+      money: { ko: "매달 부가세 신고 · 갱신 수수료", th: "ยื่น VAT ทุกเดือน · ค่าธรรมเนียมต่ออายุ", en: "Monthly VAT filing, renewal fees" },
+    },
+    basis: {
+      ko: "อ.7 3년 유효기간과 변경 신청 · 광고 승인 유효기간 최대 5년 · 태국 부가세 월 신고(PP.30) · FTA 원산지 증빙 5년 보관",
+      th: "อายุ 3 ปีของ อ.7 และการยื่นแก้ไข · การอนุมัติโฆษณามีอายุไม่เกิน 5 ปี · การยื่น ภ.พ.30 รายเดือน · การเก็บหลักฐานถิ่นกำเนิด FTA 5 ปี",
+      en: "The three-year Or.7 term and its amendments · advertising approval valid up to five years · monthly Thai VAT returns (PP.30) · five-year FTA origin record-keeping",
+    },
+    record: {
+      tab: "stock",
+      what: {
+        ko: "회수·폐기는 재고 탭에 사유를 달아 출고로 잡는다. 갱신 수수료와 세금은 재무 탭에 적는다",
+        th: "การเรียกคืนและการทำลายให้ตัดสต็อกพร้อมระบุเหตุผล ส่วนค่าธรรมเนียมต่ออายุและภาษีบันทึกในแท็บการเงิน",
+        en: "Book recalls and disposals as stock-outs with a reason; renewal fees and tax go under Finance",
       },
     },
   },
@@ -1197,6 +1424,41 @@ export const COST_GROUPS: CostGroup[] = [
   },
 ];
 
+/**
+ * 전체가 몇 달인지.
+ *
+ * 단계마다 기간은 적혀 있었지만 합은 어디에도 없었다. 브랜드 담당자가 가장 먼저
+ * 묻는 것이 "그래서 언제부터 팔려요"인데 그 답이 화면에 없으면, 단계를 아무리
+ * 잘 써 놔도 읽는 사람은 자기 머리로 아홉 개를 더한다. 그리고 그 덧셈은 틀린다 —
+ * 03과 04가 같이 돌기 때문이다.
+ */
+export interface Route {
+  title: T;
+  span: T;
+  body: T;
+}
+
+export const ROUTES: Route[] = [
+  {
+    title: { ko: "빠른 쪽", th: "เส้นทางเร็ว", en: "The fast route" },
+    span: { ko: "약 4개월", th: "ราว 4 เดือน", en: "about 4 months" },
+    body: {
+      ko: "일반식품·라벨부착식품·표준식품이면 제품 등록 자체는 이틀입니다. 그래도 라벨 사전승인 60일이 남아서, 검토·계약 3주 + 등록·라벨 9주 + 생산 4주 + 선적·통관 3주가 됩니다. 시장 검증은 이 안에서 같이 돕니다.",
+      th: "หากเป็นอาหารทั่วไป อาหารที่ต้องมีฉลาก หรืออาหารกำหนดคุณภาพ การขึ้นทะเบียนใช้เพียงสองวัน แต่ยังเหลือการอนุมัติฉลาก 60 วัน รวมแล้วคือ ตรวจสอบและทำสัญญา 3 สัปดาห์ + ขึ้นทะเบียนและฉลาก 9 สัปดาห์ + ผลิต 4 สัปดาห์ + ส่งและผ่านพิธีการ 3 สัปดาห์ โดยการทดสอบตลาดเดินคู่ขนานอยู่ในช่วงนี้",
+      en: "For general, labelled or standardised food the registration itself takes two days — but the 60-day label approval remains. That gives three weeks of screening and contract, nine of registration and label, four of production, three of shipping and clearance, with the market test running inside it.",
+    },
+  },
+  {
+    title: { ko: "느린 쪽", th: "เส้นทางช้า", en: "The slow route" },
+    span: { ko: "7~8개월", th: "7–8 เดือน", en: "7–8 months" },
+    body: {
+      ko: "구체적 통제식품이면 제품 등록만 35~90영업일입니다. 여기에 라벨 승인이 겹쳐 허가 단계에서만 다섯 달 안팎이 걸립니다. 01단계에서 갈래를 잘못 잡으면 이 길로 두 달 걸어간 뒤 처음으로 돌아옵니다.",
+      th: "หากเป็นอาหารควบคุมเฉพาะ เฉพาะการขึ้นทะเบียนก็ใช้ 35–90 วันทำการ เมื่อรวมกับการอนุมัติฉลาก เฉพาะขั้นขออนุญาตก็กินเวลาราวห้าเดือน หากชี้กลุ่มผิดตั้งแต่ขั้นที่ 01 จะเดินไปทางนี้สองเดือนแล้วต้องกลับมาเริ่มใหม่",
+      en: "Specifically controlled food takes 35–90 working days to register on its own. With the label approval overlapping it, the permit phase alone runs to roughly five months. Misplacing the group at stage 01 means walking two months down this road and starting over.",
+    },
+  },
+];
+
 export interface Term {
   term: T;
   body: T;
@@ -1249,9 +1511,9 @@ export const TERMS: Term[] = [
   {
     term: { ko: "자유판매증명서 (CFS)", th: "หนังสือรับรองการจำหน่ายเสรี (CFS)", en: "Certificate of Free Sale (CFS)" },
     body: {
-      ko: "이 제품이 한국에서 합법적으로 팔리고 있다는 증명. 한국 식약처에 온라인으로 신청해 발급받습니다. 영업허가증 사본, 품목제조보고서 사본, 영문 시험성적서, 수출신고필증이 필요합니다.",
-      th: "หนังสือรับรองว่าสินค้านี้จำหน่ายอย่างถูกกฎหมายในเกาหลี ยื่นขอออนไลน์กับ MFDS ของเกาหลี ต้องใช้สำเนาใบอนุญาตประกอบกิจการ สำเนารายงานการผลิตผลิตภัณฑ์ ผลตรวจฉบับภาษาอังกฤษ และใบขนสินค้าขาออก",
-      en: "Proof that the product is legally sold in Korea, applied for online with Korea's MFDS. It needs the business licence copy, the product manufacturing report, an English lab report, and the export declaration.",
+      ko: "이 제품이 한국에서 합법적으로 팔리고 있다는 증명. 한국 식약처에 온라인으로 신청해 발급받습니다. 영업허가증 사본, 품목제조보고서 사본, 영문 시험성적서가 필요하고, 수출 실적 증빙을 요구받는 경우가 있습니다. 그런데 이 증명서는 04단계에서 필요하고 수출신고는 06단계라서, 요건을 먼저 확인해 두지 않으면 여기서 순서가 꼬입니다.",
+      th: "หนังสือรับรองว่าสินค้านี้จำหน่ายอย่างถูกกฎหมายในเกาหลี ยื่นขอออนไลน์กับ MFDS ของเกาหลี ต้องใช้สำเนาใบอนุญาตประกอบกิจการ สำเนารายงานการผลิตผลิตภัณฑ์ และผลตรวจฉบับภาษาอังกฤษ บางกรณีอาจถูกขอหลักฐานการส่งออกด้วย แต่เอกสารนี้ต้องใช้ในขั้นที่ 04 ขณะที่ใบขนสินค้าขาออกเกิดในขั้นที่ 06 หากไม่ตรวจเงื่อนไขไว้ก่อน ลำดับงานจะพันกันตรงนี้",
+      en: "Proof that the product is legally sold in Korea, applied for online with Korea's MFDS. It needs the business licence copy, the product manufacturing report and an English lab report, and proof of an actual export is sometimes asked for. Since the certificate is needed at stage 04 while the export declaration only exists at stage 06, checking the requirement early is what keeps the order from tangling.",
     },
   },
   {
@@ -1528,6 +1790,22 @@ export const SOURCES: Source[] = [
   },
   {
     label: {
+      ko: "USDA FAS — 동물성 가공식품 축산국(DLD) 수입허가 요건",
+      th: "USDA FAS — ข้อกำหนดใบอนุญาตนำเข้าอาหารแปรรูปจากสัตว์ของกรมปศุสัตว์",
+      en: "USDA FAS — DLD import permit requirement for processed animal products",
+    },
+    url: "https://www.fas.usda.gov/data/thailand-new-thai-regulation-affecting-us-cooked-food-exports",
+  },
+  {
+    label: {
+      ko: "태국 국세청 — 부가세 등록과 월 신고 (PP.30)",
+      th: "กรมสรรพากร — การจดทะเบียน VAT และการยื่น ภ.พ.30 รายเดือน",
+      en: "Thai Revenue Department — VAT registration and monthly PP.30 filing",
+    },
+    url: "https://www.rd.go.th/english/6043.html",
+  },
+  {
+    label: {
       ko: "USDA FAS — 태국 식품 수입 규정 연례 보고 (2025)",
       th: "USDA FAS — รายงานประจำปีกฎระเบียบนำเข้าอาหารของไทย (2025)",
       en: "USDA FAS — Thailand FAIRS annual report (2025)",
@@ -1544,9 +1822,24 @@ export const F = {
     en: "Export–import workflow",
   },
   pageLead: {
-    ko: "한국 브랜드의 제품이 태국 매대에 오르기까지 아홉 단계입니다. 단계마다 누가 무엇을 하고, 무엇이 있어야 다음으로 넘어가는지 적어 뒀습니다.",
-    th: "จากสินค้าของแบรนด์เกาหลีจนถึงชั้นวางในไทย มีทั้งหมดเก้าขั้น แต่ละขั้นระบุไว้ว่าใครทำอะไร และต้องมีอะไรจึงจะไปขั้นต่อไปได้",
-    en: "Nine stages take a Korean brand's product onto a Thai shelf. Each one says who does what, and what has to exist before it moves on.",
+    ko: "한국 브랜드의 제품이 태국 매대에 오르기까지 열 단계입니다. 단계마다 누가 무엇을 하고, 무엇이 있어야 다음으로 넘어가는지 적어 뒀습니다. 물건·서류·돈이 각각 어디 있는지와 원가에 무엇이 붙는지는 단계 뒤에 표로 정리해 뒀습니다.",
+    th: "จากสินค้าของแบรนด์เกาหลีจนถึงชั้นวางในไทย มีทั้งหมดสิบขั้น แต่ละขั้นระบุไว้ว่าใครทำอะไร และต้องมีอะไรจึงจะไปขั้นต่อไปได้ ส่วนตำแหน่งของสินค้า เอกสาร และเงิน รวมถึงต้นทุนที่บวกเพิ่ม สรุปเป็นตารางไว้ท้ายขั้นตอน",
+    en: "Ten stages take a Korean brand's product onto a Thai shelf. Each one says who does what, and what has to exist before it moves on. Where the goods, the paperwork and the money each sit, and what gets added to the cost, are set out in tables after the stages.",
+  },
+  routesTitle: {
+    ko: "전체 얼마나 걸리나",
+    th: "ทั้งหมดใช้เวลาเท่าไร",
+    en: "How long the whole thing takes",
+  },
+  routesLead: {
+    ko: "단계를 순서대로 더하면 안 됩니다 — 시장 검증은 등록을 기다리는 동안 같이 돕니다. 갈리는 것은 01단계에서 정해지는 식품 갈래입니다.",
+    th: "อย่านำระยะเวลาของแต่ละขั้นมาบวกกันตรง ๆ เพราะการทดสอบตลาดเดินคู่ขนานไปในช่วงที่รอขึ้นทะเบียน สิ่งที่ทำให้ต่างกันคือกลุ่มอาหารที่ชี้ไว้ในขั้นที่ 01",
+    en: "Do not add the stages up in sequence — the market test runs while the registration is pending. What splits the two routes is the food group settled at stage 01.",
+  },
+  lblAlongside: {
+    ko: "순서가 아니라 동시에",
+    th: "ทำพร้อมกัน ไม่ใช่ตามลำดับ",
+    en: "At the same time, not in sequence",
   },
   overview: { ko: "한눈에 보기", th: "ภาพรวม", en: "At a glance" },
   overviewHint: {
@@ -1610,6 +1903,61 @@ export const F = {
     th: "งานของแบรนด์จบตรงนี้",
     en: "The brand's work ends here",
   },
+  progressTitle: { ko: "브랜드별 진행", th: "ความคืบหน้ารายแบรนด์", en: "Progress by brand" },
+  progressLead: {
+    ko: "브랜드마다 열 단계 중 어디까지 왔는지입니다. 저장된 값만 세고 짐작하지 않습니다. 줄을 펴면 각 단계의 값을 여기서 바로 고칠 수 있습니다.",
+    th: "แสดงว่าแต่ละแบรนด์มาถึงขั้นใดจากสิบขั้น นับเฉพาะค่าที่บันทึกไว้จริงและไม่คาดเดา เมื่อกางแถวออกจะแก้ค่าของแต่ละขั้นได้จากตรงนี้เลย",
+    en: "How far each brand has come through the ten stages, counted from stored values only and never inferred. Open a row to edit each stage's values right here.",
+  },
+  progressEmpty: {
+    ko: "브랜드사 탭에서 브랜드를 등록하면 여기에 진행 상황이 나옵니다",
+    th: "เมื่อเพิ่มแบรนด์ในแท็บแบรนด์ ความคืบหน้าจะแสดงที่นี่",
+    en: "Add a brand under the Brands tab and its progress appears here",
+  },
+  legDone: { ko: "지남", th: "ผ่านแล้ว", en: "Passed" },
+  legNow: { ko: "지금", th: "กำลังทำ", en: "Now" },
+  legTodo: { ko: "아직", th: "ยังไม่ถึง", en: "Not yet" },
+  shipTitle: { ko: "선적", th: "การส่งสินค้า", en: "Shipments" },
+  shipNone: { ko: "선적 없음", th: "ยังไม่มีการส่ง", en: "No shipments" },
+  shipAdd: { ko: "선적 추가", th: "เพิ่มการส่ง", en: "Add shipment" },
+  shipCode: { ko: "선적 이름", th: "ชื่อการส่ง", en: "Shipment name" },
+  shipCodeHint: {
+    ko: "예: 2026-03 1차",
+    th: "เช่น 2026-03 รอบที่ 1",
+    en: "e.g. 2026-03 first lot",
+  },
+  shipNext: { ko: "다음 단계로", th: "ไปขั้นถัดไป", en: "Advance" },
+  shipDelete: { ko: "삭제", th: "ลบ", en: "Delete" },
+  shipMissing: {
+    ko: "선적 표가 아직 데이터베이스에 없습니다. supabase/migrations 의 마이그레이션을 적용하면 05~07단계를 여기서 따라갈 수 있습니다.",
+    th: "ยังไม่มีตาราง shipments ในฐานข้อมูล เมื่อรันไฟล์ migration ใน supabase/migrations แล้วจะติดตามขั้นที่ 05–07 ได้จากที่นี่",
+    en: "The shipments table is not in the database yet. Apply the migration in supabase/migrations and stages 05–07 become trackable here.",
+  },
+  labelStatus: { ko: "라벨 승인", th: "อนุมัติฉลาก", en: "Label approval" },
+  fdaStatus: { ko: "제품 등록", th: "ขึ้นทะเบียนสินค้า", en: "Product registration" },
+  panelScreen: { ko: "01 · 04 제품", th: "01 · 04 สินค้า", en: "01 · 04 Products" },
+  panelValidate: { ko: "03 시장 검증", th: "03 ทดสอบตลาด", en: "03 Market test" },
+  panelKeep: { ko: "10 허가 · 만료", th: "10 ใบอนุญาต · วันหมดอายุ", en: "10 Licences and expiry" },
+  noProducts: {
+    ko: "이 브랜드에 등록된 제품이 없습니다",
+    th: "ยังไม่มีสินค้าของแบรนด์นี้",
+    en: "No products for this brand yet",
+  },
+  hsCode: { ko: "HS 코드", th: "พิกัดศุลกากร", en: "HS code" },
+  validatedOn: { ko: "검증 완료일", th: "วันที่ทดสอบเสร็จ", en: "Validated on" },
+  markToday: { ko: "오늘로", th: "เป็นวันนี้", en: "Today" },
+  clear: { ko: "지우기", th: "ล้าง", en: "Clear" },
+  licNone: { ko: "등록된 허가 없음", th: "ยังไม่มีใบอนุญาต", en: "No licences yet" },
+  licAdd: { ko: "허가 추가", th: "เพิ่มใบอนุญาต", en: "Add licence" },
+  licName: { ko: "이름 · 번호", th: "ชื่อ · เลขที่", en: "Name or number" },
+  licExpires: { ko: "만료일", th: "วันหมดอายุ", en: "Expires" },
+  licCompanyWide: {
+    ko: "회사 전체",
+    th: "ทั้งบริษัท",
+    en: "Company-wide",
+  },
+  licExpired: { ko: "만료됨", th: "หมดอายุแล้ว", en: "Expired" },
+  licSoon: { ko: "곧 만료", th: "ใกล้หมดอายุ", en: "Expiring soon" },
   statusTitle: { ko: "지금 상태", th: "สถานะตอนนี้", en: "Where we are now" },
   statusBrands: { ko: "브랜드사 진행 단계", th: "สถานะแบรนด์", en: "Brands by stage" },
   statusFda: { ko: "제품 FDA 상태", th: "สถานะ อย. ของสินค้า", en: "Products by FDA status" },
