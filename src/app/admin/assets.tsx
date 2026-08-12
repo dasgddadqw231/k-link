@@ -50,6 +50,14 @@ export function AssetArchive({
   async function add(files: FileList) {
     setErr("");
     setBusy((n) => n + files.length);
+    /*
+      몇 장이 실제로 들어갔는지 센다.
+
+      예전에는 끝에서 무조건 "저장했습니다"를 띄웠다. 한 장도 못 올린 사람에게도
+      성공 토스트가 떴고, 그 위의 빨간 실패 문구와 정반대 말을 하고 있었다.
+      어느 쪽을 믿어야 할지 모르는 화면은 아무 말도 안 하느니만 못하다.
+    */
+    let saved = 0;
 
     for (const file of files) {
       try {
@@ -65,6 +73,7 @@ export function AssetArchive({
           size_bytes: size,
         });
         if (error) throw error;
+        saved++;
       } catch {
         setErr(c.brandAssetFailed);
       } finally {
@@ -73,7 +82,7 @@ export function AssetArchive({
     }
 
     await data.reload();
-    toast(c.saved);
+    if (saved > 0) toast(c.saved);
   }
 
   async function remove(asset: BrandAsset) {
