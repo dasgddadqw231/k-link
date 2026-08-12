@@ -661,6 +661,11 @@ export const STAGES: Stage[] = [
         th: "หากสินค้าต้องขอใบอนุญาตจากกรมปศุสัตว์ ให้ยื่นพร้อมกันในขั้นนี้ หากรอให้ อย. เสร็จก่อนจะกลายเป็นรอสองรอบ",
         en: "If the item needs a livestock permit, file that here too — starting it after the FDA is done means waiting twice",
       },
+      {
+        ko: "라벨 도안에 섭취방법(วิธีรับประทาน)을 같이 넣는다. 표시 의무 항목은 아니지만, 광고 사전승인은 라벨에 이미 승인된 범위를 기준으로 판단하므로 라벨에 적힌 섭취방법은 승인 없이 마케팅에 그대로 쓸 수 있다. 나중에 넣으려면 변경 신고를 다시 넣어야 한다",
+        th: "ใส่วิธีรับประทานลงในอาร์ตเวิร์กฉลากไปพร้อมกัน ไม่ใช่รายการบังคับ แต่การอนุญาตโฆษณาตัดสินจากขอบเขตที่ฉลากได้รับอนุมัติไว้แล้ว วิธีรับประทานที่อยู่บนฉลากจึงนำไปใช้ในการตลาดได้เลยโดยไม่ต้องขออนุญาต หากมาเพิ่มทีหลังต้องยื่นแก้ไขใหม่",
+        en: "Put the directions for use (วิธีรับประทาน) on the label artwork at the same time. It is not a mandatory item, but advertising approval is judged against what the label already carries, so directions printed on the label can be used in marketing as they stand. Adding them afterwards means filing an amendment",
+      },
     ],
     lanes: {
       goods: { ko: "움직이지 않음", th: "ไม่มีการเคลื่อนย้าย", en: "Nothing moves" },
@@ -1485,6 +1490,14 @@ export const TERMS: Term[] = [
     },
   },
   {
+    term: { ko: "ฆอ. (광고 사전승인)", th: "ฆอ. (อนุญาตโฆษณาอาหาร)", en: "ฆอ. (food advertising approval)" },
+    body: {
+      ko: "식품 광고 사전승인. 효능·품질·특성(สรรพคุณ)을 말하는 광고에만 필요하고, 제품 사진·가격·구매처나 섭취방법 같은 사실 기술은 대상이 아닙니다. 반대로 영양강조표시와 건강강조표시, 그리고 라벨에 승인된 범위를 넘어서는 말은 전부 승인을 받아야 합니다. 그래서 04단계에서 라벨에 무엇을 넣어 두었는지가 나중에 마케팅에서 쓸 수 있는 말의 범위를 정합니다.",
+      th: "การขออนุญาตโฆษณาอาหาร จำเป็นเฉพาะเมื่อโฆษณากล่าวถึงสรรพคุณ คุณภาพ หรือคุณประโยชน์ ส่วนภาพสินค้า ราคา ช่องทางซื้อ หรือวิธีรับประทาน ซึ่งเป็นการบอกข้อเท็จจริง ไม่เข้าข่าย ในทางกลับกัน การกล่าวอ้างทางโภชนาการ การกล่าวอ้างทางสุขภาพ และข้อความที่เกินขอบเขตที่ฉลากได้รับอนุมัติ ต้องขออนุญาตทั้งหมด สิ่งที่ใส่ไว้บนฉลากในขั้นที่ 04 จึงเป็นตัวกำหนดว่าจะพูดอะไรได้ในการตลาดภายหลัง",
+      en: "Food advertising approval. It is needed only where the advertising speaks to efficacy, quality or properties (สรรพคุณ) — product photos, price, where to buy and factual directions for use fall outside it. Nutrition claims, health claims and anything beyond what the label already carries all need approval. That is why what goes on the label at stage 04 decides what may be said in marketing later.",
+    },
+  },
+  {
     term: { ko: "อย. (Or.Yor.)", th: "อย.", en: "อย. (Or.Yor.)" },
     body: {
       ko: "태국 식약청과, 그곳이 발급하는 식품일련번호. 소비자가 패키지에서 보는 번호이고 수입자 명의로 나옵니다. 패키지·광고·수입신고서에 적힌 번호가 모두 같아야 합니다.",
@@ -1699,6 +1712,14 @@ export const SOURCES: Source[] = [
       en: "Korea MFDS — export certificates (CFS)",
     },
     url: "https://www.mfds.go.kr/brd/m_1155/list.do",
+  },
+  {
+    label: {
+      ko: "태국 FDA — 식품 광고 승인 신청 (e-Submission)",
+      th: "อย. — การยื่นขออนุญาตโฆษณาอาหารผ่าน e-Submission",
+      en: "Thai FDA — food advertising approval via e-Submission",
+    },
+    url: "https://food.fda.moph.go.th/e-submission-system/esub-002",
   },
   {
     label: {

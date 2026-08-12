@@ -39,7 +39,13 @@ export const t = {
     madeInKorea: "ผลิตในเกาหลี",
     positivaName: "Positiva",
     positivaKind: "น้ำมันมะกอกแบบซองสติ๊ก",
-    positivaDesc: "สติ๊กซองละ 20 มล. ฉีกใช้ได้ทันที มี 2 สูตร",
+    /*
+     * 여기 "ซองละ 20 มล."(한 포 20ml)라고 적혀 있었는데, 이 줄은 브랜드 설명이라
+     * 올레샷과 올토샷을 한꺼번에 가리킨다. 두 스틱의 용량은 다르다 — 올레샷 20ml,
+     * 올토샷 15ml. 한 숫자로 묶을 수 없으므로 여기서는 숫자를 말하지 않고
+     * SKU별 배지에 맡긴다. 다시 넣지 말 것.
+     */
+    positivaDesc: "สติ๊กแบบซองเดียวจบ ฉีกใช้ได้ทันที มี 2 สูตร",
     olleName: "Olle Shot",
     olleDesc: "น้ำมันมะกอกเอ็กซ์ตร้าเวอร์จินออร์แกนิก 65% + น้ำเลมอนออร์แกนิก 35%",
     oltoName: "Olto Shot",
@@ -50,6 +56,42 @@ export const t = {
     eunhwiSkuName: "น้ำฟักทองเกาหลี",
     eunhwiSkuDesc: "ฟักทอง 100% · โรงงานมาตรฐาน HACCP",
     realPhotoLabel: "ภาพสินค้าจริง",
+
+    /*
+     * 섭취법. 근거는 docs/serving.md.
+     *
+     * 제목이 "이렇게 드세요"가 아니라 "계량할 필요 없다"인 이유가 그 문서 1절이다 —
+     * 태국 소비자는 이미 아침에 올리브유+레몬을 먹으려 하고 있고, 병을 사서 숟가락으로
+     * 계량하는 데서 막혀 있다. 아는 사람에게 가르치면 무시당한다.
+     *
+     * 세 줄의 축은 세 제품에 똑같다: ① 그대로 ② 음식에 ③ 하나 더. 옆으로 비교되게 한다.
+     * 효능은 한 글자도 넣지 않는다 — 용법·용도·보관은 심의 대상이 아니지만(สรรพคุณ이
+     * 아니다) "좋다", "가볍게", "공복에"가 붙는 순간 대상이 된다.
+     */
+    serveLabel: "วิธีกิน",
+    serveTitle: "ไม่ต้องตวง\nฉีกซองเดียวจบ",
+    serveLead: "หนึ่งซองคือหนึ่งครั้ง ดื่มตรง ๆ ก็ได้ ใส่ในอาหารก็ได้",
+    serveNote: "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ",
+    serveOlleWays: [
+      "เขย่าแล้วฉีกดื่มได้เลย",
+      "ราดสลัด 1 ซองต่อ 1 จาน น้ำมันมะกอกกับเลมอนผสมมาแล้ว",
+      "ราดพาสต้าซีฟู้ดตอนใกล้เสิร์ฟ",
+    ],
+    serveOltoWays: [
+      "เขย่าแล้วฉีกดื่มได้เลย",
+      "ราดข้าวผัดหรือพาสต้าตอนใกล้เสิร์ฟ",
+      "จิ้มขนมปัง",
+    ],
+    /*
+     * 얼려서 셔벗처럼 먹는 줄이 여기 있었는데 내렸다 — 제조사가 이 파우치는
+     * 냉동하면 안 된다고 확인해 줬다(2026-08-13). 한국 블로그에 실증이 있어도
+     * 우리가 권하면 우리 말이 된다. 다시 넣지 말 것.
+     */
+    serveHobakWays: [
+      "ฉีกดื่มได้เลย ไม่ต้องแช่เย็น",
+      "หรือแช่เย็นไว้ก่อนดื่ม",
+      "ผสมนม 2 ส่วน ต่อ น้ำฟักทอง 1 ส่วน",
+    ],
 
     lineLabel: "สำหรับผู้บริโภค",
     lineTitle: "รู้ก่อน ชิมก่อน",
@@ -117,7 +159,8 @@ export const t = {
     madeInKorea: "Made in Korea",
     positivaName: "Positiva",
     positivaKind: "Olive Oil Sticks",
-    positivaDesc: "Single-serve 20 ml sticks, in two blends.",
+    /* 두 SKU의 용량이 달라서(20ml · 15ml) 브랜드 줄에 숫자를 두지 않는다. */
+    positivaDesc: "Single-serve sticks, in two blends.",
     olleName: "Olle Shot",
     olleDesc: "65% organic extra virgin olive oil, 35% organic lemon juice",
     oltoName: "Olto Shot",
@@ -128,6 +171,29 @@ export const t = {
     eunhwiSkuName: "Korean Pumpkin Juice",
     eunhwiSkuDesc: "100% pumpkin · HACCP-certified facility",
     realPhotoLabel: "Actual product",
+
+    /* 태국어 쪽 주석 참고. 두 언어의 shape이 어긋나면 LandingTh가 깨진다. */
+    serveLabel: "HOW TO HAVE IT",
+    serveTitle: "No measuring.\nOne sachet, done.",
+    serveLead:
+      "One sachet is one serving — drink it straight, or use it in food.",
+    serveNote: "Every one of these is how people in Korea actually have them.",
+    serveOlleWays: [
+      "Shake, tear, drink",
+      "One sachet dresses one plate — the oil and lemon are already mixed",
+      "Over seafood pasta, right at the end",
+    ],
+    serveOltoWays: [
+      "Shake, tear, drink",
+      "Over fried rice or pasta, at the end",
+      "With bread",
+    ],
+    /* 태국어 쪽 주석 참고 — 냉동은 제조사 확인으로 내렸다. */
+    serveHobakWays: [
+      "Tear and drink, no chilling needed",
+      "Or chill it first",
+      "Mix with milk, two parts to one",
+    ],
 
     lineLabel: "For shoppers",
     lineTitle: "Know it first,\ntaste it first",

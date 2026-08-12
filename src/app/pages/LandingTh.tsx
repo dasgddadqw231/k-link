@@ -11,6 +11,13 @@ import {
   Search,
   PackageCheck,
   Store,
+  Droplets,
+  Salad,
+  UtensilsCrossed,
+  Sandwich,
+  CupSoda,
+  Refrigerator,
+  GlassWater,
 } from "lucide-react";
 import { t, type ThLang } from "../i18n";
 import { Btn, Card, Container, Eyebrow, Figure, Footer, Section, SectionHead, T } from "./site";
@@ -51,7 +58,13 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
         {
           name: c.oltoName,
           sub: c.oltoDesc,
-          size: "20 ml",
+          /*
+           * 15ml다. 여기 오래 "20 ml"라고 적혀 있었는데 그건 올레샷 값이었다 —
+           * 두 스틱의 용량이 다르다. 내용량은 라벨 고시 450호의 필수 표시
+           * 항목이라 페이지와 라벨이 어긋나면 광고 심의 대상이 되므로, 이 숫자를
+           * 올레샷과 같이 묶지 말 것(docs/serving.md 2절).
+           */
+          size: "15 ml",
           img: "/brands/sku-oltoshot.webp",
         },
       ],
@@ -74,6 +87,41 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
           img: "/brands/eunhwi-product.webp",
         },
       ],
+    },
+  ];
+
+  /*
+   * 섭취법. 근거와 카피는 docs/serving.md.
+   *
+   * 사진은 SKU마다 "가장 안 떠오르는 사용법" 한 컷씩이다 — 그대로 마시는 그림은
+   * 바로 위 제품 섹션이 이미 하고 있어서, 여기서 반복하면 자리값을 못 한다.
+   *
+   * 아이콘도 카피다. 근육·체중계·심장은 문장이 없어도 효능을 말하므로 쓰지 않는다.
+   * 여기 있는 것은 전부 그릇·온도·동작만 가리킨다. 올레와 올토가 UtensilsCrossed를
+   * 같이 쓰는 건 실수가 아니라 둘의 두 번째 줄이 같은 축(요리에)이기 때문이다.
+   */
+  const serving = [
+    {
+      name: c.olleName,
+      size: "20 ml",
+      img: "/brands/serve-olle-salad.webp",
+      ways: c.serveOlleWays,
+      icons: [Droplets, Salad, UtensilsCrossed],
+    },
+    {
+      name: c.oltoName,
+      // 올레샷과 다르다. 위 brands의 주석 참고.
+      size: "15 ml",
+      img: "/brands/serve-olto-friedrice.webp",
+      ways: c.serveOltoWays,
+      icons: [Droplets, UtensilsCrossed, Sandwich],
+    },
+    {
+      name: c.eunhwiSkuName,
+      size: "90 ml",
+      img: "/brands/serve-hobak-milk.webp",
+      ways: c.serveHobakWays,
+      icons: [CupSoda, Refrigerator, GlassWater],
     },
   ];
 
@@ -203,7 +251,109 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
         </Container>
       </Section>
 
-      {/* 소비자 훅 — 아직 못 파니까, 지금 당장 줄 수 있는 것 세 가지를 준다 */}
+      {/*
+        먹는 법 — 제품 섹션이 "무엇"을 말했으니 여기가 "어떻게"다.
+
+        이 자리에 있는 이유는 순서 때문이다. 제품을 보고 나서 쓰는 그림이 서고,
+        그 다음에 LINE 버튼이 온다. 반대로 두면 갖고 싶어지기 전에 버튼을 민다.
+
+        효능을 말할 수 없는 동안(광고 사전 심의 전) 이 섹션이 제품에 의미를 붙이는
+        유일한 자리이고, 용법은 심의 대상이 아니라서 인허가를 기다리지 않아도 된다.
+      */}
+      <Section>
+        <Container>
+          <motion.div {...fadeUp}>
+            <SectionHead
+              label={c.serveLabel}
+              title={c.serveTitle}
+              lead={c.serveLead}
+            />
+          </motion.div>
+
+          {/*
+            열은 세 제품, 행은 세 가지 방법이다. 번호를 붙이지 않는다 — 진행 방식
+            도식의 01·02·03은 순서를 뜻하는데, 여기서는 제품에도 방법에도 순서가
+            없다. 번호를 달면 "1번부터 하세요"라는 없는 말이 생긴다.
+          */}
+          <div className="mt-14 grid gap-x-9 gap-y-12 md:grid-cols-3">
+            {serving.map((s, i) => (
+              <motion.article
+                key={s.name}
+                {...fadeUp}
+                transition={{ delay: i * 0.08 }}
+                className="border-t-2 border-[#0C3F80] pt-6"
+              >
+                {/*
+                  모바일에서는 사진을 원형 썸네일로 줄인다. 세 열이 세로로 쌓이면
+                  4:5 사진 석 장이 연달아 나와서 바로 위 제품 섹션과 겹쳐 보인다 —
+                  여기는 사진을 다시 크게 보여줄 자리가 아니다.
+                */}
+                <div className="flex items-center gap-4 md:block">
+                  <img
+                    src={s.img}
+                    alt=""
+                    loading="lazy"
+                    className="size-14 shrink-0 rounded-full border border-[#E3E7ED] bg-[#F4F6F8] object-cover md:hidden"
+                  />
+                  <Figure
+                    src={s.img}
+                    alt={s.name}
+                    ratio="aspect-[4/5]"
+                    className="hidden md:block"
+                  />
+                  {/*
+                    용량을 이름 아래가 아니라 옆에 둔다. 올토샷은 용량을 확인할
+                    때까지 비어 있는데, 아래에 두면 그 열만 줄 하나가 없어져서
+                    세 열의 목록 시작점이 어긋난다. 옆에 두면 있든 없든 한 줄이다.
+                    브랜드 카드가 이름과 분류를 붙이는 방식과 같은 문법이기도 하다.
+                  */}
+                  <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 md:mt-5">
+                    <h3 className={T.h3}>{s.name}</h3>
+                    {s.size && (
+                      <span className="text-[12.5px] text-[#8B94A3]">
+                        {s.size}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <ul className="mt-6 divide-y divide-[#E3E7ED] border-t border-[#E3E7ED]">
+                  {s.ways.map((way, j) => {
+                    const Icon = s.icons[j];
+                    return (
+                      <li key={way} className="flex items-start gap-3.5 py-4">
+                        <span className="mt-0.5 shrink-0 text-[#0C3F80]">
+                          <Icon size={17} strokeWidth={1.75} />
+                        </span>
+                        <span className="text-[14.5px] leading-relaxed">
+                          {way}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.article>
+            ))}
+          </div>
+
+          {/*
+            제목이 포맷 얘기(계량할 필요 없다)로 가면서 정품성이 빠졌다. 그걸 여기서
+            한 줄로 되찾는다 — 위 아홉 줄은 지어낸 사용법이 아니라 한국에서 실제로
+            그렇게 먹는 방식이고, 그 사실 자체는 효능이 아니라서 쓸 수 있다.
+          */}
+          <motion.p {...fadeUp} className={`mt-10 ${T.small}`}>
+            {c.serveNote}
+          </motion.p>
+        </Container>
+      </Section>
+
+      {/*
+        소비자 훅 — 아직 못 파니까, 지금 당장 줄 수 있는 것 두 가지를 준다.
+
+        먹는 법 섹션이 앞에 들어오면서 흰 면이 둘 연달아 서지만 그대로 둔다.
+        site.tsx가 정한 대로 구획은 색이 아니라 여백이 나눈다 — 여기서 tone을
+        바꾸면 아래 파트너 섹션과 회색이 붙어 더 큰 덩어리가 생긴다.
+      */}
       <Section>
         <Container>
           <div className="grid gap-12 md:grid-cols-12 md:gap-16">

@@ -101,7 +101,8 @@ export function productsJsonLd() {
     },
     {
       name: "Positiva Olto Shot",
-      description: "Single-serve 20 ml stick: olive oil paired with tomato.",
+      /* 15 ml이다. 올레샷은 20 ml — 여기도 한때 둘 다 20으로 적혀 있었다. */
+      description: "Single-serve 15 ml stick: olive oil paired with tomato.",
       image: `${SITE_URL}/brands/sku-oltoshot.webp`,
       brand: "Positiva",
     },
