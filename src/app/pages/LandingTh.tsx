@@ -106,6 +106,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.olleName,
       size: "20 ml",
       img: "/brands/serve-olle-salad.webp",
+      why: c.serveOlleWhy,
       taste: c.serveOlleTaste,
       ways: c.serveOlleWays,
       icons: [Droplets, Salad, Fish],
@@ -115,6 +116,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       // 올레샷과 다르다. 위 brands의 주석 참고.
       size: "15 ml",
       img: "/brands/serve-olto-bread.webp",
+      why: c.serveOltoWhy,
       taste: c.serveOltoTaste,
       ways: c.serveOltoWays,
       icons: [Droplets, Sandwich, UtensilsCrossed],
@@ -123,6 +125,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.eunhwiSkuName,
       size: "90 ml",
       img: "/brands/serve-hobak-milk.webp",
+      why: c.serveHobakWhy,
       taste: c.serveHobakTaste,
       ways: c.serveHobakWays,
       icons: [CupSoda, Refrigerator, GlassWater],
@@ -329,7 +332,18 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   쓸 수 있다. "몸에 어떻게 좋은지" 자리를 "입에 어떻게 좋은지"로
                   채우는 줄이다.
                 */}
-                <p className="mt-4 text-[13.5px] leading-relaxed text-[#5A6373] md:min-h-[2.75rem]">
+                {/*
+                  왜 먹는지(why)와 어떤 맛인지(taste)는 다른 질문이라 한 줄에
+                  섞지 않는다. 앞줄은 잉크색으로 세우고 뒷줄은 회색으로 눕힌다 —
+                  둘을 같은 무게로 두면 어느 쪽도 읽히지 않는다.
+
+                  why에 들어갈 수 있는 말은 근거가 있는 것뿐이다. 못 넣은 것과
+                  그 이유는 docs/serving.md에 적혀 있다.
+                */}
+                <p className="mt-4 text-[14.5px] leading-relaxed text-[#12161F] md:min-h-[3.1rem]">
+                  {s.why}
+                </p>
+                <p className="mt-2 text-[13.5px] leading-relaxed text-[#8B94A3] md:min-h-[2.75rem]">
                   {s.taste}
                 </p>
 

@@ -98,9 +98,22 @@ export const t = {
      * 아몬드로 끝나는 스페인 품종이라, 여린 채소를 덮지 않는다는 말이 취향이
      * 아니라 품종 특성이 된다.
      */
+    /*
+     * 2026-08-13. 효능 문구를 넣기로 결정했다(사용자 판단). 다만 넣은 것은
+     * 지금 근거가 있는 것만이다 — 아래 세 줄 중 생리적 주장은 올토샷 하나뿐이고,
+     * 그건 라이코펜이 지용성이라는 잘 확립된 사실이라 나중에 심의에서도 선다.
+     *
+     * 못 넣은 것과 그 이유는 docs/serving.md에 적어 뒀다. 요약하면:
+     * 올레샷의 EFSA 폴리페놀 클레임은 올리브유 20g 기준인데 한 포에 약 12g뿐이고,
+     * 호박즙의 비타민A 클레임은 성분 분석 성적서가 있어야 수치를 말할 수 있다.
+     * 숫자가 오면 이 세 줄이 훨씬 세진다. 그 전에 지어내지 않는다.
+     */
+    serveOlleWhy: "เอ็กซ์ตร้าเวอร์จินกับน้ำเลมอน ไม่มีอย่างอื่น",
     serveOlleTaste: "อาร์เบกีนาจากสเปน นุ่ม ไม่ขม ทิ้งท้ายด้วยเลมอนสดชื่น",
+    serveOltoWhy: "ไลโคปีนละลายในไขมัน มะเขือเทศจึงมาคู่กับน้ำมันมะกอกในซองเดียว",
     serveOltoTaste: "มะเขือเทศคั้นสดล้วน ๆ ไม่ข้น หมดซองสบาย ๆ",
-    serveHobakTaste: "ฟักทองแก่คั้นทั้งลูก หวานนุ่มตามธรรมชาติ",
+    serveHobakWhy: "สีส้มของฟักทองแก่คือเบต้าแคโรทีน",
+    serveHobakTaste: "คั้นทั้งลูก ไม่ผสมอะไรเพิ่ม หวานนุ่มตามธรรมชาติ",
     /*
      * 두 스틱의 두 번째·세 번째 줄이 다른 이유는 배합이 다르기 때문이다.
      *
@@ -227,10 +240,15 @@ export const t = {
       "Every one of these is how people in Korea actually have them. None of it is on a Thai shelf yet — add us on LINE and you will hear the launch date first.",
 
     /* 태국어 쪽 주석 참고 — 맛 한 줄이 없어서 섹션이 설명서처럼 읽혔다. */
+    /* 태국어 쪽 주석 참고 — 근거가 있는 것만 넣었다. */
+    serveOlleWhy: "Extra virgin and lemon juice. Nothing else in it.",
     serveOlleTaste:
       "Spanish Arbequina — soft, no bitterness, a fresh lemon finish.",
+    serveOltoWhy:
+      "Lycopene is fat-soluble, so the tomato arrives with its olive oil already beside it.",
     serveOltoTaste: "Pressed tomato and nothing else. Thin enough to finish.",
-    serveHobakTaste: "Whole mature pumpkin, sweet the way pumpkin is.",
+    serveHobakWhy: "The orange of a mature pumpkin is beta-carotene.",
+    serveHobakTaste: "Pressed whole, nothing added, sweet the way pumpkin is.",
     /* 태국어 쪽 주석 참고 — 두 스틱의 줄이 갈리는 근거가 거기 있다. */
     serveOlleWays: [
       "Shake, tear, drink",
