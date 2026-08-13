@@ -106,6 +106,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.olleName,
       size: "20 ml",
       img: "/brands/serve-olle-salad.webp",
+      taste: c.serveOlleTaste,
       ways: c.serveOlleWays,
       icons: [Droplets, Salad, Fish],
     },
@@ -114,6 +115,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       // 올레샷과 다르다. 위 brands의 주석 참고.
       size: "15 ml",
       img: "/brands/serve-olto-bread.webp",
+      taste: c.serveOltoTaste,
       ways: c.serveOltoWays,
       icons: [Droplets, Sandwich, UtensilsCrossed],
     },
@@ -121,6 +123,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       name: c.eunhwiSkuName,
       size: "90 ml",
       img: "/brands/serve-hobak-milk.webp",
+      taste: c.serveHobakTaste,
       ways: c.serveHobakWays,
       icons: [CupSoda, Refrigerator, GlassWater],
     },
@@ -318,7 +321,19 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   </div>
                 </div>
 
-                <ul className="mt-6 divide-y divide-[#E3E7ED] border-t border-[#E3E7ED]">
+                {/*
+                  맛 한 줄. 이 자리가 비어 있어서 섹션이 설명서처럼 읽혔다 —
+                  무엇을 하라고만 하고 어떤 맛인지는 한 글자도 없었다.
+
+                  효능은 광고 사전승인 전까지 못 쓰지만 맛은 사실 기술이라 지금
+                  쓸 수 있다. "몸에 어떻게 좋은지" 자리를 "입에 어떻게 좋은지"로
+                  채우는 줄이다.
+                */}
+                <p className="mt-4 text-[13.5px] leading-relaxed text-[#5A6373] md:min-h-[2.75rem]">
+                  {s.taste}
+                </p>
+
+                <ul className="mt-5 divide-y divide-[#E3E7ED] border-t border-[#E3E7ED]">
                   {s.ways.map((way, j) => {
                     const Icon = s.icons[j];
                     return (

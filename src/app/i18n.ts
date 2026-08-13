@@ -70,9 +70,25 @@ export const t = {
      */
     serveLabel: "วิธีกิน",
     serveTitle: "ไม่ต้องตวง\nฉีกซองเดียวจบ",
-    /* 태국 영양표시의 1회 섭취량 표기가 "ครั้งละ 1 ซอง"이다. 그 어법을 그대로 쓴다. */
-    serveLead: "ครั้งละ 1 ซอง ดื่มตรง ๆ ก็ได้ ใส่ในอาหารก็ได้",
+    /*
+     * 태국 영양표시의 1회 섭취량 표기가 "ครั้งละ 1 ซอง"이다. 그 어법을 그대로 쓴다.
+     * 뒤 절은 이 섹션이 무엇을 주는지 약속한다 — 맛과 조합. 효능이 막혀 있으니
+     * "몸에 어떻게 좋은지" 대신 "입에 어떻게 좋은지"를 준다.
+     */
+    serveLead: "ครั้งละ 1 ซอง — รสเป็นแบบไหน กินคู่กับอะไรดี",
     serveNote: "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ",
+
+    /*
+     * 맛 한 줄. 이게 없어서 섹션이 설명서처럼 읽혔다 — 무엇을 하라고만 하고
+     * 어떤 맛인지 한 글자도 말하지 않았다. 맛은 사실 기술이라 심의와 무관하다.
+     *
+     * 올레샷의 근거는 품종이다. 아르베키나는 쓴맛이 거의 없고 버터 같은 질감에
+     * 아몬드로 끝나는 스페인 품종이라, 여린 채소를 덮지 않는다는 말이 취향이
+     * 아니라 품종 특성이 된다.
+     */
+    serveOlleTaste: "มะกอกพันธุ์อาร์เบกีนาจากสเปน แทบไม่ขม ปิดท้ายด้วยเลมอน",
+    serveOltoTaste: "รสมะเขือเทศล้วน ๆ ไม่ข้น ดื่มลื่นคอ",
+    serveHobakTaste: "หวานอ่อน ๆ ตามธรรมชาติของฟักทอง",
     /*
      * 두 스틱의 두 번째·세 번째 줄이 다른 이유는 배합이 다르기 때문이다.
      *
@@ -90,12 +106,12 @@ export const t = {
     serveOlleWays: [
       "เขย่าแล้วฉีกดื่มได้เลย",
       // 드레싱을 가리키는 태국어 명사는 น้ำสลัด다. 그 말을 쓰면 "이미 드레싱"이라는 논지가 문장 안에 들어간다.
-      "1 ซองคือน้ำสลัด 1 จาน น้ำมันมะกอกกับเลมอนผสมมาแล้ว",
-      "ราดบนปลาย่างหรืออาหารทะเล",
+      "1 ซองคือน้ำสลัด 1 จาน อาร์เบกีนาไม่ขมจึงไม่กลบผักใบอ่อน",
+      "ราดบนปลาย่างหรืออาหารทะเล ไม่ต้องบีบเลมอนเพิ่ม",
     ],
     serveOltoWays: [
       "เขย่าแล้วฉีกดื่มได้เลย",
-      "ราดบนขนมปัง แบบที่คนสเปนกินมะเขือเทศกับน้ำมันมะกอก",
+      "ราดบนขนมปังปิ้ง — มื้อเช้าของคนสเปนคือแบบนี้",
       // ปิดไฟ(불을 끄다)와 กลิ่นหอม(음식 향)은 태국 레시피가 실제로 쓰는 말이다.
       "ใส่พาสต้าตอนปิดไฟแล้ว ความร้อนทำให้กลิ่นหอมหายไป",
     ],
@@ -107,7 +123,7 @@ export const t = {
     serveHobakWays: [
       "ฉีกดื่มได้เลย ไม่ต้องแช่เย็น",
       "หรือแช่เย็นไว้ก่อนดื่ม",
-      "ผสมนม 2 ส่วน ต่อ น้ำฟักทอง 1 ส่วน",
+      "ผสมนม 2 ส่วน ต่อ น้ำฟักทอง 1 ส่วน โรยอบเชยนิดหน่อยก็เข้ากัน",
     ],
 
     lineLabel: "สำหรับผู้บริโภค",
@@ -193,24 +209,30 @@ export const t = {
     serveLabel: "HOW TO HAVE IT",
     serveTitle: "No measuring.\nOne sachet, done.",
     serveLead:
-      "One sachet is one serving — drink it straight, or use it in food.",
+      "One sachet per serving — what each one tastes like, and what to have it with.",
     serveNote: "Every one of these is how people in Korea actually have them.",
+
+    /* 태국어 쪽 주석 참고 — 맛 한 줄이 없어서 섹션이 설명서처럼 읽혔다. */
+    serveOlleTaste:
+      "Spanish Arbequina olives — barely any bitterness, then the lemon.",
+    serveOltoTaste: "Plain tomato, nothing thick about it. It goes down easily.",
+    serveHobakTaste: "Gently sweet, the way the pumpkin is.",
     /* 태국어 쪽 주석 참고 — 두 스틱의 줄이 갈리는 근거가 거기 있다. */
     serveOlleWays: [
       "Shake, tear, drink",
-      "One sachet dresses one plate — the oil and lemon are already mixed",
-      "Over grilled fish or seafood",
+      "One sachet dresses one plate — Arbequina is mild enough not to bury tender leaves",
+      "Over grilled fish or seafood; the lemon is already in it",
     ],
     serveOltoWays: [
       "Shake, tear, drink",
-      "Onto bread, the way Spain eats tomato and olive oil",
+      "Onto toast — this is what breakfast looks like in Spain",
       "Into pasta once the heat is off — heat takes the aroma with it",
     ],
     /* 태국어 쪽 주석 참고 — 냉동은 제조사 확인으로 내렸다. */
     serveHobakWays: [
       "Tear and drink, no chilling needed",
       "Or chill it first",
-      "Mix with milk, two parts to one",
+      "Two parts milk to one — a pinch of cinnamon suits it",
     ],
 
     lineLabel: "For shoppers",
