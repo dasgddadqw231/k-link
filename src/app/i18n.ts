@@ -69,14 +69,26 @@ export const t = {
      * 아니다) "좋다", "가볍게", "공복에"가 붙는 순간 대상이 된다.
      */
     serveLabel: "วิธีกิน",
-    serveTitle: "ไม่ต้องตวง\nฉีกซองเดียวจบ",
+    /*
+     * 제목이 "계량할 필요 없다"였는데 그건 기능 설명이지 갖고 싶게 만드는 말이 아니다.
+     * 태국 독자는 이미 피드에서 이 장면을 봤고(0-2), TikTok에서 "세븐일레븐에
+     * 올리브유 있냐"고 묻고 있다. 그러니 새로 알려줄 것이 아니라 "네가 본 그것"이라고
+     * 가리키는 편이 빠르다. 편의 논지는 리드로 내린다.
+     */
+    serveTitle: "ที่เห็นในฟีดทุกเช้า\nอยู่ในซองเดียว",
     /*
      * 태국 영양표시의 1회 섭취량 표기가 "ครั้งละ 1 ซอง"이다. 그 어법을 그대로 쓴다.
      * 뒤 절은 이 섹션이 무엇을 주는지 약속한다 — 맛과 조합. 효능이 막혀 있으니
      * "몸에 어떻게 좋은지" 대신 "입에 어떻게 좋은지"를 준다.
      */
-    serveLead: "ครั้งละ 1 ซอง — รสเป็นแบบไหน กินคู่กับอะไรดี",
-    serveNote: "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ",
+    serveLead: "ไม่ต้องซื้อทั้งขวด ไม่ต้องตวง — รสเป็นแบบไหน กินคู่กับอะไรดี",
+    /*
+     * 마지막 줄이 이 섹션의 값을 회수한다. 맛과 조합을 다 읽혀 놓고 "아직 태국에
+     * 없다"로 끊으면 결핍이 생기고, 그 결핍의 출구가 바로 아래 LINE 버튼이다.
+     * 미출시는 감출 일이 아니라 여기서는 파는 재료다.
+     */
+    serveNote:
+      "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ และยังไม่มีวางขายในไทย — ทักไลน์ไว้ แล้วจะรู้วันวางขายก่อนใคร",
 
     /*
      * 맛 한 줄. 이게 없어서 섹션이 설명서처럼 읽혔다 — 무엇을 하라고만 하고
@@ -86,9 +98,9 @@ export const t = {
      * 아몬드로 끝나는 스페인 품종이라, 여린 채소를 덮지 않는다는 말이 취향이
      * 아니라 품종 특성이 된다.
      */
-    serveOlleTaste: "มะกอกพันธุ์อาร์เบกีนาจากสเปน แทบไม่ขม ปิดท้ายด้วยเลมอน",
-    serveOltoTaste: "รสมะเขือเทศล้วน ๆ ไม่ข้น ดื่มลื่นคอ",
-    serveHobakTaste: "หวานอ่อน ๆ ตามธรรมชาติของฟักทอง",
+    serveOlleTaste: "อาร์เบกีนาจากสเปน นุ่ม ไม่ขม ทิ้งท้ายด้วยเลมอนสดชื่น",
+    serveOltoTaste: "มะเขือเทศคั้นสดล้วน ๆ ไม่ข้น หมดซองสบาย ๆ",
+    serveHobakTaste: "ฟักทองแก่คั้นทั้งลูก หวานนุ่มตามธรรมชาติ",
     /*
      * 두 스틱의 두 번째·세 번째 줄이 다른 이유는 배합이 다르기 때문이다.
      *
@@ -207,16 +219,18 @@ export const t = {
 
     /* 태국어 쪽 주석 참고. 두 언어의 shape이 어긋나면 LandingTh가 깨진다. */
     serveLabel: "HOW TO HAVE IT",
-    serveTitle: "No measuring.\nOne sachet, done.",
+    /* 태국어 쪽 주석 참고 — 기능 설명에서 "네가 본 그것"으로 바꿨다. */
+    serveTitle: "The morning shot\nyou keep seeing",
     serveLead:
-      "One sachet per serving — what each one tastes like, and what to have it with.",
-    serveNote: "Every one of these is how people in Korea actually have them.",
+      "No bottle to buy, nothing to measure — here is what each one tastes like, and what to have it with.",
+    serveNote:
+      "Every one of these is how people in Korea actually have them. None of it is on a Thai shelf yet — add us on LINE and you will hear the launch date first.",
 
     /* 태국어 쪽 주석 참고 — 맛 한 줄이 없어서 섹션이 설명서처럼 읽혔다. */
     serveOlleTaste:
-      "Spanish Arbequina olives — barely any bitterness, then the lemon.",
-    serveOltoTaste: "Plain tomato, nothing thick about it. It goes down easily.",
-    serveHobakTaste: "Gently sweet, the way the pumpkin is.",
+      "Spanish Arbequina — soft, no bitterness, a fresh lemon finish.",
+    serveOltoTaste: "Pressed tomato and nothing else. Thin enough to finish.",
+    serveHobakTaste: "Whole mature pumpkin, sweet the way pumpkin is.",
     /* 태국어 쪽 주석 참고 — 두 스틱의 줄이 갈리는 근거가 거기 있다. */
     serveOlleWays: [
       "Shake, tear, drink",

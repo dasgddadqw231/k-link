@@ -353,11 +353,14 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
           </div>
 
           {/*
-            제목이 포맷 얘기(계량할 필요 없다)로 가면서 정품성이 빠졌다. 그걸 여기서
-            한 줄로 되찾는다 — 위 아홉 줄은 지어낸 사용법이 아니라 한국에서 실제로
-            그렇게 먹는 방식이고, 그 사실 자체는 효능이 아니라서 쓸 수 있다.
+            이 섹션의 값을 회수하는 줄이라 각주 크기로 두지 않는다.
+
+            앞의 아홉 줄이 지어낸 사용법이 아니라 한국에서 실제로 그렇게 먹는
+            방식이라는 것(정품성), 그런데 태국 매대에는 아직 없다는 것(결핍),
+            그래서 지금 할 수 있는 일은 LINE뿐이라는 것(출구)이 한 문장에 있다.
+            바로 아래가 그 LINE 섹션이라 버튼을 여기 또 두지 않는다.
           */}
-          <motion.p {...fadeUp} className={`mt-10 ${T.small}`}>
+          <motion.p {...fadeUp} className={`mt-12 max-w-[62ch] ${T.body}`}>
             {c.serveNote}
           </motion.p>
         </Container>
