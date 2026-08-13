@@ -291,22 +291,21 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                 className="border-t-2 border-[#0C3F80] pt-6"
               >
                 {/*
-                  모바일에서는 사진을 원형 썸네일로 줄인다. 세 열이 세로로 쌓이면
-                  4:5 사진 석 장이 연달아 나와서 바로 위 제품 섹션과 겹쳐 보인다 —
-                  여기는 사진을 다시 크게 보여줄 자리가 아니다.
+                  모바일에서도 사진을 그대로 보여준다. 한동안 여기서 56px 원형
+                  썸네일로 줄였는데, 그건 이미지가 캐릭터였을 때의 판단이다 —
+                  캐릭터는 가운데 하나뿐이라 원 안에서도 읽혔지만, 식탁을 찍은
+                  사진을 그 크기로 자르면 갈색 얼룩이 된다. 사진으로 바꾼 이유가
+                  모바일에서 통째로 사라졌다.
+
+                  대신 세로를 눌러 담는다. 4:5 석 장이 연달아 서면 QR로 들어온
+                  사람이 스크롤만 하다 끝나므로, 모바일에서는 16:10으로 잘라
+                  높이를 절반 가까이 줄인다.
                 */}
-                <div className="flex items-center gap-4 md:block">
-                  <img
-                    src={s.img}
-                    alt=""
-                    loading="lazy"
-                    className="size-14 shrink-0 rounded-full border border-[#E3E7ED] bg-[#F4F6F8] object-cover md:hidden"
-                  />
+                <div>
                   <Figure
                     src={s.img}
                     alt={s.name}
-                    ratio="aspect-[4/5]"
-                    className="hidden md:block"
+                    ratio="aspect-[16/10] md:aspect-[4/5]"
                   />
                   {/*
                     용량을 이름 아래가 아니라 옆에 둔다. 올토샷은 용량을 확인할
@@ -314,7 +313,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                     세 열의 목록 시작점이 어긋난다. 옆에 두면 있든 없든 한 줄이다.
                     브랜드 카드가 이름과 분류를 붙이는 방식과 같은 문법이기도 하다.
                   */}
-                  <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 md:mt-5">
+                  <div className="mt-4 flex min-w-0 flex-wrap items-baseline gap-x-2.5 md:mt-5">
                     <h3 className={T.h3}>{s.name}</h3>
                     {s.size && (
                       <span className="text-[12.5px] text-[#8B94A3]">
