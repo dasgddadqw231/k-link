@@ -111,6 +111,8 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       taste: c.serveOlleTaste,
       ways: c.serveOlleWays,
       icons: [Droplets, Salad, Fish],
+      // 사진이 illustrate하는 줄. alt로도 쓰고, 어느 조합을 찍은 것인지 코드에 남긴다.
+      photoOf: 1,
     },
     {
       name: c.oltoName,
@@ -121,6 +123,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       taste: c.serveOltoTaste,
       ways: c.serveOltoWays,
       icons: [Droplets, Sandwich, UtensilsCrossed],
+      photoOf: 1,
     },
     {
       name: c.eunhwiSkuName,
@@ -130,6 +133,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
       taste: c.serveHobakTaste,
       ways: c.serveHobakWays,
       icons: [CupSoda, Refrigerator, GlassWater],
+      photoOf: 2,
     },
   ];
 
@@ -303,9 +307,15 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
                   높이를 절반 가까이 줄인다.
                 */}
                 <div>
+                  {/*
+                    alt는 제품명이 아니라 사진이 담은 조합이다. 제품명은 바로
+                    아래 h3가 이미 말하고 있고, 같은 이름을 위 제품 섹션의 전혀
+                    다른 사진(캐릭터)도 달고 있어서 화면 낭독기로 들으면 같은 말이
+                    두 번 나온다. 사진이 실제로 보여주는 것을 적는 편이 맞다.
+                  */}
                   <Figure
                     src={s.img}
-                    alt={s.name}
+                    alt={s.ways[s.photoOf]}
                     ratio="aspect-[16/10] md:aspect-[4/5]"
                   />
                   {/*
@@ -375,7 +385,7 @@ export default function LandingTh({ lang }: { lang: ThLang }) {
             바로 아래가 그 LINE 섹션이라 버튼을 여기 또 두지 않는다.
           */}
           <motion.p {...fadeUp} className={`mt-12 max-w-[62ch] ${T.body}`}>
-            {c.serveNote}
+            {LINE_URL ? c.serveNote : c.serveNoteAlt}
           </motion.p>
         </Container>
       </Section>

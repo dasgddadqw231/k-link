@@ -104,6 +104,14 @@ export const t = {
      */
     serveNote:
       "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ และยังไม่มีวางขายในไทย — ทักไลน์ไว้ แล้วจะรู้วันวางขายก่อนใคร",
+    /*
+     * LINE이 비어 있을 때의 같은 줄. 이 줄이 아래 버튼으로 넘기는 다리인데,
+     * LINE_URL이 비면 그 버튼은 이메일이 된다(contact.ts). 짝을 안 만들어 두면
+     * "라인 하세요" 옆에 이메일 버튼이 서서, 손님에게 우리 설정 상태를 보여주지
+     * 않는다는 이 파일 원칙 4를 정면으로 어긴다.
+     */
+    serveNoteAlt:
+      "ทั้งหมดนี้คือวิธีที่คนเกาหลีกินกันจริง ๆ และยังไม่มีวางขายในไทย — ส่งอีเมลมาไว้ แล้วจะรู้วันวางขายก่อนใคร",
 
     /*
      * 왜 먹는지(Why) 한 줄과 어떤 맛인지(Taste) 한 줄. 처음에는 Taste만 있었고
@@ -249,6 +257,9 @@ export const t = {
       "No bottle to buy, nothing to measure — here is what each one tastes like, and what to have it with.",
     serveNote:
       "Every one of these is how people in Korea actually have them. None of it is on a Thai shelf yet — add us on LINE and you will hear the launch date first.",
+    /* 태국어 쪽 주석 참고 — LINE이 비면 아래 버튼이 이메일로 바뀐다. */
+    serveNoteAlt:
+      "Every one of these is how people in Korea actually have them. None of it is on a Thai shelf yet — email us and you will hear the launch date first.",
 
     /* 태국어 쪽 주석 참고 — 맛 한 줄이 없어서 섹션이 설명서처럼 읽혔다. */
     /* 태국어 쪽 주석 참고 — 근거가 있는 것만 넣었다. */
