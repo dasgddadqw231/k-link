@@ -33,7 +33,7 @@ export function t(x: T, lang: AdminLang): string {
 }
 
 /** 내용을 마지막으로 규정과 맞춰 본 날. 화면 아래에 그대로 보여 준다. */
-export const CHECKED_ON = "2026-08-08";
+export const CHECKED_ON = "2026-08-18";
 
 /** 일을 하는 쪽. 브랜드가 손을 떼는 지점을 눈으로 보이게 하려고 나눈다. */
 export type Actor = "brand" | "kr" | "th";
@@ -241,9 +241,9 @@ export const PREREQ: PrereqItem[] = [
       en: "VAT registration (Por.Por.01)",
     },
     body: {
-      ko: "수입할 때 낸 부가세를 매입세액으로 돌려받는 주체는 수입자입니다. 등록이 없으면 그 7%가 전부 원가로 남아 판매가가 달라집니다. 연매출 180만 바트를 넘으면 의무이고, 등록 뒤에는 매달 15일(전자신고는 23일)까지 PP.30을 냅니다.",
-      th: "ผู้ที่ขอเครดิตภาษีซื้อจาก VAT ที่จ่ายตอนนำเข้าคือผู้นำเข้า หากไม่ได้จดทะเบียน VAT 7% นั้นจะกลายเป็นต้นทุนทั้งก้อนและกระทบราคาขาย เมื่อรายได้เกิน 1.8 ล้านบาทต่อปีถือเป็นหน้าที่ และหลังจดทะเบียนต้องยื่น ภ.พ.30 ทุกเดือนภายในวันที่ 15 (ยื่นออนไลน์ถึงวันที่ 23)",
-      en: "The party that reclaims import VAT as input tax is the importer. Without registration that 7% stays in the cost and changes the selling price. It is mandatory above THB 1.8m of annual turnover, and once registered a PP.30 return is filed monthly by the 15th (the 23rd when filed online).",
+      ko: "수입할 때 낸 부가세를 매입세액으로 돌려받는 주체는 수입자입니다. 등록이 없으면 그 7%가 전부 원가로 남아 판매가가 달라집니다. 연매출 180만 바트를 넘으면 의무이고, 등록 뒤에는 매달 15일까지 PP.30을 냅니다. 전자신고는 8일이 더 붙어 23일까지인데 이건 상시 제도가 아니라 2027년 1월 31일까지 연장된 조치입니다 — 그 뒤를 15일로 잡아 두세요. 서식도 2026년 3월 1일자로 바뀌어 옛 양식은 접수되지 않습니다.",
+      th: "ผู้ที่ขอเครดิตภาษีซื้อจาก VAT ที่จ่ายตอนนำเข้าคือผู้นำเข้า หากไม่ได้จดทะเบียน VAT 7% นั้นจะกลายเป็นต้นทุนทั้งก้อนและกระทบราคาขาย เมื่อรายได้เกิน 1.8 ล้านบาทต่อปีถือเป็นหน้าที่ และหลังจดทะเบียนต้องยื่น ภ.พ.30 ทุกเดือนภายในวันที่ 15 การยื่นออนไลน์ขยายเวลาอีก 8 วันเป็นวันที่ 23 แต่เป็นมาตรการขยายเวลาถึง 31 มกราคม 2570 ไม่ใช่เกณฑ์ถาวร ให้วางแผนช่วงหลังจากนั้นที่วันที่ 15 และแบบฟอร์มเปลี่ยนใหม่ตั้งแต่ 1 มีนาคม 2569 แบบเดิมจะไม่รับ",
+      en: "The party that reclaims import VAT as input tax is the importer. Without registration that 7% stays in the cost and changes the selling price. It is mandatory above THB 1.8m of annual turnover, and once registered a PP.30 return is filed monthly by the 15th. Online filing adds eight days to the 23rd, but that is an extension confirmed only to 31 January 2027, not a standing rule — plan the period after it at the 15th. The form itself changed on 1 March 2026 and the old one is refused.",
     },
   },
 ];
