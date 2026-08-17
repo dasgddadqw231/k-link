@@ -658,9 +658,9 @@ export const STAGES: Stage[] = [
       en: "The อย. number is issued and the label artwork is approved",
     },
     risk: {
-      ko: "제조품질증명서는 발급일로부터 1년 이내여야 하고, 제조국 정부나 정부가 인정한 기관이 발급한 것이어야 합니다. 온라인으로 확인되는 증명서는 공증이 필요 없지만, 확인이 안 되면 태국어·영어 번역과 공증을 붙여야 합니다. 반려는 대개 이 서류에서 납니다.",
-      th: "ใบรับรองมาตรฐานการผลิตต้องออกไม่เกิน 1 ปี และต้องออกโดยหน่วยงานรัฐของประเทศผู้ผลิตหรือหน่วยงานที่รัฐรับรอง ใบรับรองที่ตรวจสอบออนไลน์ได้ไม่ต้องรับรองสำเนา แต่ถ้าตรวจสอบไม่ได้ต้องแนบคำแปลภาษาไทยหรืออังกฤษพร้อมรับรอง การถูกตีกลับส่วนใหญ่เกิดจากเอกสารนี้",
-      en: "The production standard certificate must be less than a year old and issued by the producing country's government or a body it recognises. Certificates verifiable online need no notarisation; those that are not need a Thai or English translation, notarised. Most rejections come from this document.",
+      ko: "제조품질증명서는 ①제조국 정부, ②정부가 인정한 기관, ③국제인정포럼(IAF) 소속 인정기구(AB)의 인증을 받은 인증기관(CB) 중 어디서 발급해도 됩니다 — 한국 브랜드가 흔히 갖고 있는 민간 인증기관 HACCP·ISO 22000도 세 번째 경로로 들어갑니다. 유효기간은 증명서에 적힌 대로 인정되고, 적혀 있지 않은 경우에만 발급일(또는 실제 심사일)로부터 1년으로 봅니다 — 3년짜리 인증서를 1년 지났다고 다시 받을 필요가 없습니다. 온라인으로 확인되는 증명서는 공증이 필요 없지만, 확인이 안 되면 태국어·영어 번역과 공증을 붙여야 합니다. 반려는 대개 이 서류에서 납니다.",
+      th: "ใบรับรองมาตรฐานการผลิตออกได้จาก (1) หน่วยงานรัฐของประเทศผู้ผลิต (2) หน่วยงานที่รัฐนั้นรับรอง หรือ (3) หน่วยรับรอง (CB) ที่ได้รับการรับรองระบบงานจากหน่วยรับรองระบบงาน (AB) ซึ่งอยู่ใน IAF ดังนั้น HACCP หรือ ISO 22000 จากหน่วยรับรองเอกชนที่แบรนด์เกาหลีมักถืออยู่ก็เข้าเกณฑ์ทางที่สาม อายุใบรับรองให้ถือตามที่ระบุไว้บนใบรับรอง หากไม่ได้ระบุจึงถือว่าไม่เกิน 1 ปีนับจากวันออกหรือวันตรวจจริง ไม่จำเป็นต้องขอใบใหม่เพียงเพราะใบอายุ 3 ปีผ่านมาแล้วหนึ่งปี ใบรับรองที่ตรวจสอบออนไลน์ได้ไม่ต้องรับรองสำเนา แต่ถ้าตรวจสอบไม่ได้ต้องแนบคำแปลภาษาไทยหรืออังกฤษพร้อมรับรอง การถูกตีกลับส่วนใหญ่เกิดจากเอกสารนี้",
+      en: "The production standard certificate may come from any of three issuers: the producing country's government, a body that government recognises, or a certification body (CB) accredited by an accreditation body (AB) inside the International Accreditation Forum — that third route covers the private-CB HACCP and ISO 22000 certificates most Korean brands already hold. Its validity is whatever the certificate states; only when no expiry is printed is it treated as one year from issue or from the actual audit, so a three-year certificate does not need replacing after twelve months. Certificates verifiable online need no notarisation; those that are not need a Thai or English translation, notarised. Most rejections come from this document.",
     },
     watch: [
       {
@@ -690,9 +690,9 @@ export const STAGES: Stage[] = [
       money: { ko: "등록 수수료 (갈래별로 다름)", th: "ค่าธรรมเนียมขึ้นทะเบียน (ต่างกันตามกลุ่ม)", en: "Registration fees (varies by group)" },
     },
     basis: {
-      ko: "태국 FDA 식품 수입 절차 · 2024년 11월 제조시스템 증명 고시 · 한국 식약처 수출 증명서 발급",
-      th: "ขั้นตอนการนำเข้าอาหารของ อย. · ประกาศเรื่องใบรับรองระบบการผลิต พฤศจิกายน 2567 · การออกใบรับรองเพื่อส่งออกของ MFDS เกาหลี",
-      en: "Thai FDA food import procedure · November 2024 production-system certificate notification · Korean MFDS export certificate issuance",
+      ko: "태국 FDA 식품 수입 절차 · 2024-11-27 제조시스템 증명 고시(2021-04-19판 대체) · 한국 식약처 수출 증명서 발급",
+      th: "ขั้นตอนการนำเข้าอาหารของ อย. · ประกาศใบรับรองระบบการผลิต 27 พ.ย. 2567 (แทนฉบับ 19 เม.ย. 2564) · การออกใบรับรองเพื่อส่งออกของ MFDS เกาหลี",
+      en: "Thai FDA food import procedure · production-system certificate notification of 27 Nov 2024, replacing the 19 Apr 2021 version · Korean MFDS export certificate issuance",
     },
     record: {
       tab: "stock",
