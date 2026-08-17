@@ -543,6 +543,23 @@ export const STAGES: Stage[] = [
       th: "ทำคู่ขนานไปกับขั้นที่ 04 การขึ้นทะเบียนกับ อย. หากรอให้ขั้นนี้จบก่อนแล้วค่อยเริ่มขึ้นทะเบียน ตารางงานทั้งหมดจะยืดออกไปเท่านั้น ให้ยื่นขึ้นทะเบียนไว้ก่อน แล้วทดสอบตลาดในช่วงที่รออนุมัติ",
       en: "Runs alongside stage 04, the FDA registration. Waiting for this stage to finish before filing pushes the whole schedule back by exactly that much — file the registration first and test the market inside the waiting time.",
     },
+    /*
+     * 시딩이 처음 도는 곳이 여기다. 08단계에는 광고 문구를 심의 범위 안에 두라는
+     * 경고가 있는데, 정작 이 단계에는 없었다 — 그런데 여기는 등록도 라벨 승인도
+     * 광고 심의도 없는 상태라 기댈 범위 자체가 없다. 08보다 더 좁게 가야 한다.
+     */
+    watch: [
+      {
+        ko: "이 단계에는 기댈 광고 심의가 없다. 크리에이터 브리프에 효능 표현 금지 목록을 넣고, 원재료·형태·먹는 법까지만 말하게 한다 — 남이 대신 한 말도 우리 광고다(08단계와 같은 선이지만, 여기는 승인된 범위가 아직 0이다)",
+        th: "ขั้นนี้ยังไม่มีโฆษณาที่ผ่านการอนุมัติให้อ้างอิง ให้ใส่รายการคำต้องห้ามเรื่องสรรพคุณไว้ในไกด์ไลน์ของครีเอเตอร์ และให้พูดได้แค่ส่วนประกอบ รูปแบบบรรจุ และวิธีกิน คำพูดของคนอื่นก็ถือเป็นโฆษณาของเรา (เส้นเดียวกับขั้นที่ 08 แต่ขั้นนี้ขอบเขตที่อนุมัติแล้วยังเป็นศูนย์)",
+        en: "There is no approved advertising to lean on here. Put the forbidden benefit wording in the creator brief and keep them to ingredients, format and how to eat it — what someone else says on our behalf is still our advertising, and at this stage the approved scope is nil rather than narrow",
+      },
+      {
+        ko: "시딩용으로 들여온 물량이 판매로 새지 않게 한다. 크리에이터에게 '구매처'를 안내하거나 증정 이벤트를 걸면 등록 전 판매로 읽힌다",
+        th: "อย่าให้ของที่นำเข้ามาเพื่อซีดดิ้งไหลไปสู่การขาย หากบอกช่องทางซื้อกับครีเอเตอร์หรือจัดกิจกรรมแจกของ จะถูกตีความว่าเป็นการขายก่อนขึ้นทะเบียน",
+        en: "Keep the seeding lot from leaking into sales — pointing creators at a place to buy, or running a giveaway, reads as selling before registration",
+      },
+    ],
     gate: {
       ko: "시딩 결과를 보고 본물량과 판매가를 정했다",
       th: "ดูผลจากการซีดดิ้งแล้ว และกำหนดปริมาณล็อตจริงกับราคาขายได้",
