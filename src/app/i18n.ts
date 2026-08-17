@@ -57,10 +57,20 @@ export const t = {
      * SKU별 배지에 맡긴다. 다시 넣지 말 것.
      */
     positivaDesc: "สติ๊กแบบซองเดียวจบ ฉีกใช้ได้ทันที มี 2 สูตร",
-    olleName: "Olle Shot",
-    olleDesc: "น้ำมันมะกอกเอ็กซ์ตร้าเวอร์จินออร์แกนิก 65% + น้ำเลมอนออร์แกนิก 35%",
-    oltoName: "Olto Shot",
-    oltoDesc: "น้ำมันมะกอกจับคู่กับมะเขือเทศ",
+    /*
+     * 이름을 풀어 쓴다. "Olle Shot"은 올리브유+레몬샷을 줄인 한국식 조어라
+     * 한국 밖에서는 아무 뜻도 없다 — 태국 독자에게는 읽어도 무엇인지 모르는
+     * 글자다. 이 섹션에서 이름이 하는 일은 브랜딩이 아니라 식별이다.
+     *
+     * 다만 팩에 인쇄되는 이름은 버리지 않고 설명줄 맨 앞으로 내린다. 매대에서
+     * 실제로 보게 될 글자가 "Olle Shot"이라, 여기서 통째로 지우면 손님이
+     * 편의점에서 같은 물건을 알아보지 못한다. 등록명과 구조화 데이터도
+     * 그 이름을 쓴다(seo.ts).
+     */
+    olleName: "Olive Oil + Lemon Shot",
+    olleDesc: "Olle Shot · น้ำมันมะกอกเอ็กซ์ตร้าเวอร์จินออร์แกนิก 65% + น้ำเลมอนออร์แกนิก 35%",
+    oltoName: "Olive Oil + Tomato Shot",
+    oltoDesc: "Olto Shot · น้ำมันมะกอกจับคู่กับมะเขือเทศคั้น",
     eunhwiName: "Eunhwi Flow",
     eunhwiKind: "น้ำฟักทอง",
     eunhwiDesc: "ฟักทองแก่บดทั้งลูก บรรจุซองละ 90 มล.",
@@ -238,10 +248,11 @@ export const t = {
     positivaKind: "Olive Oil Sticks",
     /* 두 SKU의 용량이 달라서(20ml · 15ml) 브랜드 줄에 숫자를 두지 않는다. */
     positivaDesc: "Single-serve sticks, in two blends.",
-    olleName: "Olle Shot",
-    olleDesc: "65% organic extra virgin olive oil, 35% organic lemon juice",
-    oltoName: "Olto Shot",
-    oltoDesc: "Olive oil paired with tomato",
+    /* 태국어 쪽 주석 참고 — 이름은 풀어 쓰고 팩 이름은 설명줄 맨 앞에 남긴다. */
+    olleName: "Olive Oil + Lemon Shot",
+    olleDesc: "Olle Shot · 65% organic extra virgin olive oil, 35% organic lemon juice",
+    oltoName: "Olive Oil + Tomato Shot",
+    oltoDesc: "Olto Shot · olive oil paired with pressed tomato",
     eunhwiName: "Eunhwi Flow",
     eunhwiKind: "Pumpkin Juice",
     eunhwiDesc: "Whole Korean-grown pumpkin, in a 90 ml pouch.",
