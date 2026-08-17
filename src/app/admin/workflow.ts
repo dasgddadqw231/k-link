@@ -674,9 +674,9 @@ export const STAGES: Stage[] = [
         en: "File the product registration and the label approval together — registration finishing in two days means nothing if the label takes sixty",
       },
       {
-        ko: "축산국 허가가 걸리는 품목이면 그 신청도 여기서 같이 넣는다. FDA가 끝난 뒤에 시작하면 두 번 기다린다",
-        th: "หากสินค้าต้องขอใบอนุญาตจากกรมปศุสัตว์ ให้ยื่นพร้อมกันในขั้นนี้ หากรอให้ อย. เสร็จก่อนจะกลายเป็นรอสองรอบ",
-        en: "If the item needs a livestock permit, file that here too — starting it after the FDA is done means waiting twice",
+        ko: "축산국 허가가 걸리는 품목이면 그 신청도 여기서 같이 넣는다. FDA가 끝난 뒤에 시작하면 두 번 기다린다. 허가는 선적 건마다 입항지 동물검역소에 내고 수출국 위생증명서에 그 허가번호가 인용돼야 하며, 동물성 원료가 들어가면 제조시설 실사까지 붙을 수 있다 — 실사가 붙으면 일정이 달 단위로 늘어난다",
+        th: "หากสินค้าต้องขอใบอนุญาตจากกรมปศุสัตว์ ให้ยื่นพร้อมกันในขั้นนี้ หากรอให้ อย. เสร็จก่อนจะกลายเป็นรอสองรอบ ใบอนุญาตต้องยื่นต่อด่านกักกันสัตว์ที่ท่าเข้าเป็นรายเที่ยว และใบรับรองสุขอนามัยจากประเทศผู้ส่งออกต้องอ้างเลขที่ใบอนุญาตนั้น หากมีวัตถุดิบจากสัตว์อาจต้องตรวจประเมินสถานที่ผลิตด้วย ซึ่งจะทำให้ตารางงานยืดออกไปเป็นเดือน",
+        en: "If the item needs a livestock permit, file that here too — starting it after the FDA is done means waiting twice. The permit is filed per shipment with the animal quarantine station at the port of entry, the exporting country's health certificate has to quote its number, and anything with animal-derived material can additionally require an audit of the production site, which adds months rather than days",
       },
       {
         ko: "라벨 도안에 섭취방법(วิธีรับประทาน)을 같이 넣는다. 표시 의무 항목은 아니지만, 광고 사전승인은 라벨에 이미 승인된 범위를 기준으로 판단하므로 라벨에 적힌 섭취방법은 승인 없이 마케팅에 그대로 쓸 수 있다. 나중에 넣으려면 변경 신고를 다시 넣어야 한다",
@@ -1084,6 +1084,13 @@ export const STAGES: Stage[] = [
       th: "ไม่ใช่ขั้นที่จบลง ตัวชี้วัดคือสต็อกหมุนเร็วกว่าวันหมดอายุหรือไม่",
       en: "This stage does not end. The measure is whether stock turns faster than it expires",
     },
+    watch: [
+      {
+        ko: "할랄은 의무가 아니지만 채널이 요구하면 태국에서 다시 받을 필요는 없다 — CICOT가 인정한 해외 인증기관(FHCB) 목록에 있는 곳에서 받은 인증이면 그대로 통한다. 다만 목록에는 기관별 만료일이 있고 한국무슬림중앙회(KMF) 인정은 2025-04-30에 끝났으므로, 브랜드가 가진 인증서의 발급기관이 지금 목록에 있는지부터 본다",
+        th: "ฮาลาลไม่ใช่ข้อบังคับ แต่หากช่องทางขายกำหนด ก็ไม่ต้องขอใหม่ในไทย — ใบรับรองจากหน่วยงานที่อยู่ในรายชื่อหน่วยรับรองฮาลาลต่างประเทศ (FHCB) ที่ CICOT รับรอง ใช้ได้เลย แต่รายชื่อมีวันหมดอายุรายหน่วยงาน และการรับรอง KMF ของเกาหลีสิ้นสุดเมื่อ 30/04/2568 จึงต้องตรวจก่อนว่าหน่วยงานที่ออกใบรับรองให้แบรนด์ยังอยู่ในรายชื่อปัจจุบันหรือไม่",
+        en: "Halal is not compulsory, but where a channel asks for it there is no need to certify again in Thailand — a certificate from a body on CICOT's recognised foreign halal certification body list carries over. The list carries an expiry per body, though, and the Korea Muslim Federation's recognition lapsed on 30 April 2025, so check that whoever issued the brand's certificate is on the current list",
+      },
+    ],
     risk: {
       ko: "건강 효능은 광고 사전 심의를 받은 범위 안에서만 말할 수 있습니다. 인플루언서에게 주는 가이드에도 이 선을 넣으세요 — 남이 대신 한 말도 우리 광고로 봅니다.",
       th: "การกล่าวถึงประโยชน์ต่อสุขภาพทำได้เฉพาะภายในขอบเขตที่ได้รับอนุมัติล่วงหน้า ต้องใส่ข้อจำกัดนี้ในไกด์ไลน์ที่ให้อินฟลูเอนเซอร์ด้วย เพราะคำพูดของคนอื่นก็ถือเป็นโฆษณาของเรา",
@@ -1737,6 +1744,14 @@ export const SOURCES: Source[] = [
       en: "Thai FDA — food advertising approval via e-Submission",
     },
     url: "https://food.fda.moph.go.th/e-submission-system/esub-002",
+  },
+  {
+    label: {
+      ko: "CICOT — 인정 해외 할랄 인증기관(FHCB) 목록",
+      th: "CICOT — รายชื่อหน่วยรับรองฮาลาลต่างประเทศที่ได้รับการรับรอง",
+      en: "CICOT — recognised foreign halal certification bodies",
+    },
+    url: "https://www.halal.or.th/storages/documents/download/110.pdf",
   },
   {
     label: {
